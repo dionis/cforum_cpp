@@ -1,0 +1,36 @@
+--
+-- This is the Classic Forum configuration file
+-- Configuration is done via small LUA scripts
+--
+
+set_opt('module_path','/usr/lib/cforum/')
+
+add_forum('FORUM1')
+
+FORUM1.set_opt('message_path', "/var/cforum/messages/forum1/")
+FORUM1.set_opt('archive_path', "/var/cforum/archive/forum1/")
+FORUM1.set_opt('main_file_max_bytes',250000) -- start archiving at 250k bytes
+FORUM1.set_opt('main_file_max_postings',2000), -- max number of postings before archiver starts
+FORUM1.set_opt('main_file_max_threads',150)
+
+--
+-- server options
+--
+
+set_opt('auth_names',"/var/cforum/registered_names_forum1.db")
+
+set_opt('socket','/tmp/cforum.sock')
+set_opt('run_archiver',1800)
+set_opt('min_threads',5)
+set_opt('spare_threads',5)
+set_opt('max_threads',120)
+set_opt('user',"ckruse")
+set_opt('group',"users"),
+set_opt('chroot',"/home/ckruse/tmp/cforum/chroot/")
+set_opt('pid_file',"/var/run/cf_pid")
+set_opt('log_max_size',2097152)
+set_opt('error_log',"/var/log/cf_errors")
+set_opt('std_log',"/var/log/cf_stdlog")
+
+
+-- eof
