@@ -1,0 +1,11 @@
+Classic Forum
+
+The Classic Forum is a threaded web forum with a client/server
+architecture. It's goals are:
+
+- Scalability and performance
+- Highly customizable user views
+- Highly customization of the installation/configuration
+
+For more information have a look at
+<http://de.wiki.github.com/ckruse/cforum/>
