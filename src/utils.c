@@ -36,10 +36,14 @@ int cf_strcasecmp(const char *str1,const char *str2) {
   return 0;
 }
 
-/*!
- * \todo implement cf_strncasecmp!
- */
 int cf_strncasecmp(const char *str1,const char *str2,size_t n) {
+  register const char *ptr1 = str1,*ptr2 = str2;
+  register size_t i;
+
+  for(i=0;*ptr1 && *ptr2 && i < n && g_unichar_toupper(g_utf8_get_char(ptr1)) == g_unichar_toupper(g_utf8_get_char(ptr2));ptr1 = g_utf8_next_char(ptr1),ptr2 = g_utf8_next_char(ptr2),i++) {
+    if(i == n - 1) return 0;
+  }
+
   return -1;
 }
 
