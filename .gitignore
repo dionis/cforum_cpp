@@ -1,3 +1,5 @@
 ._*
 .DS*
+*.o
+Makefile
 

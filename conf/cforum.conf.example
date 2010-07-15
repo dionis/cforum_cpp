@@ -36,5 +36,6 @@ LogMaxSize 2097152
 ErrorLog "/var/log/cf_errors"
 StdLog "/var/log/cf_stdlog"
 
+Include "another_file.conf"
 
 # eof
