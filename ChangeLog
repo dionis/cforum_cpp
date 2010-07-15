@@ -1,3 +1,7 @@
+2010-07-15 Christian Kruse <cjk@wwwtech.de>
+	* src/utils.[ch]: Initial commit of a basic utility library
+	* conf/cforum.conf.example: added a apache style config file example
+
 2010-07-14 Christian Kruse <cjk@wwwtech.de>
 	* *: Initial commit of the complete rewrite
 
