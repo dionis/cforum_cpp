@@ -299,7 +299,7 @@ size_t getdelim(char **lineptr,size_t *n,int delim,FILE *stream) {
 #endif
 
 #ifdef NOSTRDUP
-u_char *strdup(const char *str) {
+char *strdup(const char *str) {
   size_t len = strlen(str);
   char *buff = cf_alloc(NULL,1,len+1,CF_ALLOC_MALLOC);
 
@@ -310,7 +310,7 @@ u_char *strdup(const char *str) {
 #endif
 
 #ifdef NOSTRNDUP
-u_char *strndup(const char *str,size_t len) {
+char *strndup(const char *str,size_t len) {
   char *buff = cf_alloc(NULL,1,len+1,CF_ALLOC_MALLOC);
 
   memcpy(buff,str,len);
@@ -319,6 +319,67 @@ u_char *strndup(const char *str,size_t len) {
   return buff;
 }
 #endif
+
+size_t split(const char *big,const char *small,char ***ulist) {
+  char **list  = cf_alloc(NULL,CF_PRERESERVE,sizeof(*list),CF_ALLOC_MALLOC);
+  char  *pos   = (char *)big,*pre = (char *)big;
+  size_t len   = 0;
+  size_t reser = CF_PRERESERVE;
+  size_t slen  = strlen(small);
+
+  while((pos = strstr(pos,small)) != NULL) {
+    *pos = '\0';
+
+    list[len++] = strdup(pre);
+
+    if(len >= reser) {
+      reser += CF_PRERESERVE;
+      list = cf_alloc(list,reser,sizeof(*list),CF_ALLOC_REALLOC);
+    }
+
+    pre    = pos+slen;
+    *pos++ = *small;
+  }
+
+  if(len >= reser) list = cf_alloc(list,++reser,sizeof(*list),CF_ALLOC_REALLOC);
+  list[len++] = strdup(pre);
+
+  *ulist = list;
+
+  return len;
+}
+
+size_t nsplit(const char *big,const char *small,char ***ulist,size_t max) {
+  char **list  = cf_alloc(NULL,CF_PRERESERVE,sizeof(*list),CF_ALLOC_MALLOC);
+  char  *pos   = (char *)big,*pre = (char *)big;
+  size_t len   = 0;
+  size_t reser = CF_PRERESERVE;
+  size_t slen  = strlen(small);
+
+  while((pos = strstr(pos,small)) != NULL) {
+    *pos = '\0';
+
+    list[len++] = strdup(pre);
+
+    if(len >= reser) {
+      reser += CF_PRERESERVE;
+      list = cf_alloc(list,reser,sizeof(*list),CF_ALLOC_REALLOC);
+    }
+
+    pre    = pos+slen;
+    *pos++ = *small;
+    if(len + 1 == max) break;
+  }
+
+  if(len + 1 <= max) {
+    if(len >= reser) list = cf_alloc(list,++reser,sizeof(*list),CF_ALLOC_REALLOC);
+    list[len++] = strdup(pre);
+  }
+
+  *ulist = list;
+
+  return len;
+}
 
 
 /* eof */

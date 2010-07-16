@@ -13,6 +13,8 @@
 #define CF_BUFSIZE 1024
 #define CF_BUFSIZE_MEMPOOL CF_BUFSIZE
 
+#define CF_PRERESERVE 5
+
 #endif
 
 /* eof */

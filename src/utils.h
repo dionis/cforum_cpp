@@ -11,7 +11,7 @@
 #define CF_UTILS_H
 
 /*!
- * \brief UTF8 version of strcmp(): compare two strings
+ * UTF8 version of strcmp(): compare two strings
  * \arg \c str1 First string
  * \arg \c str2 Second string
  * \return 0 if strings are equal, -1 if strings are not equal
@@ -19,7 +19,7 @@
 int cf_strcasecmp(const u_char *str1,const u_char *str2);
 
 /*!
- * \brief UTF8 version of strncasecmp(): compare \c n bytes of two strings
+ * UTF8 version of strncasecmp(): compare \c n bytes of two strings
  * \arg \c str1 First string
  * \arg \c str2 Second string
  * \arg \c n The number of bytes to compare
@@ -28,7 +28,7 @@ int cf_strcasecmp(const u_char *str1,const u_char *str2);
 int cf_strncasecmp(const u_char *str1,const u_char *str2,size_t n);
 
 /*!
- * \brief Count characters of an utf8 string
+ * Count characters of an utf8 string
  * \arg \c _s The string to count
  * \return The number of characters found (not the number of bytes!)
  * \author Colin Percival, <http://www.daemonology.net/blog/2008-06-05-faster-utf8-strlen.html>
@@ -36,14 +36,14 @@ int cf_strncasecmp(const u_char *str1,const u_char *str2,size_t n);
 size_t cf_strlen_utf8(const char * _s);
 
 /*!
- * \brief Count bytes of a string. We use our own implementation because the glibc's sucks
+ * Count bytes of a string. We use our own implementation because the glibc's sucks
  * \arg \c s The string to count
  * \return The number of bytes found
  */
 size_t cf_strlen(register const char *s);
 
 /*!
- * \brief Remove a directory with its contents (recursively) or a file
+ * Remove a directory with its contents (recursively) or a file
  * \arg \c path The directory/file to remove
  * \return 0 if directory/file could be removed successfully, -1 if an error occured
  * \attention This operation is \b NOT atomic!
@@ -51,7 +51,7 @@ size_t cf_strlen(register const char *s);
 int cf_remove_path(const u_char *path);
 
 /*!
- * \brief Create a directory with subdirectories, e.g. cf_make_path("/tmp/test/test")
+ * Create a directory with subdirectories, e.g. cf_make_path("/tmp/test/test")
  * \arg \c path The directories to create
  * \arg \c mode The mode
  * \return 0 if directory/file could be removed successfully, 1 if an error occured
@@ -61,7 +61,7 @@ int cf_make_path(const u_char *path,mode_t mode);
 
 #ifdef HAS_NO_GETLINE
 /*!
- * \brief Read a complete line from a file
+ * Read a complete line from a file
  * \arg \c lineptr A reference to a char * pointer, line will be stored in it
  * \arg \c n A reference to a size_t, length will be stored in it
  * \arg \c stream The FILE* stream to read from
@@ -72,7 +72,7 @@ size_t getline(char **lineptr,size_t *n,FILE *stream);
 
 #ifdef HAS_NO_GETDELIM
 /*!
- * \brief This function reads from a file until 'delim' has been found
+ * This function reads from a file until 'delim' has been found
  * \arg \c lineptr A reference to a char * pointer, line will be stored in it
  * \arg \c n A reference to a size_t, length will be stored in it
  * \arg \c delim The delimiter character
@@ -84,7 +84,7 @@ size_t getdelim(char **lineptr,size_t *n,int delim,FILE *stream);
 
 #ifdef NOSTRDUP
 /*!
- * \brief This function duplicates a string, allocating memory on heap
+ * This function duplicates a string, allocating memory on heap
  * \arg \c str The string to duplicate
  * \return The new string or NULL on failure
  * \attention YOU have to \c free() the string again!
@@ -94,7 +94,7 @@ u_char *strdup(const char *str);
 
 #ifdef NOSTRNDUP
 /*!
- * \brief This function duplicates \c len bytes of a string, allocating memory on heap
+ * This function duplicates \c len bytes of a string, allocating memory on heap
  * \arg \c str The string to duplicate
  * \return The new string or NULL on failure
  * \attention YOU have to \c free() the string again!
@@ -102,6 +102,27 @@ u_char *strdup(const char *str);
 u_char *strndup(const char *str,size_t len);
 #endif
 
+
+/**
+ * Splits a string into a list of strings and returns the length of the list. The string big will be cut at
+ * every match of the string \c small
+ * \param \c big The string to split
+ * \param \c small The string to search
+ * \param \c ulist A reference to a char ** pointer. In this char ** pointer will the list be stored.
+ * \return The length of the list
+ * \attention YOU have to free every element of the list and the list itself!
+ */
+size_t split(const char *big,const char *small,char ***ulist);
+
+/**
+ * Splits a string into a list of maximal max elements
+ * \param \c big The string to split
+ * \param \c small The string to search
+ * \param \c ulist A reference to a u_char ** pointer
+ * \return The length of the list
+ * \attention YOU have to free every element of the list _and_ the list itself!
+ */
+size_t nsplit(const char *big,const char *small,char ***ulist,size_t max);
 
 # endif
 
