@@ -6,6 +6,9 @@
  * Interface to an implementation of an AVL binary tree
  */
 
+#ifndef CF_TREE_UTILS_H
+#define CF_TREE_UTILS_H
+
 typedef struct cf_tree_dataset_s {
   void *data; /*!< Data member */
   void *key; /*!< Key member */
@@ -96,3 +99,7 @@ int cf_tree_remove(cf_tree_t *tree,cf_tree_node_t **n, cf_tree_dataset_t *key);
  * \return NULL if element could not be found, element reference if element has been found
  */
 const cf_tree_dataset_t *cf_tree_find(cf_tree_t *tree,cf_tree_node_t *n, cf_tree_dataset_t *key);
+
+#endif
+
+/* eof */

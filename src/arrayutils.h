@@ -6,8 +6,8 @@
  * An abstracted array implementation interface for the Classic Forum
  */
 
-#ifndef CF_ARRAY_UTILS
-#define CF_ARRAY_UTILS
+#ifndef CF_ARRAY_UTILS_H
+#define CF_ARRAY_UTILS_H
 
 /*! Array destructor function, called for every single element */
 typedef void (*cf_array_destroy_t)(void *);
