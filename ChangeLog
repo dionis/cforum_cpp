@@ -7,6 +7,7 @@
 		abstraction
 	* src/ipcutils.[ch]: Initial commit of a small IPC abstraction by
 		Christian Seiler
+	* src/stringutils.[ch]: Initial commit of a string abstraction
 
 2010-07-15 Christian Kruse <cjk@wwwtech.de>
 	* src/utils.[ch]: Initial commit of a basic utility library
