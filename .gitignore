@@ -2,4 +2,7 @@
 .DS*
 *.o
 Makefile
+.#*
+*.so
+/docs/
 
