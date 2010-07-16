@@ -51,7 +51,7 @@ typedef struct s_mem_pool {
  * \brief This function initializes a memory pool
  * \param pool The memory pool object pointer
  */
-#define cf_mem_init(pool) (cf_mem_init_growth((pool),CF_BUFSIZE_MEMPOOL))
+#define cf_mem_init(pool) (cf_mem_init_growth((pool),CF_BUFSIZ_MEMPOOL))
 
 /*!
  * \brief This function initializes a memory pool with a specified growth parameter
