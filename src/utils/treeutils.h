@@ -10,7 +10,7 @@
 #define CF_TREE_UTILS_H
 
 /*!
- * A tree data node
+ * A tree node data
  */
 typedef struct cf_tree_dataset_s {
   void *key; /*!< Key member */
@@ -40,6 +40,12 @@ typedef struct s_cf_tree_node {
   enum cf_tree_balance_e bal; /*!< balance */
 } cf_tree_node_t;
 
+/*! comparer function prototype */
+typedef int (*cf_tree_comparer_t)(cf_tree_dataset_t *,cf_tree_dataset_t *);
+
+/*! destroyer function prototype */
+typedef void (*cf_tree_destroyer_t)(cf_tree_dataset_t *);
+
 /*!
  * AVL tree structure
  */
@@ -49,21 +55,15 @@ typedef struct s_cf_tree {
    * than the second, +1 if first dataset is greater than the second
    * and 0 if both are equal.
    */
-  int (*compare)(cf_tree_dataset_t *,cf_tree_dataset_t *);
+  cf_tree_comparer_t compare;
 
   /*!
    * 'Destructor' function for a tree dataset
    */
-  void (*destroy)(cf_tree_dataset_t *);
+  cf_tree_destroyer_t destroy;
 
   cf_tree_node_t *root; /*!< root node */
 } cf_tree_t;
-
-/*! comparer function prototype */
-typedef int (*cf_tree_comparer_t)(cf_tree_dataset_t *,cf_tree_dataset_t *);
-
-/*! destroyer function prototype */
-typedef void (*cf_tree_destroyer_t)(cf_tree_dataset_t *);
 
 /**
  * This function initializes a new tree object
