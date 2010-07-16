@@ -51,8 +51,11 @@ int cf_strncasecmp(const char *str1,const char *str2,size_t n) {
   return -1;
 }
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 #define ONEMASK ((size_t)(-1) / 0xFF)
-size_t cf_strlen_utf8(const char * _s) {
+#endif
+
+size_t cf_strlen_utf8(const char *_s) {
   const char * s;
   size_t count = 0;
   size_t u;

@@ -38,33 +38,33 @@ typedef struct cf_list_head_s {
 
 /*!
  * This function initializes a list head
- * \param \c head The list header variable
+ * \param head The list header variable
  */
 void cf_list_init(cf_list_head_t *head);
 
 /*!
  * This function appends an element to a list
- * \param \c head The list header variable for this list
- * \param \c data The data to append
- * \param \c size The size of the data
+ * \param head The list header variable for this list
+ * \param data The data to append
+ * \param size The size of the data
  */
 void cf_list_append(cf_list_head_t *head,void *data,size_t size);
 
 /*!
  * This function appends an element to a list _and_does_not_copy_it_ but
  * safes the data argument as a reference
- * \param \c head The list header variable for this list
- * \param \c data The data to append
- * \param \c size The size of the data
+ * \param head The list header variable for this list
+ * \param data The data to append
+ * \param size The size of the data
  */
 
 void cf_list_append_static(cf_list_head_t *head,void *data,size_t size);
 
 /*!
  * This function prepends an element to a list
- * \param \c head The list header variable for this list
- * \param \c data The data to prepend
- * \param \c size The size of the data
+ * \param head The list header variable for this list
+ * \param data The data to prepend
+ * \param size The size of the data
  */
 void cf_list_prepend(cf_list_head_t *head,void *data,size_t size);
 
@@ -72,42 +72,42 @@ void cf_list_prepend(cf_list_head_t *head,void *data,size_t size);
  * This function prepends an element to a list _and_does_not_copy_it
 _
  * but safes the data argument as a reference
- * \param \c head The list header variable for this list
- * \param \c data The data to prepend
- * \param \c size The size of the data
+ * \param head The list header variable for this list
+ * \param data The data to prepend
+ * \param size The size of the data
  */
 
 void cf_list_prepend_static(cf_list_head_t *head,void *data,size_t size);
 
 /*!
  * This function inserts an element in a list after the given element
- * \param \c head The list header variable for this list
- * \param \c prev The list element variable to insert after
- * \param \c data The data to insert
- * \param \c size The size of the data
+ * \param head The list header variable for this list
+ * \param prev The list element variable to insert after
+ * \param data The data to insert
+ * \param size The size of the data
  */
 void cf_list_insert(cf_list_head_t *head,cf_list_element_t *prev,void *data,size_t size);
 
 /*!
  * This function searches an element in a list
- * \param \c head The list header variable for this list
- * \param \c data The data to search
- * \param \c compare The comparing function
+ * \param head The list header variable for this list
+ * \param data The data to search
+ * \param compare The comparing function
  * \return Returns the data of the element if found or NULL if not found
  */
 void *cf_list_search(cf_list_head_t *head,void *data,cf_list_comparer_t compare);
 
 /*!
  * This function deletes an element from a list
- * \param \c head The list header variable for this list
- * \param \c elem The list element to delete
+ * \param head The list header variable for this list
+ * \param elem The list element to delete
  */
 void cf_list_delete(cf_list_head_t *head,cf_list_element_t *elem);
 
 /*!
  * This function destroys a list
- * \param \c head The list header variable for this list
- * \param \c destroy A destroying function for the list elements (NULL if not needed)
+ * \param head The list header variable for this list
+ * \param destroy A destroying function for the list elements (NULL if not needed)
  */
 void cf_list_destroy(cf_list_head_t *head,cf_list_destroy_t destroy);
 

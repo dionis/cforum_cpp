@@ -12,23 +12,23 @@
 
 /*!
  * \brief This function duplicates a memory area
- * \arg \c inptr The pointer to the original memory area
- * \arg \c size The size of the memory area
+ * \param inptr The pointer to the original memory area
+ * \param size The size of the memory area
  * \return A pointer to the duplicated memory area
  */
 void *memdup(void *inptr,size_t size);
 
 
-#define CF_ALLOC_MALLOC  0x0
-#define CF_ALLOC_CALLOC  0x1
-#define CF_ALLOC_REALLOC 0x2
+#define CF_ALLOC_MALLOC  0x0 /*!< use malloc() for memory allocation */
+#define CF_ALLOC_CALLOC  0x1 /*!< use calloc() for memory allocation */
+#define CF_ALLOC_REALLOC 0x2 /*!< use realloc() for memory allocation */
 
 /*!
  * \brief Safely allocates new memory
- * \arg \c ptr The old pointer for realloc()
- * \arg \c nmemb The number of objects to allocate
- * \arg \c size The size of one object
- * \arg \c type The type of the allocation (CF_ALLOC_MALLOC, CF_ALLOC_CALLOC or CF_ALLOC_REALLOC)
+ * \param ptr The old pointer for realloc()
+ * \param nmemb The number of objects to allocate
+ * \param size The size of one object
+ * \param type The type of the allocation (CF_ALLOC_MALLOC, CF_ALLOC_CALLOC or CF_ALLOC_REALLOC)
  * \return The new pointer
  */
 void *cf_alloc(void *ptr,size_t nmemb,size_t size,int type);
@@ -45,6 +45,7 @@ typedef struct s_mem_pool {
   unsigned char *content; /*!< The memory area itself */
 } cf_mem_pool_t;
 
+/*! Initializer macro */
 #define CF_MEMPOOL_INITIALIZER { 0, 0, 0, NULL }
 
 /*!

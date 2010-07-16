@@ -99,7 +99,7 @@ void cf_list_insert(cf_list_head_t *head,cf_list_element_t *prev,void *data,size
   prev->next = elem;
 }
 
-void *cf_list_search(cf_list_head_t *head,void *data,int (*compare)(const void *data1,const void *data2)) {
+void *cf_list_search(cf_list_head_t *head,void *data,cf_list_comparer_t compare) {
   cf_list_element_t *elem;
 
   for(elem=head->elements;elem;elem=elem->next) {
@@ -117,7 +117,7 @@ void cf_list_delete(cf_list_head_t *head,cf_list_element_t *elem) {
   if(head->last == elem) head->last = elem->next;
 }
 
-void cf_list_destroy(cf_list_head_t *head,void (*destroy)(void *data)) {
+void cf_list_destroy(cf_list_head_t *head,cf_list_destroy_t destroy) {
   cf_list_element_t *elem,*elem1;
 
   for(elem=head->elements;elem;elem=elem1) {

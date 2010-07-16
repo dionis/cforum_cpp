@@ -10,10 +10,10 @@
 #ifndef CF_CONFIG_H
 #define CF_CONFIG_H
 
-#define CF_BUFSIZ 1024
-#define CF_BUFSIZ_MEMPOOL CF_BUFSIZ
+#define CF_BUFSIZ 1024 /*!< Default buffer size */
+#define CF_BUFSIZ_MEMPOOL CF_BUFSIZ /*!< Default memory pool buffer size */
 
-#define CF_PRERESERVE 5
+#define CF_PRERESERVE 5 /*!< default prereservation count (e.g. for arrays) */
 
 #endif
 

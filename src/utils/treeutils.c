@@ -20,7 +20,7 @@
 /*!
  * private function to do left-rotation if tree is
  * unbalanced
- * \param \c n The subtree root node
+ * \param n The subtree root node
  */
 static void cf_tree_rotate_left(cf_tree_node_t **n) {
   cf_tree_node_t *tmp = *n;
@@ -35,7 +35,7 @@ static void cf_tree_rotate_left(cf_tree_node_t **n) {
 /*!
  * private function to do right-rotation if tree
  * is unbalanced
- * \param \c n The subtree root node
+ * \param n The subtree root node
  */
 static void cf_tree_rotate_right(cf_tree_node_t **n) {
   cf_tree_node_t *tmp = *n;
@@ -50,7 +50,7 @@ static void cf_tree_rotate_right(cf_tree_node_t **n) {
 /*!
  * private function to handle the case that the tree has
  * grown on the left side
- * \param \c n The subtree root node
+ * \param n The subtree root node
  * \return Returns 0 or 1
  */
 static int cf_tree_leftgrown(cf_tree_node_t **n) {
@@ -101,7 +101,7 @@ static int cf_tree_leftgrown(cf_tree_node_t **n) {
 /*!
  * private function to handle the case that the tree
  * has been grown to the right side
- * \param \c n Subtree root node
+ * \param n Subtree root node
  * \return Returns 0 or 1
  */
 static int cf_tree_rightgrown(cf_tree_node_t **n) {
@@ -148,7 +148,7 @@ static int cf_tree_rightgrown(cf_tree_node_t **n) {
 /*!
  * private function to handle the case that the tree has
  * shrunken on the left side
- * \param \c n The subtree root node
+ * \param n The subtree root node
  * \return Returns 0 or 1
  */
 static int cf_tree_leftshrunk(cf_tree_node_t **n) {
@@ -206,7 +206,7 @@ static int cf_tree_leftshrunk(cf_tree_node_t **n) {
 /*!
  * Private function to handle the case that the tree has
  * shrunken on the right side
- * \param \c n The subtree root node
+ * \param n The subtree root node
  * \return Returns 0 or 1
  */
 static int cf_tree_rightshrunk(cf_tree_node_t **n) {
@@ -264,9 +264,9 @@ static int cf_tree_rightshrunk(cf_tree_node_t **n) {
 
 /*!
  * Private function to find the highest subtree
- * \param \c target Target node
- * \param \c n The subtree root node
- * \param \c res Result of this operation (height of the tree)
+ * \param target Target node
+ * \param n The subtree root node
+ * \param res Result of this operation (height of the tree)
  * \return Returns 0 or 1
  */
 static int cf_tree_findhighest(cf_tree_node_t *target,cf_tree_node_t **n,int *res) {
@@ -300,9 +300,9 @@ static int cf_tree_findhighest(cf_tree_node_t *target,cf_tree_node_t **n,int *re
 
 /*!
  * Private function to find the lowest subtree
- * \param \c target The target node
- * \param \c n The subtree root node
- * \param \c res The result of this operation (height of the tree)
+ * \param target The target node
+ * \param n The subtree root node
+ * \param res The result of this operation (height of the tree)
  * \return Returns 0 or 1
  */
 static int cf_tree_findlowest(cf_tree_node_t *target,cf_tree_node_t **n,int *res) {
@@ -332,8 +332,8 @@ static int cf_tree_findlowest(cf_tree_node_t *target,cf_tree_node_t **n,int *res
 
 /*!
  * Private function used to destroy all tree nodes (works recursively)
- * \param \c tree The tree
- * \param \c n Actual node
+ * \param tree The tree
+ * \param n Actual node
  */
 static void cf_tree_destroy_nodes(cf_tree_t *tree,cf_tree_node_t *n) {
   if(n) {
