@@ -3,6 +3,8 @@
 	* src/memoryutils.[ch]: Initial commit of the memory pool abstraction
 		layer
 	* src/treeutils.[ch]: Initial commit of an AVL tree implementation
+	* src/listutils.[ch]: Initial commit of a double linked list
+		abstraction
 
 2010-07-15 Christian Kruse <cjk@wwwtech.de>
 	* src/utils.[ch]: Initial commit of a basic utility library
