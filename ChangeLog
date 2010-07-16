@@ -1,4 +1,5 @@
 2010-07-16 Christian Kruse <cjk@wwwtech.de>
+	* src/hashlib.[ch]: Added a hash lib
 	* src/utils/datautils.[ch]: Added data utilities
 	* src/validate.[ch]: Added a lot of validation functions for URIs
 	* src/readline.[ch]: Initial commit of the thread-safe buffered
