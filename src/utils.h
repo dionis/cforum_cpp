@@ -7,8 +7,8 @@
  * remove_path(), etc, pp making the life easier
  */
 
-#ifndef _CF_UTILS_H_
-#define _CF_UTILS_H_
+#ifndef CF_UTILS_H
+#define CF_UTILS_H
 
 /*!
  * \brief UTF8 version of strcmp(): compare two strings
@@ -81,6 +81,27 @@ size_t getline(char **lineptr,size_t *n,FILE *stream);
  */
 size_t getdelim(char **lineptr,size_t *n,int delim,FILE *stream);
 #endif
+
+#ifdef NOSTRDUP
+/*!
+ * \brief This function duplicates a string, allocating memory on heap
+ * \arg \c str The string to duplicate
+ * \return The new string or NULL on failure
+ * \attention YOU have to \c free() the string again!
+ */
+u_char *strdup(const char *str);
+#endif
+
+#ifdef NOSTRNDUP
+/*!
+ * \brief This function duplicates \c len bytes of a string, allocating memory on heap
+ * \arg \c str The string to duplicate
+ * \return The new string or NULL on failure
+ * \attention YOU have to \c free() the string again!
+ */
+u_char *strndup(const char *str,size_t len);
+#endif
+
 
 # endif
 

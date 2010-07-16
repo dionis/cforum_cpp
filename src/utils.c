@@ -7,6 +7,7 @@
  * remove_path(), etc, pp making the life easier
  */
 
+#include "defines.h"
 #include "config.h"
 
 #include <stdlib.h>
@@ -18,10 +19,13 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <limits.h>
 
 #include <dirent.h>
 
 #include <glib.h>
+
+#include "memoryutils.h"
 
 int cf_strcasecmp(const char *str1,const char *str2) {
   register const char *ptr1 = str1,*ptr2 = str2;
@@ -137,6 +141,9 @@ static inline int count_bits_to_0(unsigned int x) {  /* counting trailing zeroes
 
 size_t cf_strlen(const char *str) {
   register size_t len = 0;
+  __m128i xmm0 = _mm_setzero_si128();
+  __m128i xmm1;
+  int mask = 0;
 
   /* align to 16 bytes */
   while((((intptr_t)str) & (sizeof(__m128i)-1)) != 0) {
@@ -145,9 +152,6 @@ size_t cf_strlen(const char *str) {
   }
 
   /* search for 0 */
-  __m128i xmm0 = _mm_setzero_si128();
-  __m128i xmm1;
-  int mask = 0;
   for(;;) {
     xmm1 = _mm_load_si128((__m128i *)str);
     xmm1 = _mm_cmpeq_epi8(xmm1, xmm0);
@@ -194,8 +198,10 @@ size_t cf_strlen(const char *str) {
 int cf_remove_path(const char *path) {
   DIR *dir;
   struct dirent *ent = NULL,*entry = NULL;
-  char buff[PATH_MAX];
+  char *buff;
   struct stat st;
+  size_t len = cf_strlen(path);
+  int ret;
 
   if(lstat(path, &st) < 0) {
     fprintf(stderr,"utils: cf_remove_path: could not lstat '%s': %s\n",path,strerror(errno));
@@ -213,8 +219,12 @@ int cf_remove_path(const char *path) {
       if(strcmp(ent->d_name,".") == 0 || strcmp(ent->d_name,"..") == 0) continue;
 
       /* Recursively call to remove the current entry */
-      snprintf(buff,PATH_MAX, "%s/%s",path,ent->d_name);
-      if(cf_remove_path(buff) != 0) return -1;
+      buff = cf_alloc(NULL,1,len + cf_strlen(ent->d_name) + 2,CF_ALLOC_MALLOC);
+      sprintf(buff,"%s/%s",path,ent->d_name);
+      ret = cf_remove_path(buff);
+      free(buff);
+
+      if(ret != 0) return -1;
     }
 
     if(rmdir(path) < 0) {
@@ -287,5 +297,28 @@ size_t getdelim(char **lineptr,size_t *n,int delim,FILE *stream) {
   return buf.len;
 }
 #endif
+
+#ifdef NOSTRDUP
+u_char *strdup(const char *str) {
+  size_t len = strlen(str);
+  char *buff = cf_alloc(NULL,1,len+1,CF_ALLOC_MALLOC);
+
+  memcpy(buff,str,len+1);
+
+  return buff;
+}
+#endif
+
+#ifdef NOSTRNDUP
+u_char *strndup(const char *str,size_t len) {
+  char *buff = cf_alloc(NULL,1,len+1,CF_ALLOC_MALLOC);
+
+  memcpy(buff,str,len);
+  buff[len-1] = '\0';
+
+  return buff;
+}
+#endif
+
 
 /* eof */

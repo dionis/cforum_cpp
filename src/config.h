@@ -1,23 +1,17 @@
 /**
- * \file configparser.c
- * \brief The config parser of the cforum
+ * \file config.h
+ * \brief Some basic configuration
  * \author Christian Kruse, <cjk@wwwtech.de>
  *
- * The configparser uses an Apache style config format. By default,
- * all configuration is held in one file, but other script files can
- * be included by the cforum.conf.
- *
- * There are three places where we look for a script file:
- * - content of env variable CF_CONF_FILE
- * - /etc/cforum.conf
- * - /usr/local/etc/cforum.conf
- * - ./cforum.conf
+ * This file contains some basic configuration,
+ * such as default buffer sizes, etc, pp
  */
 
 #ifndef CF_CONFIG_H
 #define CF_CONFIG_H
 
-
+#define CF_BUFSIZE 1024
+#define CF_BUFSIZE_MEMPOOL CF_BUFSIZE
 
 #endif
 
