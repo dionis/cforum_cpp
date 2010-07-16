@@ -7,16 +7,6 @@
  * abstraction, etc, pp
  */
 
-#include "defines.h"
-#include "config.h"
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <errno.h>
-
-#include <sys/types.h>
-
 #include "memoryutils.h"
 
 

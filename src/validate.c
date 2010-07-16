@@ -8,15 +8,6 @@
  *
  */
 
-#include "config.h"
-#include "defines.h"
-
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-
-#include <idna.h>
-
 #include "validate.h"
 
 static int is_valid_http_link_check(const char *link);

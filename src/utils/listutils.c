@@ -6,14 +6,8 @@
  * double linked list abstraction for the Classic Forum
  */
 
-#include "config.h"
-#include "defines.h"
-
-#include <stdlib.h>
-#include <string.h>
-
 #include "listutils.h"
-#include "memoryutils.h"
+
 
 void cf_list_init(cf_list_head_t *head) {
   memset(head,0,sizeof(*head));
@@ -112,7 +106,7 @@ void *cf_list_search(cf_list_head_t *head,void *data,cf_list_comparer_t compare)
 void cf_list_delete(cf_list_head_t *head,cf_list_element_t *elem) {
   if(elem->prev) elem->prev->next = elem->next;
   if(elem->next) elem->next->prev = elem->prev;
-  
+
   if(head->elements == elem) head->elements = elem->next;
   if(head->last == elem) head->last = elem->next;
 }

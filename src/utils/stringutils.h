@@ -9,6 +9,14 @@
 #ifndef CF_STRING_UTILS_H
 #define CF_STRING_UTILS_H
 
+#include "config.h"
+#include "defines.h"
+
+#include <string.h>
+#include <stdlib.h>
+
+#include "memoryutils.h"
+
 /*!
  * This is the heart of the string abstraction. It contains the string itself, the length
  * of the string and the size of the reserved memory for the string.

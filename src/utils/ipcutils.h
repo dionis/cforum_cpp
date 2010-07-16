@@ -1,7 +1,23 @@
-
+/**
+ * \file ipcutils.h
+ * \author Christian Seiler, <self@christian-seiler.de>
+ * \brief IPC utilities for the Classic Forum
+ *
+ * Small IPC abstraction for the Classic Forum
+ */
 
 #ifndef CF_IPC_UTILS_H
 #define CF_IPC_UTILS_H
+
+#include "config.h"
+#include "defines.h"
+
+#include <stdlib.h>
+#include <unistd.h>
+#include <errno.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
 
 /*!
  * \param filename the filename to execute

@@ -13,6 +13,14 @@
 #ifndef CF_HASHLIB_H
 #define CF_HASHLIB_H
 
+#include "config.h"
+#include "defines.h"
+
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <stddef.h>
+
 /*!
  * Is the starting hash table size (2^9)
  */

@@ -14,15 +14,6 @@
  * should be a moderate compromiss.
  */
 
-#include "config.h"
-#include "defines.h"
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/types.h>
-#include <stddef.h>
-
 #include "hashlib.h"
 
 

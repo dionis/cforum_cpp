@@ -9,6 +9,15 @@
 #ifndef CF_ARRAY_UTILS_H
 #define CF_ARRAY_UTILS_H
 
+#include "config.h"
+#include "defines.h"
+
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
+
+#include "memoryutils.h"
+
 /*! Array destructor function, called for every single element */
 typedef void (*cf_array_destroy_t)(void *);
 

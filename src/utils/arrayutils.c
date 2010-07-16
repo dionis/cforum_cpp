@@ -6,15 +6,7 @@
  * An abstracted array implementation for the Classic Forum
  */
 
-#include "config.h"
-#include "defines.h"
-
-#include <stdlib.h>
-#include <string.h>
-#include <errno.h>
-
 #include "arrayutils.h"
-#include "memoryutils.h"
 
 void cf_array_init_growth(cf_array_t *ary,size_t element_size,size_t growth,cf_array_destroy_t cf_array_destroy) {
   ary->reserved      = 0;

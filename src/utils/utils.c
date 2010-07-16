@@ -7,25 +7,7 @@
  * remove_path(), etc, pp making the life easier
  */
 
-#include "defines.h"
-#include "config.h"
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <errno.h>
-#include <string.h>
-#include <stdint.h>
-
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <limits.h>
-
-#include <dirent.h>
-
-#include <glib.h>
-
-#include "memoryutils.h"
+#include "utils.h"
 
 int cf_strcasecmp(const char *str1,const char *str2) {
   register const char *ptr1 = str1,*ptr2 = str2;
@@ -82,19 +64,19 @@ size_t cf_strlen_utf8(const char *_s) {
 
     /* Exit the loop if there are any zero bytes. */
     if((u - ONEMASK) & (~u) & (ONEMASK * 0x80)) break;
-  
+
     /* Count bytes which are NOT the first byte of a character. */
     u = ((u & (ONEMASK * 0x80)) >> 7) & ((~u) >> 6);
     count += (u * ONEMASK) >> ((sizeof(size_t) - 1) * 8);
   }
-  
+
   /* Take care of any left-over bytes. */
   for(; ;++s) {
     b = *s;
 
     /* Exit if we hit a zero byte. */
     if(b == '\0') break;
-  
+
     /* Is this byte NOT the first byte of a character? */
     count += (b >> 7) & ((~b) >> 6);
   }
@@ -110,21 +92,21 @@ size_t cf_strlen_utf8(const char *_s) {
 #ifndef WORDS_BIGENDIAN
 static inline int count_bits_to_0(unsigned int x) { /* counting trailing zeroes, by Nazo, post: 2009/07/20 03:40, this is current winner for speed */
   static const unsigned char table[256] = {
-    7, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 
-    4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 
-    5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 
-    4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 
-    6, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 
-    4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 
-    5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 
-    4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 
-    7, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 
-    4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 
-    5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 
-    4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 
-    6, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 
-    4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 
-    5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0, 
+    7, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+    4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+    5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+    4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+    6, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+    4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+    5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+    4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+    7, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+    4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+    5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+    4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+    6, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+    4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+    5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
     4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
   };
   if((unsigned char)x) return table[(unsigned char)x];
@@ -186,7 +168,7 @@ size_t cf_strlen(const char *str) {
 
       break;
     }
-  
+
     str += sizeof(__m128i);
     len += sizeof(__m128i);
   }

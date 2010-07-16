@@ -9,6 +9,14 @@
 #ifndef CF_LIST_UTILS_H
 #define CF_LIST_UTILS_H
 
+#include "config.h"
+#include "defines.h"
+
+#include <stdlib.h>
+#include <string.h>
+
+#include "memoryutils.h"
+
 /*! Type to destroy list elements. Gets called for every element. */
 typedef void (*cf_list_destroy_t)(void *data);
 

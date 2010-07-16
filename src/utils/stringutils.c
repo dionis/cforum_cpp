@@ -6,14 +6,7 @@
  * A string abstraction for the Classic Forum
  */
 
-#include "config.h"
-#include "defines.h"
-
-#include <string.h>
-#include <stdlib.h>
-
 #include "stringutils.h"
-#include "memoryutils.h"
 
 void cf_str_init_growth(cf_string_t *str,unsigned growth) {
   str->len      = 0;

@@ -7,12 +7,6 @@
  */
 
 
-#include "config.h"
-#include "defines.h"
-
-#include <stdlib.h>
-
-#include "memoryutils.h"
 #include "treeutils.h"
 
 

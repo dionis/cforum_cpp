@@ -10,6 +10,16 @@
 #ifndef CF_MEMORY_UTILS_H
 #define CF_MEMORY_UTILS_H
 
+#include "defines.h"
+#include "config.h"
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <errno.h>
+
+#include <sys/types.h>
+
 /*!
  * \brief This function duplicates a memory area
  * \param inptr The pointer to the original memory area

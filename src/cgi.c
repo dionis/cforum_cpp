@@ -7,18 +7,6 @@
  * parse x-www-form/url-encoded
  */
 
-#include "config.h"
-#include "defines.h"
-
-#include <sys/types.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-
-#include "hashlib.h"
-#include "utils/memoryutils.h"
-#include "utils/arrayutils.h"
 #include "cgi.h"
 
 

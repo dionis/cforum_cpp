@@ -7,14 +7,6 @@
  * developed by Richard Stevens, but I did some small changes.
  */
 
-#include "config.h"
-#include "defines.h"
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <errno.h>
-#include <unistd.h>
-
 #include "readline.h"
 
 static ssize_t my_read(cf_rline_t *tsd,int fd,char *ptr) {

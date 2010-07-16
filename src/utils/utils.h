@@ -10,6 +10,26 @@
 #ifndef CF_UTILS_H
 #define CF_UTILS_H
 
+#include "defines.h"
+#include "config.h"
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <errno.h>
+#include <string.h>
+#include <stdint.h>
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <limits.h>
+
+#include <dirent.h>
+
+#include <glib.h>
+
+#include "memoryutils.h"
+
 /*!
  * UTF8 version of strcmp(): compare two strings
  * \param str1 First string

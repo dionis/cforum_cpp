@@ -6,15 +6,6 @@
  * Small IPC abstraction for the Classic Forum
  */
 
-#include "config.h"
-#include "defines.h"
-
-#include <stdlib.h>
-#include <unistd.h>
-#include <errno.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-
 #include "ipcutils.h"
 
 int cf_ipc_dpopen(const char *filename,char *const argv[],char *const envp[],int *result,pid_t *res_pid) {
@@ -27,7 +18,7 @@ int cf_ipc_dpopen(const char *filename,char *const argv[],char *const envp[],int
   int res;
   int saved_errno;
   pid_t pid;
-  
+
   res = pipe(input_pipe);
   if(res) return -1;
 

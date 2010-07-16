@@ -11,6 +11,15 @@
 #ifndef CF_VALIDATE_H
 #define CF_VALIDATE_H
 
+#include "config.h"
+#include "defines.h"
+
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+#include <idna.h>
+
 /*!
  * scheme list data structure
  */

@@ -18,6 +18,19 @@
 #ifndef CF_CGI_H
 #define CF_CGI_H
 
+#include "config.h"
+#include "defines.h"
+
+#include <sys/types.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+#include "hashlib.h"
+#include "utils/memoryutils.h"
+#include "utils/arrayutils.h"
+
 /*!
  * this type is used for multiple form values (such as checkboxes or something like that)
  */

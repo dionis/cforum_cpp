@@ -9,6 +9,13 @@
 #ifndef CF_TREE_UTILS_H
 #define CF_TREE_UTILS_H
 
+#include "config.h"
+#include "defines.h"
+
+#include <stdlib.h>
+
+#include "memoryutils.h"
+
 /*!
  * A tree node data
  */

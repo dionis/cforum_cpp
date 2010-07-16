@@ -10,6 +10,14 @@
 #ifndef CF_READLINE_H
 #define CF_READLINE_H
 
+#include "config.h"
+#include "defines.h"
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <errno.h>
+#include <unistd.h>
+
 /*!
  * This structure contains the necessary information about the read data
  */
