@@ -1,4 +1,6 @@
 2010-07-16 Christian Kruse <cjk@wwwtech.de>
+	* src/readline.[ch]: Initial commit of the thread-safe buffered
+		readline implementation
 	* src/arrayutils.[ch]: Initial commit of the array abstraction layer
 	* src/memoryutils.[ch]: Initial commit of the memory pool abstraction
 		layer
