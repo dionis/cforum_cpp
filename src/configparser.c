@@ -107,14 +107,36 @@ cf_cfg_t *cf_cfg_read_config(const char *filename) {
   return cfg;
 }
 
-int main(void) {
-  cf_cfg_t *cfg = cf_cfg_read_config(NULL),*con;
+cf_cfg_value_t *cf_cfg_get_value_w_pos(cf_cfg_t *cfg,const char *contexts[],size_t clen, size_t pos,const char *name) {
+  cf_cfg_value_t *val;
+  cf_cfg_t *cont;
   size_t i;
 
-  if(cfg) {
+  if(!cfg->values) return NULL;
+
+  if(clen > 0 && cfg->contexts != NULL && cfg->contexts->elements > 0 && pos < clen) {
     for(i=0;i<cfg->contexts->elements;++i) {
-      con = cf_array_element_at(cfg->contexts,i);
-      printf("con: %s\n",con->name);
+      cont = cf_array_element_at(cfg->contexts,i);
+
+      if(strcmp(cont->name,contexts[pos]) == 0) {
+        if((val = cf_cfg_get_value_w_pos(cont,contexts,clen,pos+1,name)) == NULL) break;
+        return val;
+      }
+    }
+  }
+
+  return cf_hash_get(cfg->values,name,strlen(name));
+}
+
+#if 0
+int main(void) {
+  const char *contexts[] = {"abc","def"};
+  cf_cfg_t *cfg = cf_cfg_read_config(NULL);
+  cf_cfg_value_t *val;
+
+  if(cfg) {
+    if((val = cf_cfg_get_value(cfg,contexts,2,"ModulePath")) != NULL) {
+      printf("val is: %s (%p)\n",val->value.cval,val);
     }
 
     cf_cfg_destroy_cfg(cfg);
@@ -122,6 +144,6 @@ int main(void) {
   }
   return 0;
 }
-
+#endif
 
 /* eof */

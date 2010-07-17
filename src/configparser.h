@@ -103,6 +103,25 @@ void cf_cfg_l_register(lua_State *l,cf_cfg_t *conf);
  */
 void cf_cfg_destroy_value(cf_cfg_value_t *val);
 
+
+/*!
+ * Access function for config values. It works with „contexts.” That means you define
+ * which contexts may be active (e.g. FORUM1, fo_server) and the function will first
+ * look for the value in the context fo_server in the context FORUM1. If it cannot
+ * be found it looks in the context FORUM1 and after that in the global context. This
+ * leads to a hierarchical structure <global>\FORUM1\fo_server
+ *
+ * \param cfg The configuration
+ * \param contexts The contexts of the program
+ * \param clen The length of the contexts array
+ * \param pos The position in the contexts
+ * \param name The name of the value to find
+ * \return returns NULL if value could not be found, returns the value if the value could be found
+ */
+cf_cfg_value_t *cf_cfg_get_value_w_pos(cf_cfg_t *cfg,const char *contexts[],size_t clen, size_t pos,const char *name);
+
+#define cf_cfg_get_value(cfg,contexts,clen,name) (cf_cfg_get_value_w_pos((cfg),(contexts),(clen),0,(name)))
+
 #endif
 
 /* eof */
