@@ -1,4 +1,11 @@
+2010-07-17 Christian Kruse <cjk@wwwtech.de>
+	* src/hashlib.c: Removed a senseless free() call in cf_hash_destroy
+	* src/configparser.[ch], src/configparser_lua.c: Added basic
+		config parser based on LUA
+
 2010-07-16 Christian Kruse <cjk@wwwtech.de>
+	* src/utils.[ch]: Removed cf_strlen completely (we don't really
+		need it)
 	* src/hashlib.[ch]: Added cgi library
 	* src/hashlib.[ch]: Added a hash lib
 	* src/utils/datautils.[ch]: Added data utilities
