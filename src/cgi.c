@@ -44,6 +44,7 @@ cf_hash_t *cf_cgi_new(void) {
   else {
     if(!len) {
       cf_hash_destroy(hash);
+      free(hash);
       return NULL;
     }
 
@@ -57,6 +58,7 @@ cf_hash_t *cf_cgi_new(void) {
   if(data && *data) {
     if(!_cf_cgi_parse_params(hash,data)) {
       cf_hash_destroy(hash);
+      free(hash);
       if(trash) free(data);
       return NULL;
     }
@@ -65,6 +67,7 @@ cf_hash_t *cf_cgi_new(void) {
   }
   else {
     cf_hash_destroy(hash);
+    free(hash);
   }
 
   return NULL;
@@ -380,6 +383,7 @@ cf_cgi_param_t *cf_cgi_get_multiple(cf_hash_t *hash,char *param) {
 
 void cf_cgi_destroy(cf_hash_t *hash) {
   cf_hash_destroy(hash);
+  free(hash);
 }
 
 u_int32_t cf_cgi_path_info_parsed(char ***infos) {
