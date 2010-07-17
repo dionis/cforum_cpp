@@ -128,7 +128,7 @@ typedef struct cf_hash_s {
  * \param level  The entropy level. It is used to mix a little bit random into the keys. Not used by this hash table library.
  * \return the hash sum
  */
-u_int32_t cf_lookup(register char *k, register u_int32_t length, register u_int32_t level);
+u_int32_t cf_lookup(register const char *k, register u_int32_t length, register u_int32_t level);
 
 /*!
  * This function constructs a new hash. It expects a pointer to a
@@ -156,7 +156,7 @@ cf_hash_t *cf_hash_new(cf_hash_cleanup_t cl);
  * \param datalen The size of the data
  * \return 0 on failure, 1 if successful
  */
-int cf_hash_set(cf_hash_t *hsh,char *key,size_t keylen,void *data,size_t datalen);
+int cf_hash_set(cf_hash_t *hsh,const char *key,size_t keylen,void *data,size_t datalen);
 
 /*!
  * This function saves a hash entry with the given key in the hash
@@ -173,7 +173,7 @@ int cf_hash_set(cf_hash_t *hsh,char *key,size_t keylen,void *data,size_t datalen
  * \param data    The data of the entry
  * \return 0 on failure, 1 if successful
  */
-int cf_hash_set_static(cf_hash_t *hsh,char *key,size_t keylen,void *data);
+int cf_hash_set_static(cf_hash_t *hsh,const char *key,size_t keylen,void *data);
 
 /*!
  * This function looks up a hash entry in a hash table. If an entry with
@@ -183,7 +183,7 @@ int cf_hash_set_static(cf_hash_t *hsh,char *key,size_t keylen,void *data);
  * \param keylen The length of the key
  * \return The data of the entry if it has been found or NULL if it could not be found.
  */
-void *cf_hash_get(cf_hash_t *hsh,char *key,size_t keylen);
+void *cf_hash_get(cf_hash_t *hsh,const char *key,size_t keylen);
 
 /*!
  * This function deletes a hash entry in a hashtable.
@@ -192,7 +192,7 @@ void *cf_hash_get(cf_hash_t *hsh,char *key,size_t keylen);
  * \param keylen The length of the key
  * \return It returns 0 if the entry could not be found and 1 if the entry has been deleted successfully.
  */
-int cf_hash_entry_delete(cf_hash_t *hsh,char *key,size_t keylen);
+int cf_hash_entry_delete(cf_hash_t *hsh,const char *key,size_t keylen);
 
 /*!
  * This function destroys a hash and frees all of its values.

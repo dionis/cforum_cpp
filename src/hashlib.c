@@ -91,7 +91,7 @@
  * Use for hash table lookup, or anything where one collision in 2^32 is
  * acceptable.  Do NOT use for cryptographic purposes.
  */
-u_int32_t cf_lookup(register char *k,register u_int32_t length,register u_int32_t level) {
+u_int32_t cf_lookup(register const char *k,register u_int32_t length,register u_int32_t level) {
   register u_int32_t a,b,c,len;
 
   /* Set up the internal state */
@@ -196,7 +196,7 @@ cf_hash_t *cf_hash_new(cf_hash_cleanup_t cl) {
  *
  * This function is private!
  */
-cf_hash_entry_t *_cf_hash_save(cf_hash_t *hsh,char *key,size_t keylen,void *data,size_t datalen,u_int32_t hashval) {
+cf_hash_entry_t *_cf_hash_save(cf_hash_t *hsh,const char *key,size_t keylen,void *data,size_t datalen,u_int32_t hashval) {
   cf_hash_entry_t *ent = malloc(sizeof(cf_hash_entry_t));
   cf_hash_keylist_t *akt = NULL;
 
@@ -274,7 +274,7 @@ cf_hash_entry_t *_cf_hash_save(cf_hash_t *hsh,char *key,size_t keylen,void *data
  * This function is private!
  *
  */
-void _cf_hash_split(cf_hash_t *hsh,char *key,size_t keylen,void *data,size_t datalen,u_int32_t hval) {
+void _cf_hash_split(cf_hash_t *hsh,const char *key,size_t keylen,void *data,size_t datalen,u_int32_t hval) {
   u_int32_t elems,oelems,i,hval_short;
   cf_hash_entry_t *elem,*elem1;
 
@@ -365,7 +365,7 @@ void _cf_hash_split(cf_hash_t *hsh,char *key,size_t keylen,void *data,size_t dat
 
 #endif
 
-int cf_hash_set(cf_hash_t *hsh,char *key,size_t keylen,void *data,size_t datalen) {
+int cf_hash_set(cf_hash_t *hsh,const char *key,size_t keylen,void *data,size_t datalen) {
   u_int32_t hval,hval_short;
   cf_hash_entry_t *ent,*prev;
 
@@ -425,7 +425,7 @@ int cf_hash_set(cf_hash_t *hsh,char *key,size_t keylen,void *data,size_t datalen
   return 0;
 }
 
-int cf_hash_set_static(cf_hash_t *hsh,char *key,size_t keylen,void *data) {
+int cf_hash_set_static(cf_hash_t *hsh,const char *key,size_t keylen,void *data) {
   u_int32_t hval,hval_short;
   cf_hash_entry_t *ent,*prev;
 
@@ -484,7 +484,7 @@ int cf_hash_set_static(cf_hash_t *hsh,char *key,size_t keylen,void *data) {
   return 0;
 }
 
-void *cf_hash_get(cf_hash_t *hsh,char *key,size_t keylen) {
+void *cf_hash_get(cf_hash_t *hsh,const char *key,size_t keylen) {
   u_int32_t hval,hval_short;
   cf_hash_entry_t *ent;
 
@@ -500,7 +500,7 @@ void *cf_hash_get(cf_hash_t *hsh,char *key,size_t keylen) {
   return NULL;
 }
 
-int cf_hash_entry_delete(cf_hash_t *hsh,char *key,size_t keylen) {
+int cf_hash_entry_delete(cf_hash_t *hsh,const char *key,size_t keylen) {
   u_int32_t hval,hval_short;
   cf_hash_entry_t *ent;
 

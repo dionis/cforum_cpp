@@ -1,5 +1,6 @@
 2010-07-17 Christian Kruse <cjk@wwwtech.de>
-	* src/hashlib.c: Removed a senseless free() call in cf_hash_destroy
+	* src/hashlib.[ch]: Removed a senseless free() call in
+		cf_hash_destroy, made all key parameters const
 	* src/configparser.[ch], src/configparser_lua.c: Added basic
 		config parser based on LUA
 
