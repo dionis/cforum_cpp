@@ -24,8 +24,7 @@
  * This code has been developed by Bob Jenkins.
  */
 
-/* {{{ #define mix
- * mix -- mix 3 32-bit values reversibly.
+/* mix -- mix 3 32-bit values reversibly.
  * For every delta with one or two bit set, and the deltas of all three
  * high bits or all three low bits, whether the original value of a,b,c
  * is almost all zero or is uniformly distributed,
@@ -62,7 +61,6 @@
   b -= c; b -= a; b ^= (a<<10); \
   c -= a; c -= b; c ^= (b>>15); \
 }
-/* }}} */
 #endif
 
 /*!
@@ -131,7 +129,6 @@ u_int32_t cf_lookup(register char *k,register u_int32_t length,register u_int32_
   /*-------------------------------------------- report the result */
   return c;
 }
-/* }}} */
 
 /******************************* HASHING ALGORITHM END *************************************/
 
@@ -139,8 +136,7 @@ u_int32_t cf_lookup(register char *k,register u_int32_t length,register u_int32_
  * at this point the hashlib code begins ((c) by CK)
  */
 
-/* {{{ cf_hash_new()
- * Returns:                the new hashtable object
+/* Returns:                the new hashtable object
  * Parameters:
  *   - cf_hash_t_cleanup   a destructor function for the entry data
  *
@@ -187,11 +183,9 @@ cf_hash_t *cf_hash_new(cf_hash_cleanup_t cl) {
 
   return hsh;
 }
-/* }}} */
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-/* {{{ _cf_hash_save()
- * Returns:                the data of the hash entry if found or NULL
+/* Returns:                the data of the hash entry if found or NULL
  * Parameters:
  *   - cf_hash_t *hsh      the hash object
  *   - char *key  the key
@@ -264,10 +258,8 @@ cf_hash_entry_t *_cf_hash_save(cf_hash_t *hsh,char *key,size_t keylen,void *data
 
   return ent;
 }
-/* }}} */
 
-/* {{{ _cf_hash_split()
- * Returns:                nothing
+/* Returns:                nothing
  * Parameters:
  *   - cf_hash_t *hsh      the hash object
  *   - char *key  the key
@@ -370,11 +362,9 @@ void _cf_hash_split(cf_hash_t *hsh,char *key,size_t keylen,void *data,size_t dat
   }
 
 }
-/* }}} */
 
 #endif
 
-/* {{{ cf_hash_set */
 int cf_hash_set(cf_hash_t *hsh,char *key,size_t keylen,void *data,size_t datalen) {
   u_int32_t hval,hval_short;
   cf_hash_entry_t *ent,*prev;
@@ -434,9 +424,7 @@ int cf_hash_set(cf_hash_t *hsh,char *key,size_t keylen,void *data,size_t datalen
 
   return 0;
 }
-/* }}} */
 
-/* {{{ cf_hash_set_static */
 int cf_hash_set_static(cf_hash_t *hsh,char *key,size_t keylen,void *data) {
   u_int32_t hval,hval_short;
   cf_hash_entry_t *ent,*prev;
@@ -495,9 +483,7 @@ int cf_hash_set_static(cf_hash_t *hsh,char *key,size_t keylen,void *data) {
 
   return 0;
 }
-/* }}} */
 
-/* {{{ cf_hash_get */
 void *cf_hash_get(cf_hash_t *hsh,char *key,size_t keylen) {
   u_int32_t hval,hval_short;
   cf_hash_entry_t *ent;
@@ -513,9 +499,7 @@ void *cf_hash_get(cf_hash_t *hsh,char *key,size_t keylen) {
 
   return NULL;
 }
-/* }}} */
 
-/* {{{ cf_hash_entry_delete */
 int cf_hash_entry_delete(cf_hash_t *hsh,char *key,size_t keylen) {
   u_int32_t hval,hval_short;
   cf_hash_entry_t *ent;
@@ -554,9 +538,7 @@ int cf_hash_entry_delete(cf_hash_t *hsh,char *key,size_t keylen) {
 
   return 0;
 }
-/* }}} */
 
-/* {{{ cf_hash_destroy() */
 void cf_hash_destroy(cf_hash_t *hsh) {
   cf_hash_keylist_t *key,*key1;
   u_int32_t hval,hval_short;
@@ -597,9 +579,7 @@ void cf_hash_destroy(cf_hash_t *hsh) {
   }
 
   free(hsh->table);
-  free(hsh);
 }
-/* }}} */
 
 /*
  * this is a small example
