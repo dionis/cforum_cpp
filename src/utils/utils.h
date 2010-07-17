@@ -56,13 +56,6 @@ int cf_strncasecmp(const char *str1,const char *str2,size_t n);
 size_t cf_strlen_utf8(const char * _s);
 
 /*!
- * Count bytes of a string. We use our own implementation because the glibc's sucks
- * \param str The string to count
- * \return The number of bytes found
- */
-size_t cf_strlen(const char *str);
-
-/*!
  * Remove a directory with its contents (recursively) or a file
  * \param path The directory/file to remove
  * \return 0 if directory/file could be removed successfully, -1 if an error occured

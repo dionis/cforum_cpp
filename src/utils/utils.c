@@ -86,106 +86,12 @@ size_t cf_strlen_utf8(const char *_s) {
 }
 
 
-#if __SSE2__
-#include <emmintrin.h>
-
-#ifndef WORDS_BIGENDIAN
-static inline int count_bits_to_0(unsigned int x) { /* counting trailing zeroes, by Nazo, post: 2009/07/20 03:40, this is current winner for speed */
-  static const unsigned char table[256] = {
-    7, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
-    4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
-    5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
-    4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
-    6, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
-    4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
-    5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
-    4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
-    7, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
-    4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
-    5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
-    4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
-    6, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
-    4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
-    5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
-    4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
-  };
-  if((unsigned char)x) return table[(unsigned char)x];
-  return table[x >> 8] + 8; /* t[x / 256] + 8 */
-}
-#else
-static inline int count_bits_to_0(unsigned int x) {  /* counting trailing zeroes
-  http://www.hackersdelight.org/: nlz1() shortened for 16-bit mask */
-  register int n = 0;
-  if(x <= 0x000000FFU) {n = n + 8; x = x << 8;}
-  if(x <= 0x00000FFFU) {n = n + 4; x = x << 4;}
-  if(x <= 0x00003FFFU) {n = n + 2; x = x << 2;}
-  if(x <= 0x00007FFFU) {n = n + 1;}
-  return n;
-}
-#endif
-
-size_t cf_strlen(const char *str) {
-  register size_t len = 0;
-  __m128i xmm0 = _mm_setzero_si128();
-  __m128i xmm1;
-  int mask = 0;
-
-  /* align to 16 bytes */
-  while((((intptr_t)str) & (sizeof(__m128i)-1)) != 0) {
-    if(*str++ == 0) return len;
-    ++len;
-  }
-
-  /* search for 0 */
-  for(;;) {
-    xmm1 = _mm_load_si128((__m128i *)str);
-    xmm1 = _mm_cmpeq_epi8(xmm1, xmm0);
-    if((mask = _mm_movemask_epi8(xmm1)) != 0) {
-      /* got 0 somewhere within 16 bytes in xmm1, or within 16 bits in mask
-      find index of first set bit */
-
-      #ifndef _DISABLE_ASM_BSF /* define it to disable ASM */
-      #if(_MSC_VER >= 1300)   /* make sure <intrin.h> is included */
-      unsigned long pos;
-      _BitScanForward(&pos, mask);
-      len += (size_t)pos;
-      #elif defined(_MSC_VER)  /* earlier MSVC's do not have _BitScanForward, use inline asm */
-      __asm bsf edx, mask ; edx = bsf(mask)
-      __asm add edx, len  ; edx += len
-      __asm mov len, edx  ; len = edx
-      #elif((__GNUC__ >= 4) || ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 4))) /* modern GCC has built-in __builtin_ctz */
-      len += __builtin_ctz(mask);
-      #elif defined(__GNUC__) /* older GCC shall use inline asm */
-      unsigned int pos;
-      asm("bsf %1, %0" : "=r" (pos) : "rm" (mask));
-      len += (size_t)pos;
-      #else                    /* none of choices exist, use local BSF implementation */
-      len += count_bits_to_0(mask);
-      #endif
-      #else
-      len += count_bits_to_0(mask);
-      #endif
-
-      break;
-    }
-
-    str += sizeof(__m128i);
-    len += sizeof(__m128i);
-  }
-
-  return len;
-}
-#else
-#define cf_strlen(s) strlen(s)
-#endif
-
-
 int cf_remove_path(const char *path) {
   DIR *dir;
   struct dirent *ent = NULL,*entry = NULL;
   char *buff;
   struct stat st;
-  size_t len = cf_strlen(path);
+  size_t len = strlen(path);
   int ret;
 
   if(lstat(path, &st) < 0) {
@@ -204,7 +110,7 @@ int cf_remove_path(const char *path) {
       if(strcmp(ent->d_name,".") == 0 || strcmp(ent->d_name,"..") == 0) continue;
 
       /* Recursively call to remove the current entry */
-      buff = cf_alloc(NULL,1,len + cf_strlen(ent->d_name) + 2,CF_ALLOC_MALLOC);
+      buff = cf_alloc(NULL,1,len + strlen(ent->d_name) + 2,CF_ALLOC_MALLOC);
       sprintf(buff,"%s/%s",path,ent->d_name);
       ret = cf_remove_path(buff);
       free(buff);
