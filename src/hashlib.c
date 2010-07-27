@@ -196,7 +196,7 @@ cf_hash_t *cf_hash_new(cf_hash_cleanup_t cl) {
  *
  * This function is private!
  */
-cf_hash_entry_t *_cf_hash_save(cf_hash_t *hsh,const char *key,size_t keylen,void *data,size_t datalen,u_int32_t hashval) {
+static cf_hash_entry_t *_cf_hash_save(cf_hash_t *hsh,const char *key,size_t keylen,void *data,size_t datalen,u_int32_t hashval) {
   cf_hash_entry_t *ent = malloc(sizeof(cf_hash_entry_t));
   cf_hash_keylist_t *akt = NULL;
 
@@ -274,7 +274,7 @@ cf_hash_entry_t *_cf_hash_save(cf_hash_t *hsh,const char *key,size_t keylen,void
  * This function is private!
  *
  */
-void _cf_hash_split(cf_hash_t *hsh,const char *key,size_t keylen,void *data,size_t datalen,u_int32_t hval) {
+static void _cf_hash_split(cf_hash_t *hsh,const char *key,size_t keylen,void *data,size_t datalen,u_int32_t hval) {
   u_int32_t elems,oelems,i,hval_short;
   cf_hash_entry_t *elem,*elem1;
 
