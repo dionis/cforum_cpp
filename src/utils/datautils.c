@@ -16,76 +16,123 @@
 #include "stringutils.h"
 #include "datautils.h"
 
-u_int64_t cf_str_to_uint64(register const char *ptr) {
+u_int64_t cf_uchr_to_uint64(const UChar *str,const int32_t len,int *errcode) {
   u_int64_t retval = 0;
+  int32_t i = 0;
+  UChar32 c;
 
-  for(;*ptr && isdigit(*ptr);++ptr) retval = retval * 10 + *ptr - '0';
+  if(len < 0 || str == NULL) {
+    *errcode = CF_ERR_ILPARAM;
+    return 0;
+  }
 
+  while(i<len) {
+    U16_NEXT(str,i,len,c);
+    if(!u_isdigit(c)) break;
+
+    retval = retval * 10 + u_digit(c,10);
+  }
+
+  *errcode = 0;
   return retval;
 }
 
-void cf_uint64_to_str(cf_string_t *str, u_int64_t num) {
-  register char *ptr1,*ptr2,tmp;
-  size_t i = 0;
+int64_t cf_uchr_to_int64(const UChar *str,const int32_t len,int *errcode) {
+  int64_t retval = 0;
+  int32_t i = 0;
+  UChar32 c;
+  int neg = 0;
+
+  if(len < 0 || str == NULL) {
+    *errcode = CF_ERR_ILPARAM;
+    return 0;
+  }
+
+  while(i<len) {
+    U16_NEXT(str,i,len,c);
+    if(c == '-') { /* this works because code point for '-' is the same as the usascii value for '-' */
+      neg = 1;
+      continue;
+    }
+
+    if(!u_isdigit(c)) break;
+    retval = retval * 10 + u_digit(c,10);
+  }
+
+  *errcode = 0;
+  if(neg) retval = retval * -1;
+  return retval;
+}
+
+int cf_uint64_to_str(cf_string_t *str, u_int64_t num) {
+  UChar buff[50]; /* a number of uint64_t cannot have more than 20 digits, so 50 is totally safe */
+  UChar32 c;
+  int32_t len = 0,digit;
+  UBool is_err = FALSE;
+
+  if(str == NULL) return CF_ERR_ILPARAM;
 
   if(num) {
     while(num) {
-      cf_str_char_append(str,'0' + (num % 10));
+      digit = num % 10;
+      c = u_forDigit(digit,10);
+      U16_APPEND(buff,len,50,c,is_err);
       num /= 10;
-      ++i;
+
+      if(is_err) return CF_ERR_UNICODE;
     }
 
-    /* now we have to swap the bytes */
-    for(ptr1=str->content+str->len-i,ptr2=str->content+str->len-1;ptr1<ptr2;ptr1++,ptr2--) {
-      tmp = *ptr1;
-      *ptr1 = *ptr2;
-      *ptr2 = tmp;
+    /* swap it */
+    while(len > 0) {
+      U16_PREV(buff,0,len,c)
+      cf_str_uchar32_append(str,c);
     }
+
+    cf_str_chars_append(str,buff,len);
   }
-  else cf_str_char_append(str,'0');
+  else cf_str_uchar32_append(str,(UChar32)'0');
+
+  return 0;
 }
 
-void cf_uint32_to_str(cf_string_t *str, u_int32_t num) {
-  register char *ptr1,*ptr2,tmp;
-  size_t i = 0;
+int cf_int64_to_str(cf_string_t *str, int64_t num) {
+  UChar buff[50]; /* a number of int64_t cannot have more than 10 digits, so 50 is totally safe */
+  UChar32 c;
+  int32_t len = 0,digit;
+  UBool is_err = FALSE;
+  int neg = 0;
+
+  if(str == NULL) return CF_ERR_ILPARAM;
 
   if(num) {
+    if(num < 0) {
+      neg = 1;
+      num = num * -1;
+    }
+
     while(num) {
-      cf_str_char_append(str,'0' + (num % 10));
+      digit = num % 10;
+      c = u_forDigit(digit,10);
+      U16_APPEND(buff,len,50,c,is_err);
       num /= 10;
-      ++i;
+
+      if(is_err) return CF_ERR_UNICODE;
     }
 
-    /* now we have to swap the bytes */
-    for(ptr1=str->content+str->len-i,ptr2=str->content+str->len-1;ptr1<ptr2;ptr1++,ptr2--) {
-      tmp = *ptr1;
-      *ptr1 = *ptr2;
-      *ptr2 = tmp;
+    /* this works because the code point for '-' has the same value as the usascii code for '-' */
+    if(neg) cf_str_uchar32_append(str,(UChar32)'-');
+
+    /* swap it */
+    while(len > 0) {
+      U16_PREV(buff,0,len,c)
+      cf_str_uchar32_append(str,c);
     }
+
+    cf_str_chars_append(str,buff,len);
   }
-  else cf_str_char_append(str,'0');
+  else cf_str_uchar32_append(str,(UChar32)'0');
+
+  return 0;
 }
-
-void cf_uint16_to_str(cf_string_t *str, u_int16_t num) {
-  register char *ptr1,*ptr2,tmp;
-  size_t i = 0;
-
-  if(num) {
-    while(num) {
-      cf_str_char_append(str,'0' + (num % 10));
-      num /= 10;
-      ++i;
-    }
-
-    /* now we have to swap the bytes */
-    for(ptr1=str->content+str->len-i,ptr2=str->content+str->len-1;ptr1<ptr2;ptr1++,ptr2--) {
-      tmp = *ptr1;
-      *ptr1 = *ptr2;
-      *ptr2 = tmp;
-    }
-  }
-  else cf_str_char_append(str,'0');
-}
-
 
 /* eof */
