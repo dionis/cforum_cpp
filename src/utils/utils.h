@@ -26,34 +26,7 @@
 
 #include <dirent.h>
 
-#include <glib.h>
-
 #include "memoryutils.h"
-
-/*!
- * UTF8 version of strcmp(): compare two strings
- * \param str1 First string
- * \param str2 Second string
- * \return 0 if strings are equal, -1 if strings are not equal
- */
-int cf_strcasecmp(const char *str1,const char *str2);
-
-/*!
- * UTF8 version of strncasecmp(): compare \c n bytes of two strings
- * \param str1 First string
- * \param str2 Second string
- * \param n The number of bytes to compare
- * \return 0 if strings are equal, -1 if strings are not equal
- */
-int cf_strncasecmp(const char *str1,const char *str2,size_t n);
-
-/*!
- * Count characters of an utf8 string
- * \param _s The string to count
- * \return The number of characters found (not the number of bytes!)
- * \author Colin Percival, <http://www.daemonology.net/blog/2008-06-05-faster-utf8-strlen.html>
- */
-size_t cf_strlen_utf8(const char * _s);
 
 /*!
  * Remove a directory with its contents (recursively) or a file
