@@ -79,7 +79,7 @@ int cf_str_eq_string(const cf_string_t *str1,const cf_string_t *str2) {
 }
 
 int cf_str_eq_chars(const cf_string_t *str1,const UChar *str2, const int32_t len) {
-  return u_strncmp(str1->content,str2->content,len);
+  return u_strncmp(str1->content,str2,len);
 }
 
 int32_t cf_str_str_append(cf_string_t *str,const cf_string_t *content) {
