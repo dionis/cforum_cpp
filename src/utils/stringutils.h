@@ -30,7 +30,7 @@ typedef struct s_string {
   UChar *content; /*!< The memory area itself */
 } cf_string_t;
 
-#define STRING_INITIALIZER { 0, 0, CF_BUFSIZ, NULL }
+#define CF_STRING_INITIALIZER { 0, 0, CF_BUFSIZ, NULL }
 
 /*!
  * This function initializes a string structure with specified growth factor.
@@ -63,6 +63,14 @@ int32_t cf_str_char_append(cf_string_t *str,const UChar content);
  * \return The number of characters appended on success or 0 on failure
  */
 int32_t cf_str_chars_append(cf_string_t *str,const UChar *content,const int32_t length);
+
+/*!
+ * This function appends a code point in utf16 representation to the string in the string structure
+ * \param str A reference to the string structure
+ * \param content The code point to append
+ * \return The number of bytes appended on success or 0 on failure
+ */
+int32_t cf_str_uchar32_append(cf_string_t *str,const UChar32 content);
 
 /*!
  * This function appends a string structure to a string structure. It's just a wrapper for

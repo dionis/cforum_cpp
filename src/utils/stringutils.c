@@ -38,6 +38,22 @@ int32_t cf_str_char_append(cf_string_t *str,const UChar content) {
   return 1;
 }
 
+int32_t cf_str_uchar32_append(cf_string_t *str,const UChar32 content) {
+  UBool is_err = FALSE;
+
+  if(str->growth == 0) str->growth = CF_BUFSIZ;
+
+  if(str->len + (U16_LENGTH(content) * sizeof(*str->content)) >= str->reserved) {
+    str->reserved += str->growth;
+    str->content   = cf_alloc(str->content,(size_t)str->reserved,sizeof(*str->content),CF_ALLOC_REALLOC);
+  }
+
+  U16_APPEND(str->content,str->len,str->reserved,content,is_err);
+  str->content[str->len] = 0;
+
+  return U16_LENGTH(content);
+}
+
 int32_t cf_str_chars_append(cf_string_t *str,const UChar *content,const int32_t length) {
   int32_t len;
 
