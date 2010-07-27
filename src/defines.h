@@ -12,6 +12,11 @@
 
 #define SIZE_T_FMT "%zd"
 
+
+
+#define CF_ERR_ILPARAM 1
+#define CF_ERR_UNICODE 2
+
 #endif
 
 /* eof */
