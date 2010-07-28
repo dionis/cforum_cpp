@@ -38,39 +38,19 @@ cf_hash_t *cf_cgi_new(void) {
 
   hash = cf_hash_new(cf_cgi_destroy_entry);
 
-  if(strcmp(rqmeth,"GET") == 0) {
-    data = getenv("QUERY_STRING");
-  }
-  else {
-    if(!len) {
-      cf_hash_destroy(hash);
-      free(hash);
-      return NULL;
-    }
+  data = getenv("QUERY_STRING");
+  if(data != NULL && *data) _cf_cgi_parse_params(hash,data);
 
-    trash = 1;
+  if(strcmp(rqmeth,"POST") == 0 && len != 0) {
     data  = cf_alloc(NULL,len + 1,1,CF_ALLOC_MALLOC);
 
     fread(data,1,len,stdin);
     data[len] = '\0';
+    _cf_cgi_parse_params(hash,data);
+    free(data);
   }
 
-  if(data && *data) {
-    if(!_cf_cgi_parse_params(hash,data)) {
-      cf_hash_destroy(hash);
-      free(hash);
-      if(trash) free(data);
-      return NULL;
-    }
-
-    return hash;
-  }
-  else {
-    cf_hash_destroy(hash);
-    free(hash);
-  }
-
-  return NULL;
+  return hash;
 }
 
 void cf_cgi_parse_path_info(cf_array_t *ary) {
@@ -86,7 +66,8 @@ void cf_cgi_parse_path_info(cf_array_t *ary) {
     for(;*ptr;ptr++) {
       if(*ptr == '/') {
         if(start) {
-          name = strndup(start+1,ptr-start-1);
+          name = cf_cgi_url_decode(start+1,ptr-start);
+
           cf_array_push(ary,&name);
           start = ptr;
         }
@@ -116,16 +97,9 @@ cf_hash_t *cf_cgi_parse_path_info_nv(cf_hash_t *hash) {
       if(*ptr == '/') {
         if(start == NULL) start = ptr;
         else {
-          if(name == NULL) {
-            *ptr = '\0';
-            name = cf_cgi_url_decode(start+1,ptr-start);
-            *ptr = '/';
-          }
+          if(name == NULL) name = cf_cgi_url_decode(start+1,ptr-start);
           else {
-            *ptr  = '\0';
             value = cf_cgi_url_decode(start+1,ptr-start);
-            *ptr  = '/';
-
             _cf_cgi_save_param(hash,name,strlen(name),value);
 
             name = value = NULL;
@@ -156,17 +130,13 @@ void cf_cgi_parse_cookies(cf_hash_t *hash) {
       for(;*pos && isspace(*pos);++pos);
 
       namlen = pos - pos1;
-      *pos   = 0;
       name   = cf_cgi_url_decode(pos1,namlen);
-      *pos   = '=';
 
       pos1 = strstr(pos,";");
       if(!pos1) break;
 
       vallen  = pos1 - pos;
-      *pos1   = 0;
       value   = cf_cgi_url_decode(pos+1,vallen);
-      *pos1++ = ';';
 
       for(pos = name;*pos && isspace(*pos);++pos);
 
@@ -199,17 +169,30 @@ void cf_cgi_parse_cookies(cf_hash_t *hash) {
 
 char *cf_cgi_url_decode(const char *str,size_t len) {
   char *ret = cf_alloc(NULL,len + 1,1,CF_ALLOC_MALLOC); /* the new string can be as long as the old (but not longer) */
-  register char *ptr1,*ptr2;
+  register char *ptr1;
+  register const char *ptr2;
   char ptr3[3] = { '\0','\0','\0' };
 
-  if(!ret) return NULL;
+  if(!str) return NULL;
 
-  for(ptr1=ret,ptr2=(char *)str;*ptr2;ptr2++,ptr1++) {
+  for(ptr1=ret,ptr2=str;ptr2-str < len;ptr2++,ptr1++) {
     switch(*ptr2) {
       case '+':
         *ptr1 = ' ';
         break;
       case '%':
+        /* string is to short; copy remaining bytes and return */
+        if(ptr2+2 - str >= len) {
+          *ptr1 = '%';
+          *(ptr1+1) = '\0';
+          if(ptr2+1 - str < len) {
+            *(ptr1+1) = *(ptr2+1);
+            *(ptr1+2) = '\0';
+          }
+
+          return ret;
+        }
+
         memcpy(ptr3,ptr2+1,2);
         *ptr1 = strtol(ptr3,NULL,16);
         ptr2 += 2;
@@ -228,7 +211,7 @@ char *cf_cgi_url_encode(const char *str,size_t len) {
   char *nstr = cf_alloc(NULL,nlen,1,CF_ALLOC_MALLOC);
   register char *ptr1,*ptr2;
 
-  for(ptr1=(char *)str,ptr2=nstr;*ptr1;ptr2++,ptr1++) {
+  for(ptr1=(char *)str,ptr2=nstr;ptr2-str < len;ptr2++,ptr1++) {
     if((*ptr1 >= 48 && *ptr1 <= 122) || (*ptr1 == '_' || *ptr1 == '.' || *ptr1 == '-')) {
       *ptr2 = *ptr1;
     }
@@ -291,17 +274,13 @@ static int _cf_cgi_parse_params(cf_hash_t *hash,char *data) {
 
   while((pos = strstr(pos1,"=")) != NULL) {
     namlen = pos - pos1;
-    *pos   = 0;
     name   = cf_cgi_url_decode(pos1,namlen);
-    *pos   = '=';
 
     pos1 = strstr(pos,"&");
     if(!pos1) break;
 
     vallen  = pos1 - pos;
-    *pos1   = 0;
     value   = cf_cgi_url_decode(pos+1,vallen);
-    *pos1++ = '&';
 
     if(!_cf_cgi_save_param(hash,name,namlen,value)) {
       free(name);
@@ -341,7 +320,7 @@ void cf_cgi_destroy_entry(void *data) {
   }
 }
 
-char *cf_cgi_get(cf_hash_t *hash,char *name) {
+char *cf_cgi_get(cf_hash_t *hash,const char *name) {
   cf_cgi_param_t *p = cf_hash_get(hash,name,strlen(name));
 
   if(p) return p->value;
@@ -351,7 +330,7 @@ char *cf_cgi_get(cf_hash_t *hash,char *name) {
 
 void cf_cgi_set(cf_hash_t *hash,const char *name,const char *value) {
   size_t nlen = strlen(name);
-  cf_cgi_param_t *p = cf_hash_get(hash,(char *)name,nlen),*p1,*p2;
+  cf_cgi_param_t *p = cf_hash_get(hash,name,nlen),*p1,*p2;
   cf_cgi_param_t par;
 
   if(p) {
@@ -364,6 +343,7 @@ void cf_cgi_set(cf_hash_t *hash,const char *name,const char *value) {
       }
     }
 
+    p->next = NULL;
     free(p->value);
     p->value = strdup(value);
   }
@@ -373,7 +353,7 @@ void cf_cgi_set(cf_hash_t *hash,const char *name,const char *value) {
     par.next  = NULL;
     par.last  = NULL;
 
-    cf_hash_set(hash,(char *)name,nlen,&par,sizeof(par));
+    cf_hash_set(hash,name,nlen,&par,sizeof(par));
   }
 }
 
@@ -394,17 +374,24 @@ u_int32_t cf_cgi_path_info_parsed(char ***infos) {
   if(path) {
     for(prev=ptr=path+1;*ptr;ptr++) {
       if(*ptr == '/') {
-        *ptr        = '\0';
         list        = cf_alloc(list,++len,sizeof(char **),CF_ALLOC_REALLOC);
         list[len-1] = cf_cgi_url_decode(prev,ptr-prev);
         prev        = ptr+1;
-        *ptr        = '/';
       }
     }
   }
 
   *infos = list;
   return len;
+}
+
+int main(void) {
+  char *x = "xy%61%61ef";
+  char *y = cf_cgi_url_decode(x,8);
+
+  printf("y is: %s\n",y);
+
+  return 0;
 }
 
 /* eof */

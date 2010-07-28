@@ -86,7 +86,7 @@ char *cf_cgi_url_decode(const char *str,size_t len);
  * This function gets a single CGI value and returns it as a C string.
  * \attention You may not free this returned value! This will be done when you call cf_cgi_destroy().
  */
-char *cf_cgi_get(cf_hash_t *cgi,char *name);
+char *cf_cgi_get(cf_hash_t *cgi,const char *name);
 
 /*!
  * This function sets a CGI param value
