@@ -385,13 +385,5 @@ u_int32_t cf_cgi_path_info_parsed(char ***infos) {
   return len;
 }
 
-int main(void) {
-  char *x = "xy%61%61ef";
-  char *y = cf_cgi_url_decode(x,8);
-
-  printf("y is: %s\n",y);
-
-  return 0;
-}
 
 /* eof */
