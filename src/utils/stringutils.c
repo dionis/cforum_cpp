@@ -26,7 +26,7 @@ void cf_str_cleanup(cf_string_t *str) {
 int32_t cf_str_char_append(cf_string_t *str,const UChar content) {
   if(str->growth == 0) str->growth = CF_BUFSIZ;
 
-  if(str->len + sizeof(*str->content) >= str->reserved) {
+  if(str->len + (int32_t)sizeof(*str->content) >= str->reserved) {
     str->reserved += str->growth;
     str->content   = cf_alloc(str->content,(size_t)str->reserved,sizeof(*str->content),CF_ALLOC_REALLOC);
   }
@@ -43,7 +43,7 @@ int32_t cf_str_uchar32_append(cf_string_t *str,const UChar32 content) {
 
   if(str->growth == 0) str->growth = CF_BUFSIZ;
 
-  if(str->len + (U16_LENGTH(content) * sizeof(*str->content)) >= str->reserved) {
+  if(str->len + (U16_LENGTH(content) * (int32_t)sizeof(*str->content)) >= str->reserved) {
     str->reserved += str->growth;
     str->content   = cf_alloc(str->content,(size_t)str->reserved,sizeof(*str->content),CF_ALLOC_REALLOC);
   }
@@ -95,7 +95,7 @@ int32_t cf_str_cstr_set(cf_string_t *str,const UChar *content) {
 }
 
 int32_t cf_str_char_set(cf_string_t *str,const UChar *content,const int32_t length) {
-  size_t len;
+  int32_t len;
 
   if(str->growth == 0) str->growth = CF_BUFSIZ;
   len = str->growth;
@@ -118,7 +118,6 @@ int32_t cf_str_str_set(cf_string_t *str,const cf_string_t *set) {
   return cf_str_char_set(str,set->content,set->len);
 }
 
-
 UChar *cf_strdup(const UChar *src,int32_t len) {
   UChar *out;
 
@@ -130,6 +129,29 @@ UChar *cf_strdup(const UChar *src,int32_t len) {
   out[len] = 0;
 
   return out;
+}
+
+UChar *cf_to_utf16(const char *src,int32_t len,int32_t *destlen) {
+  UChar *dest = NULL;
+  int32_t dlen = 0;
+  UErrorCode err = 0;
+
+  if(src == NULL || len < -1 || len == 0) return NULL;
+
+  u_strFromUTF8(NULL,0,&dlen,src,len,&err);
+  if(dlen <= 0) return NULL;
+
+  err = 0;
+  dest = cf_alloc(NULL,sizeof(*dest),dlen+1,CF_ALLOC_MALLOC);
+  u_strFromUTF8(dest,dlen+1,&dlen,src,len,&err);
+
+  if(U_FAILURE(err)) {
+    free(dest);
+    return NULL;
+  }
+
+  if(destlen) *destlen = dlen;
+  return dest;
 }
 
 /* eof */

@@ -143,6 +143,15 @@ int cf_str_eq_chars(const cf_string_t *str1,const UChar *str2, const int32_t len
  */
 UChar *cf_strdup(const UChar *src,int32_t len);
 
+/*!
+ * This function converts an UTF-8 char * to an UTF-16 UChar *
+ * \param src The source string
+ * \param len The length of the source string; may be -1, in this case the string has to be 0 terminated
+ * \param destlen The destination length will be stored in it if != NULL. If it is NULL, it will be ignored.
+ * \return The converted string
+ */
+UChar *cf_to_utf16(const char *src,int32_t len,int32_t *destlen);
+
 #endif
 
 /* eof */
