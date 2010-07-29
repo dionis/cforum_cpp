@@ -118,4 +118,18 @@ int32_t cf_str_str_set(cf_string_t *str,const cf_string_t *set) {
   return cf_str_char_set(str,set->content,set->len);
 }
 
+
+UChar *cf_strdup(const UChar *src,int32_t len) {
+  UChar *out;
+
+  if(len == 0 || len < -1 || src == NULL) return NULL;
+  if(len == -1) len = u_strlen(src);
+
+  out = cf_alloc(NULL,len+1,sizeof(*out),CF_ALLOC_MALLOC);
+  u_strncpy(out,src,len);
+  out[len] = 0;
+
+  return out;
+}
+
 /* eof */

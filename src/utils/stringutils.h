@@ -134,6 +134,14 @@ int cf_str_eq_string(const cf_string_t *str1,const cf_string_t *str2);
  */
 int cf_str_eq_chars(const cf_string_t *str1,const UChar *str2, const int32_t len);
 
+/*!
+ * Copies a UChar* string
+ * \param src The source string
+ * \param len The length of the string; can be -1, in this case u_strlen() gets called to determine the string length
+ * \return NULL on failure, the copied string on success
+ * \attention The caller has to free() the string!
+ */
+UChar *cf_strdup(const UChar *src,int32_t len);
 
 #endif
 
