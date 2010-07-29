@@ -31,7 +31,6 @@ cf_hash_t *cf_cgi_new(void) {
   char *clen = getenv("CONTENT_LENGTH"),*rqmeth = getenv("REQUEST_METHOD"),*data;
   cf_hash_t *hash;
   long len  = 0;
-  int trash = 0;
 
   if(!rqmeth) return NULL;
   if(clen) len = strtol(clen,NULL,10);
@@ -175,17 +174,17 @@ char *cf_cgi_url_decode(const char *str,size_t len) {
 
   if(!str) return NULL;
 
-  for(ptr1=ret,ptr2=str;ptr2-str < len;ptr2++,ptr1++) {
+  for(ptr1=ret,ptr2=str;(size_t)(ptr2-str) < len;ptr2++,ptr1++) {
     switch(*ptr2) {
       case '+':
         *ptr1 = ' ';
         break;
       case '%':
         /* string is to short; copy remaining bytes and return */
-        if(ptr2+2 - str >= len) {
+        if((size_t)(ptr2+2 - str) >= len) {
           *ptr1 = '%';
           *(ptr1+1) = '\0';
-          if(ptr2+1 - str < len) {
+          if((size_t)(ptr2+1 - str) < len) {
             *(ptr1+1) = *(ptr2+1);
             *(ptr1+2) = '\0';
           }
@@ -211,7 +210,7 @@ char *cf_cgi_url_encode(const char *str,size_t len) {
   char *nstr = cf_alloc(NULL,nlen,1,CF_ALLOC_MALLOC);
   register char *ptr1,*ptr2;
 
-  for(ptr1=(char *)str,ptr2=nstr;ptr2-str < len;ptr2++,ptr1++) {
+  for(ptr1=(char *)str,ptr2=nstr;(size_t)(ptr2-str) < len;ptr2++,ptr1++) {
     if((*ptr1 >= 48 && *ptr1 <= 122) || (*ptr1 == '_' || *ptr1 == '.' || *ptr1 == '-')) {
       *ptr2 = *ptr1;
     }
