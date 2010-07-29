@@ -118,4 +118,27 @@ int32_t cf_str_str_set(cf_string_t *str,const cf_string_t *set) {
   return cf_str_char_set(str,set->content,set->len);
 }
 
+UChar *cf_to_utf16(const char *src,int32_t len,int32_t *destlen) {
+  UChar *dest = NULL;
+  int32_t dlen = 0;
+  UErrorCode err = 0;
+
+  if(src == NULL || len < -1 || len == 0) return NULL;
+
+  u_strFromUTF8(NULL,0,&dlen,src,len,&err);
+  if(dlen <= 0) return NULL;
+
+  err = 0;
+  dest = cf_alloc(NULL,sizeof(*dest),dlen+1,CF_ALLOC_MALLOC);
+  u_strFromUTF8(dest,dlen+1,&dlen,src,len,&err);
+
+  if(U_FAILURE(err)) {
+    free(dest);
+    return NULL;
+  }
+
+  if(destlen) *destlen = dlen;
+  return dest;
+}
+
 /* eof */
