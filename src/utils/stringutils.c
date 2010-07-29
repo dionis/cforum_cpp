@@ -137,6 +137,7 @@ UChar *cf_to_utf16(const char *src,int32_t len,int32_t *destlen) {
   UErrorCode err = 0;
 
   if(src == NULL || len < -1 || len == 0) return NULL;
+  if(len == -1) len = strlen(src);
 
   u_strFromUTF8(NULL,0,&dlen,src,len,&err);
   if(dlen <= 0) return NULL;
@@ -144,6 +145,30 @@ UChar *cf_to_utf16(const char *src,int32_t len,int32_t *destlen) {
   err = 0;
   dest = cf_alloc(NULL,sizeof(*dest),dlen+1,CF_ALLOC_MALLOC);
   u_strFromUTF8(dest,dlen+1,&dlen,src,len,&err);
+
+  if(U_FAILURE(err)) {
+    free(dest);
+    return NULL;
+  }
+
+  if(destlen) *destlen = dlen;
+  return dest;
+}
+
+char *cf_to_utf8(const UChar *src,int32_t len,int32_t *destlen) {
+  char *dest = NULL;
+  int32_t dlen = 0;
+  UErrorCode err = 0;
+
+  if(src == NULL || len < -1 || len == 0) return NULL;
+  if(len == -1) len = u_strlen(src);
+
+  u_strToUTF8(NULL,0,&dlen,src,len,&err);
+  if(dlen <= 0) return NULL;
+
+  err = 0;
+  dest = cf_alloc(NULL,sizeof(*dest),dlen+1,CF_ALLOC_MALLOC);
+  u_strToUTF8(dest,dlen+1,&dlen,src,len,&err);
 
   if(U_FAILURE(err)) {
     free(dest);
