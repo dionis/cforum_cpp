@@ -10,6 +10,9 @@
 #ifndef CF_CONFIGPARSER_H
 #define CF_CONFIGPARSER_H
 
+#include <unicode/uchar.h>
+#include <unicode/ustring.h>
+
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -19,6 +22,7 @@
 #include <lauxlib.h>
 #include <lualib.h>
 
+#include "utils/stringutils.h"
 #include "utils/arrayutils.h"
 #include "utils/utils.h"
 #include "hashlib.h"
@@ -39,9 +43,9 @@
  */
 typedef struct cf_cfg_value_s {
   char type; /*!< The value type */
-  char *name; /*!< The value name (if given) */
+  UChar *name; /*!< The value name (if given) */
   union {
-    char *cval; /*!< string data */
+    UChar *cval; /*!< string data */
     int ival; /*!< int data */
     double dval; /*!< double data */
     cf_array_t *aval; /*!< array data */
@@ -54,7 +58,7 @@ typedef struct cf_cfg_value_s {
  * Each value is a cf_cfg_value_t, each context is a cf_cfg_t
  */
 typedef struct cf_cfg_s {
-  char *name; /*!< the name of the context. config filename in global (configuration) context */
+  UChar *name; /*!< the name of the context. config filename in global (configuration) context */
   cf_array_t *contexts; /*!< The list of available contexts */
   cf_hash_t *values; /*!< the values in this context */
 } cf_cfg_t;
@@ -118,7 +122,7 @@ void cf_cfg_destroy_value(cf_cfg_value_t *val);
  * \param name The name of the value to find
  * \return returns NULL if value could not be found, returns the value if the value could be found
  */
-cf_cfg_value_t *cf_cfg_get_value_w_pos(cf_cfg_t *cfg,const char *contexts[],size_t clen, size_t pos,const char *name);
+cf_cfg_value_t *cf_cfg_get_value_w_pos(cf_cfg_t *cfg,const UChar **contexts,size_t clen, size_t pos,const UChar *name);
 
 #define cf_cfg_get_value(cfg,contexts,clen,name) (cf_cfg_get_value_w_pos((cfg),(contexts),(clen),0,(name)))
 

@@ -77,9 +77,13 @@ cf_cfg_t *cf_cfg_read_config(const char *filename) {
   cf_cfg_t *cfg;
   lua_State *l;
   int top;
+  int free_file = 0;
 
-  if(filename == NULL) file = cf_cfg_find_file();
-  else file = strdup(filename);
+  if(filename == NULL) {
+    file = cf_cfg_find_file();
+    free_file = 1;
+  }
+  else file = (char *)filename;
 
   if(file == NULL) {
     fprintf(stderr,"Config file could not be found!\n");
@@ -87,7 +91,7 @@ cf_cfg_t *cf_cfg_read_config(const char *filename) {
   }
 
   cfg = cf_cfg_new_cfg();
-  cfg->name = file;
+  cfg->name = cf_to_utf16(file,-1,NULL);
 
   l = luaL_newstate();
   luaL_openlibs(l);
@@ -100,14 +104,17 @@ cf_cfg_t *cf_cfg_read_config(const char *filename) {
     lua_close(l);
     cf_cfg_destroy_cfg(cfg);
     free(cfg);
+    if(free_file) free(file);
     return NULL;
   }
+
+  if(free_file) free(file);
 
   lua_close(l);
   return cfg;
 }
 
-cf_cfg_value_t *cf_cfg_get_value_w_pos(cf_cfg_t *cfg,const char *contexts[],size_t clen, size_t pos,const char *name) {
+cf_cfg_value_t *cf_cfg_get_value_w_pos(cf_cfg_t *cfg,const UChar **contexts,size_t clen, size_t pos,const UChar *name) {
   cf_cfg_value_t *val;
   cf_cfg_t *cont;
   size_t i;
@@ -118,32 +125,53 @@ cf_cfg_value_t *cf_cfg_get_value_w_pos(cf_cfg_t *cfg,const char *contexts[],size
     for(i=0;i<cfg->contexts->elements;++i) {
       cont = cf_array_element_at(cfg->contexts,i);
 
-      if(strcmp(cont->name,contexts[pos]) == 0) {
+      if(u_strcmp(cont->name,contexts[pos]) == 0) {
         if((val = cf_cfg_get_value_w_pos(cont,contexts,clen,pos+1,name)) == NULL) break;
         return val;
       }
     }
   }
 
-  return cf_hash_get(cfg->values,name,strlen(name));
+  return cf_hash_get(cfg->values,(char *)name,u_strlen(name) * sizeof(*name));
 }
 
-#if 0
+
+/*
 int main(void) {
-  const char *contexts[] = {"abc","def"};
+  char *cval;
+  UChar **contexts;
+  U_STRING_DECL(context,"abc",3);
+  U_STRING_DECL(mpath,"ModulePath",10);
+
   cf_cfg_t *cfg = cf_cfg_read_config(NULL);
   cf_cfg_value_t *val;
 
+  U_STRING_INIT(mpath,"ModulePath",10);
+
+  contexts = cf_alloc(NULL,2,sizeof(*contexts),CF_ALLOC_MALLOC);
+
+  U_STRING_INIT(context,"abc",3);
+  contexts[0] = cf_strdup(context,-1);
+
+  U_STRING_INIT(context,"def",3);
+  contexts[1] = cf_strdup(context,-1);
+
   if(cfg) {
-    if((val = cf_cfg_get_value(cfg,contexts,2,"ModulePath")) != NULL) {
-      printf("val is: %s (%p)\n",val->value.cval,val);
+    if((val = cf_cfg_get_value(cfg,(const UChar **)contexts,2,mpath)) != NULL) {
+      cval = cf_to_utf8(val->value.cval,-1,NULL);
+      printf("val is: %s (%p)\n",cval,val);
+      if(cval) free(cval);
     }
 
     cf_cfg_destroy_cfg(cfg);
     free(cfg);
   }
+
+  free(contexts[0]);
+  free(contexts[1]);
+  free(contexts);
+
   return 0;
-}
-#endif
+}*/
 
 /* eof */

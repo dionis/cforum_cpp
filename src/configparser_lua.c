@@ -66,7 +66,7 @@ static void cf_cfg_l_lary_to_cfary(lua_State *l,cf_array_t *ary) {
     }
     else if(lua_isstring(l,-1)) {
       val.type = CF_CFG_VALUE_STR;
-      val.value.cval = strdup(luaL_checkstring(l,-1));
+      val.value.cval = cf_to_utf16(luaL_checkstring(l,-1),-1,NULL);
     }
     else if(lua_istable(l,-1)) {
       val.type = CF_CFG_VALUE_ARY;
@@ -95,7 +95,7 @@ static int cf_cfg_l_setvalue(lua_State *l) {
   double dval;
   int ival;
 
-  val.name = strdup(name);
+  val.name = cf_to_utf16(name,-1,NULL);
 
   if(lua_isboolean(l,-1)) {
     val.type = CF_CFG_VALUE_INT;
@@ -116,7 +116,7 @@ static int cf_cfg_l_setvalue(lua_State *l) {
   }
   else if(lua_isstring(l,-1)) {
     val.type = CF_CFG_VALUE_STR;
-    val.value.cval = strdup(luaL_checkstring(l,-1));
+    val.value.cval = cf_to_utf16(luaL_checkstring(l,-1),-1,NULL);
   }
   else if(lua_istable(l,-1)) {
     val.type = CF_CFG_VALUE_ARY;
@@ -127,7 +127,7 @@ static int cf_cfg_l_setvalue(lua_State *l) {
     cf_cfg_l_lary_to_cfary(l,val.value.aval);
   }
 
-  cf_hash_set(cfg->values,val.name,strlen(val.name),&val,sizeof(val));
+  cf_hash_set(cfg->values,(char *)val.name,u_strlen(val.name) * sizeof(*val.name),&val,sizeof(val));
 
   return 0;
 }
@@ -142,7 +142,7 @@ static int cf_cfg_l_createcontext(lua_State *l) {
   const char *name = luaL_checkstring(l,-1);
 
   cf_cfg_init_cfg(&ncfg);
-  ncfg.name = strdup(name);
+  ncfg.name = cf_to_utf16(name,-1,NULL);
 
   cf_array_push(cfg->contexts,&ncfg);
   ncfgp = cf_array_element_at(cfg->contexts,cfg->contexts->elements - 1);
