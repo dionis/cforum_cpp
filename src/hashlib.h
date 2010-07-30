@@ -40,6 +40,7 @@ typedef void (*cf_hash_cleanup_t)(void *);
 
 typedef struct cf_hash_keylist_s {
   char *key;
+  size_t keylen;
   struct cf_hash_keylist_s *next,*prev;
 } cf_hash_keylist_t;
 

@@ -209,14 +209,10 @@ static cf_hash_entry_t *_cf_hash_save(cf_hash_t *hsh,const char *key,size_t keyl
    */
   ent->hashval     = hashval;
 
-  /*
-   * the key of the entry has to be a 0 terminated char *
-   */
-  ent->key         = malloc((keylen + 1) * sizeof(char));
+  ent->key         = malloc(keylen * sizeof(char));
   if(!ent->key) return NULL;
 
   memcpy(ent->key,key,keylen);
-  ent->key[keylen] = 0;
   ent->keylen      = keylen;
 
   /*
@@ -244,8 +240,9 @@ static cf_hash_entry_t *_cf_hash_save(cf_hash_t *hsh,const char *key,size_t keyl
     if((akt = hsh->keys.last->next = malloc(sizeof(*hsh->keys.last))) == NULL) return NULL;
   }
 
-  akt->key  = ent->key;
-  akt->next = NULL;
+  akt->key    = ent->key;
+  akt->keylen = ent->keylen;
+  akt->next   = NULL;
 
   /* are we at the first element? */
   if(hsh->keys.last != akt) {
@@ -543,17 +540,15 @@ void cf_hash_destroy(cf_hash_t *hsh) {
   cf_hash_keylist_t *key,*key1;
   u_int32_t hval,hval_short;
   cf_hash_entry_t *ent;
-  size_t keylen;
 
   for(key=hsh->keys.elems;key;key=key1) {
-    keylen     = strlen(key->key);
-    hval       = cf_lookup(key->key,keylen,0);
+    hval       = cf_lookup(key->key,key->keylen,0);
     hval_short = hval & cf_hashmask(hsh->tablesize);
 
     key1 = key->next;
 
     if(hsh->table[hval_short]) {
-      for(ent = hsh->table[hval_short];ent && (ent->hashval != hval || ent->keylen != keylen || memcmp(ent->key,key->key,keylen) != 0);ent=ent->next);
+      for(ent = hsh->table[hval_short];ent && (ent->hashval != hval || ent->keylen != key->keylen || memcmp(ent->key,key->key,key->keylen) != 0);ent=ent->next);
 
       if(ent) {
         if(ent->stat == 0) {
