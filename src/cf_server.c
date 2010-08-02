@@ -8,7 +8,7 @@
 
 #include "cf_server.h"
 
-void setup_server_environment(const char *pidfile,int check_only) {
+int setup_server_environment(const char *pidfile,int check_only) {
   struct stat st;
   FILE *fd;
   pid_t pid;
@@ -23,7 +23,7 @@ void setup_server_environment(const char *pidfile,int check_only) {
         pidfile
       );
 
-      exit(EXIT_FAILURE);
+      return -1;
     }
 
     if((len = fread(buff,1,250,fd)) > 0 && len < 249) {
@@ -38,7 +38,7 @@ void setup_server_environment(const char *pidfile,int check_only) {
         );
 
         fclose(fd);
-        exit(EXIT_FAILURE);
+        return -1;
       }
     }
     else {
@@ -49,7 +49,7 @@ void setup_server_environment(const char *pidfile,int check_only) {
       );
 
       fclose(fd);
-      exit(EXIT_FAILURE);
+      return -1;
     }
 
     fclose(fd);
@@ -58,7 +58,7 @@ void setup_server_environment(const char *pidfile,int check_only) {
   if(check_only == 0) {
     if((fd = fopen(pidfile,"w")) == NULL) {
       fprintf(stderr,"Could not open PID file (%s)!\n",strerror(errno));
-      exit(EXIT_FAILURE);
+      return -1;
     }
 
     pid = getpid();
@@ -66,6 +66,8 @@ void setup_server_environment(const char *pidfile,int check_only) {
     fwrite(buff,len,1,fd);
     fclose(fd);
   }
+
+  return 0;
 }
 
 void usage(void) {
@@ -109,6 +111,16 @@ uid_t get_uid(const UChar *uname_u) {
   return 0;
 }
 
+void cleanup_env(char *pidfile,char *cfgfile,cf_cfg_contexts_t contexts,size_t num,cf_cfg_t *cfg) {
+  if(pidfile) free(pidfile);
+  if(cfgfile) free(cfgfile);
+  if(contexts) cf_cfg_destroy_contexts(contexts,num);
+  if(cfg) {
+    cf_cfg_destroy_cfg(cfg);
+    free(cfg);
+  }
+}
+
 static struct option server_cmdline_options[] = {
   { "pid-file",         1, NULL, 'p' },
   { "config-file",      1, NULL, 'c' },
@@ -118,7 +130,7 @@ static struct option server_cmdline_options[] = {
 };
 
 int main(int argc,char *argv[]) {
-  int demonize,lid=0;
+  int demonize = 0,lid=0;
   char *pidfile = NULL,*cfgfile = NULL,*chdir_dir = NULL,c;
   cf_cfg_contexts_t contexts;
   static const char *cnts[] = {"cf_server"};
@@ -159,8 +171,7 @@ int main(int argc,char *argv[]) {
   if(pidfile == NULL) {
     if((cval = cf_cfg_get_value_c(cfg,contexts,1,"PIDFile")) == NULL) {
       fprintf(stderr,"Error: no PID file set, neither in config nor on command line!\n");
-      cf_cfg_destroy_contexts(contexts,1);
-      cf_cfg_destroy_cfg(cfg);
+      cleanup_env(pidfile,cfgfile,contexts,1,cfg);
       return EXIT_FAILURE;
     }
 
@@ -172,11 +183,15 @@ int main(int argc,char *argv[]) {
 
     if(chdir(chdir_dir) == -1) {
       fprintf(stderr,"could not chdir to chroot dir '%s': %s\n",chdir_dir,strerror(errno));
+      free(chdir_dir);
+      cleanup_env(pidfile,cfgfile,contexts,1,cfg);
       return EXIT_FAILURE;
     }
 
     if(chroot(chdir_dir) == -1) {
       fprintf(stderr,"could not chroot to dir '%s': %s\n",chdir_dir,strerror(errno));
+      free(chdir_dir);
+      cleanup_env(pidfile,cfgfile,contexts,1,cfg);
       return EXIT_FAILURE;
     }
 
@@ -187,57 +202,69 @@ int main(int argc,char *argv[]) {
     cval1 = cf_array_element_at(cval->value.aval,1);
     if((gid = cval1->value.ival) == 0 && (gid = get_gid(cval1->value.cval)) == 0) {
       fprintf(stderr,"config error: cannot set gid!\n");
+      cleanup_env(pidfile,cfgfile,contexts,1,cfg);
       return EXIT_FAILURE;
     }
 
     cval1 = cf_array_element_at(cval->value.aval,0);
     if((uid = cval1->value.ival) == 0 && (uid = get_uid(cval1->value.cval)) == 0) {
       fprintf(stderr,"config error: cannot set uid!\n");
+      cleanup_env(pidfile,cfgfile,contexts,1,cfg);
       return EXIT_FAILURE;
     }
 
     if(setgid(gid) == -1 || setregid(gid,gid) == -1) {
       fprintf(stderr,"config error: cannot set gid! error: %s\n",strerror(errno));
+      cleanup_env(pidfile,cfgfile,contexts,1,cfg);
       return EXIT_FAILURE;
     }
 
     if(setuid(uid) == -1 || setreuid(uid,uid) == -1) {
       fprintf(stderr,"config error: cannot set uid! error: %s\n",strerror(errno));
+      cleanup_env(pidfile,cfgfile,contexts,1,cfg);
       return EXIT_FAILURE;
     }
   }
   else {
     if((uid = getuid()) == 0) {
       fprintf(stderr,"You should not run this server as root! Set UserGroup in cforum.conf to an appropriate value!\n");
+      cleanup_env(pidfile,cfgfile,contexts,1,cfg);
       return EXIT_FAILURE;
     }
 
     if((gid = getgid()) == 0) {
       fprintf(stderr,"You should not run this server with gid 0! Set UserGroup in cforum.conf to an appropriate value!\n");
+      cleanup_env(pidfile,cfgfile,contexts,1,cfg);
       return EXIT_FAILURE;
     }
   }
 
   /* be sure that only one instance runs */
-  setup_server_environment(pidfile,1);
+  if(setup_server_environment(pidfile,1) == -1) {
+    cleanup_env(pidfile,cfgfile,contexts,1,cfg);
+    return EXIT_FAILURE;
+  }
 
   if(demonize) {
     /* we daemonize... */
     switch(pid = fork()) {
       case -1:
         fprintf(stderr,"cf_server: could not fork: %s\n",strerror(errno));
+        cleanup_env(pidfile,cfgfile,contexts,1,cfg);
         return EXIT_FAILURE;
 
       case 0:
         if(setsid() == -1) {
           fprintf(stderr,"cf_server: could not detach from shell: %s\n",strerror(errno));
-          exit(-1);
+          cleanup_env(pidfile,cfgfile,contexts,1,cfg);
+          return EXIT_FAILURE;
         }
         break;
 
       default:
         printf("server forked. It's pid is: %d\n",pid);
-        exit(EXIT_SUCCESS);
+        cleanup_env(pidfile,cfgfile,contexts,1,cfg);
+        return EXIT_SUCCESS;
     }
 
     fclose(stdout);
@@ -246,15 +273,17 @@ int main(int argc,char *argv[]) {
   }
 
   /* be sure that only one instance runs */
-  setup_server_environment(pidfile,0);
+  if(setup_server_environment(pidfile,0) == -1) {
+    cleanup_env(pidfile,cfgfile,contexts,1,cfg);
+    return EXIT_FAILURE;
+  }
 
 
   /* TODO: Implement main loop */
 
   remove(pidfile);
 
-  cf_cfg_destroy_contexts(contexts,1);
-  cf_cfg_destroy_cfg(cfg);
+  cleanup_env(pidfile,cfgfile,contexts,1,cfg);
   return EXIT_SUCCESS;
 }
 
