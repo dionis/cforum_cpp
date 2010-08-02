@@ -127,6 +127,16 @@ cf_cfg_value_t *cf_cfg_get_value_w_pos(cf_cfg_t *cfg,const UChar **contexts,size
 #define cf_cfg_get_value(cfg,contexts,clen,name) (cf_cfg_get_value_w_pos((cfg),(contexts),(clen),0,(name)))
 
 /*!
+ * Convenience function to access config values with const char * literals, calls cf_cfg_get_value_w_pos()
+ * \param cfg The configuration
+ * \param contexts The contexts of the program
+ * \param clen The length of the contexts array
+ * \param name The name of the value to find
+ * \return returns NULL if value could not be found or the name could not be converted to UTF-16, returns the value if the value could be found
+ */
+cf_cfg_value_t *cf_cfg_get_value_c(cf_cfg_t *cfg,const UChar **contexts,size_t clen,const char *name);
+
+/*!
  * Function to create an UChar ** array of given char ** contexts
  * \param cnts The contexts
  * \param num The number of contexts to create

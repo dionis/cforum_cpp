@@ -114,6 +114,14 @@ cf_cfg_t *cf_cfg_read_config(const char *filename) {
   return cfg;
 }
 
+cf_cfg_value_t *cf_cfg_get_value_c(cf_cfg_t *cfg,const UChar **contexts,size_t clen,const char *name) {
+  UChar *n = cf_to_utf16(name,-1,NULL);
+  cf_cfg_value_t *val = cf_cfg_get_value_w_pos(cfg,contexts,clen,0,n);
+  free(n);
+
+  return val;
+}
+
 cf_cfg_value_t *cf_cfg_get_value_w_pos(cf_cfg_t *cfg,const UChar **contexts,size_t clen, size_t pos,const UChar *name) {
   cf_cfg_value_t *val;
   cf_cfg_t *cont;
