@@ -11,9 +11,9 @@
 
 char *cf_cfg_find_file(void) {
   static const char *files[] = {
-    "./cforum.conf",
-    "/etc/cforum.conf",
-    "/usr/local/etc/cforum.conf",
+    "./cforum.lua",
+    "/etc/cforum.lua",
+    "/usr/local/etc/cforum.lua",
     NULL
   };
 
