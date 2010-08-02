@@ -63,6 +63,8 @@ typedef struct cf_cfg_s {
   cf_hash_t *values; /*!< the values in this context */
 } cf_cfg_t;
 
+typedef UChar ** cf_cfg_contexts_t;
+
 /*!
  * Find our config file.
  * \returns \c NULL if no file could be found or the filename with path if file could be found.
@@ -122,7 +124,7 @@ void cf_cfg_destroy_value(cf_cfg_value_t *val);
  * \param name The name of the value to find
  * \return returns NULL if value could not be found, returns the value if the value could be found
  */
-cf_cfg_value_t *cf_cfg_get_value_w_pos(cf_cfg_t *cfg,const UChar **contexts,size_t clen, size_t pos,const UChar *name);
+cf_cfg_value_t *cf_cfg_get_value_w_pos(cf_cfg_t *cfg,const cf_cfg_contexts_t contexts,size_t clen, size_t pos,const UChar *name);
 
 #define cf_cfg_get_value(cfg,contexts,clen,name) (cf_cfg_get_value_w_pos((cfg),(contexts),(clen),0,(name)))
 
@@ -134,7 +136,7 @@ cf_cfg_value_t *cf_cfg_get_value_w_pos(cf_cfg_t *cfg,const UChar **contexts,size
  * \param name The name of the value to find
  * \return returns NULL if value could not be found or the name could not be converted to UTF-16, returns the value if the value could be found
  */
-cf_cfg_value_t *cf_cfg_get_value_c(cf_cfg_t *cfg,const UChar **contexts,size_t clen,const char *name);
+cf_cfg_value_t *cf_cfg_get_value_c(cf_cfg_t *cfg,const cf_cfg_contexts_t contexts,size_t clen,const char *name);
 
 /*!
  * Function to create an UChar ** array of given char ** contexts
@@ -142,14 +144,14 @@ cf_cfg_value_t *cf_cfg_get_value_c(cf_cfg_t *cfg,const UChar **contexts,size_t c
  * \param num The number of contexts to create
  * \return returns NULL if cnts is NULL or num <= 0, returns the UChar ** array otherwise
  */
-UChar **cf_cfg_create_contexts(const char **cnts,size_t num);
+cf_cfg_contexts_t cf_cfg_create_contexts(const char **cnts,size_t num);
 
 /*!
  * Function to destroy an UChar ** array of contexts
  * \param cnts The contexts
  * \param num The number of contexts to destroy
  */
-void cf_cfg_destroy_contexts(UChar **cnts,size_t num);
+void cf_cfg_destroy_contexts(cf_cfg_contexts_t cnts,size_t num);
 
 #endif
 
