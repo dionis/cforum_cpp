@@ -135,6 +135,26 @@ cf_cfg_value_t *cf_cfg_get_value_w_pos(cf_cfg_t *cfg,const UChar **contexts,size
   return cf_hash_get(cfg->values,(char *)name,u_strlen(name) * sizeof(*name));
 }
 
+UChar **cf_cfg_create_contexts(const char **cnts,size_t num) {
+  size_t i;
+  UChar **ret;
+
+  if(ret == NULL || num <= 0) return NULL;
+
+  ret = cf_alloc(NULL,num,sizeof(*ret),CF_ALLOC_MALLOC);
+  for(i=0;i<num;++i) ret[i] = cf_to_utf16(cnts[i],-1,NULL);
+  return ret;
+}
+
+void cf_cfg_destroy_contexts(UChar **cnts,size_t num) {
+  if(cnts == NULL || num <= 0) return;
+
+  for(size_t i=0;i<num;++i) {
+    if(cnts[i]) free(cnts[i]);
+  }
+
+  free(cnts);
+}
 
 /*
 int main(void) {

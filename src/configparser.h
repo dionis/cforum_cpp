@@ -126,6 +126,21 @@ cf_cfg_value_t *cf_cfg_get_value_w_pos(cf_cfg_t *cfg,const UChar **contexts,size
 
 #define cf_cfg_get_value(cfg,contexts,clen,name) (cf_cfg_get_value_w_pos((cfg),(contexts),(clen),0,(name)))
 
+/*!
+ * Function to create an UChar ** array of given char ** contexts
+ * \param cnts The contexts
+ * \param num The number of contexts to create
+ * \return returns NULL if cnts is NULL or num <= 0, returns the UChar ** array otherwise
+ */
+UChar **cf_cfg_create_contexts(const char **cnts,size_t num);
+
+/*!
+ * Function to destroy an UChar ** array of contexts
+ * \param cnts The contexts
+ * \param num The number of contexts to destroy
+ */
+void cf_cfg_destroy_contexts(UChar **cnts,size_t num);
+
 #endif
 
 /* eof */
