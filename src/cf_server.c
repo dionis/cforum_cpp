@@ -1,0 +1,261 @@
+/**
+ * \file cf_server.c
+ * \brief The Classic Forum application server
+ * \author Christian Kruse, <cjk@wwwtech.de>
+ *
+ * This is the Classic Forum application server.
+ */
+
+#include "cf_server.h"
+
+void setup_server_environment(const char *pidfile,int check_only) {
+  struct stat st;
+  FILE *fd;
+  pid_t pid;
+  char buff[250];
+  size_t len;
+
+  if(stat(pidfile,&st) == 0) {
+    if((fd = fopen(pidfile,"r")) == NULL) {
+      fprintf(stderr,"the PID file (%s) exists! Maybe there is already an instance running " \
+        "or the server crashed. However, if there is no instance running you " \
+        "should remove the file. Sorry, but I have to exit\n",
+        pidfile
+      );
+
+      exit(EXIT_FAILURE);
+    }
+
+    if((len = fread(buff,1,250,fd)) > 0 && len < 249) {
+      buff[len] = 0;
+      pid = (pid_t)atoi(buff);
+
+      if(kill(pid,0) == 0) {
+        fprintf(stderr,"the PID file (%s, PID: %d) exists! Maybe there is already an instance running " \
+          "or the server crashed. However, if there is no instance running you " \
+          "should remove the file. Sorry, but I have to exit\n",
+          pidfile, pid
+        );
+
+        fclose(fd);
+        exit(EXIT_FAILURE);
+      }
+    }
+    else {
+      fprintf(stderr,"the PID file (%s) exists! Maybe there is already an instance running " \
+        "or the server crashed. However, if there is no instance running you " \
+        "should remove the file. Sorry, but I have to exit\n",
+        pidfile
+      );
+
+      fclose(fd);
+      exit(EXIT_FAILURE);
+    }
+
+    fclose(fd);
+  }
+
+  if(check_only == 0) {
+    if((fd = fopen(pidfile,"w")) == NULL) {
+      fprintf(stderr,"Could not open PID file (%s)!\n",strerror(errno));
+      exit(EXIT_FAILURE);
+    }
+
+    pid = getpid();
+    len = snprintf(buff,250,"%d",pid);
+    fwrite(buff,len,1,fd);
+    fclose(fd);
+  }
+}
+
+void usage(void) {
+  fprintf(stderr,"Usage:\n" \
+    "[CF_CONF_FILE=\"/path/to/config\"] cf_server [options]\n\n" \
+    "where options are:\n" \
+    "\t-p, --pid-file          Path to the pid file (optional)\n" \
+    "\t-c, --config-file       Path to the configuration file\n" \
+    "\t-d, --daemonize         Detach process from shell\n" \
+    "\t-h, --help              Show this help screen\n\n" \
+    "One of both must be set: config-file option or CF_CONF_FILE\n" \
+    "environment variable\n\n"
+  );
+
+  exit(-1);
+}
+
+void terminate(int sig) {
+  (void)sig;
+}
+
+gid_t get_gid(const UChar *gname_u) {
+  char *gname = cf_to_utf8(gname_u,-1,NULL);
+  struct group *gr = getgrnam(gname);
+  free(gname);
+
+  if(gr) return gr->gr_gid;
+
+  perror("getgrnam");
+  return 0;
+}
+
+uid_t get_uid(const UChar *uname_u) {
+  char *uname = cf_to_utf8(uname_u,-1,NULL);
+  struct passwd *pwd = getpwnam(uname);
+  free(uname);
+
+  if(pwd) return pwd->pw_uid;
+
+  perror("getpwnam");
+  return 0;
+}
+
+static struct option server_cmdline_options[] = {
+  { "pid-file",         1, NULL, 'p' },
+  { "config-file",      1, NULL, 'c' },
+  { "daemonize",        0, NULL, 'd' },
+  { "help",             0, NULL, 'h' },
+  { NULL,               0, NULL, 0   }
+};
+
+int main(int argc,char *argv[]) {
+  int demonize,lid=0;
+  char *pidfile = NULL,*cfgfile = NULL,*chdir_dir = NULL,c;
+  cf_cfg_contexts_t contexts;
+  static const char *cnts[] = {"cf_server"};
+  cf_cfg_value_t *cval,*cval1;
+  cf_cfg_t *cfg;
+  gid_t gid;
+  uid_t uid;
+  pid_t pid;
+
+  /* read options from commandline */
+  while((c = getopt_long(argc,argv,"p:c:dh",server_cmdline_options,&lid)) != (char)-1) {
+
+    switch(c) {
+      case 'p':
+        if(!optarg) usage();
+        pidfile = optarg;
+        break;
+      case 'c':
+        if(!optarg) usage();
+        cfgfile = strdup(optarg);
+        break;
+      case 'd':
+        demonize = 1;
+        break;
+      default:
+        printf("default: %d (%d)\n",c,lid);
+        usage();
+    }
+  }
+
+  if((cfg = cf_cfg_read_config(cfgfile)) == NULL) return EXIT_FAILURE;
+  contexts = cf_cfg_create_contexts(cnts,1);
+
+  signal(SIGPIPE,SIG_IGN);
+  signal(SIGINT,terminate);
+  signal(SIGTERM,terminate);
+
+  if(pidfile == NULL) {
+    if((cval = cf_cfg_get_value_c(cfg,contexts,1,"PIDFile")) == NULL) {
+      fprintf(stderr,"Error: no PID file set, neither in config nor on command line!\n");
+      cf_cfg_destroy_contexts(contexts,1);
+      cf_cfg_destroy_cfg(cfg);
+      return EXIT_FAILURE;
+    }
+
+    pidfile = cf_to_utf8(cval->value.cval,-1,NULL);
+  }
+
+  if((cval = cf_cfg_get_value_c(cfg,contexts,1,"Chroot")) != NULL) {
+    chdir_dir = cf_to_utf8(cval->value.cval,-1,NULL);
+
+    if(chdir(chdir_dir) == -1) {
+      fprintf(stderr,"could not chdir to chroot dir '%s': %s\n",chdir_dir,strerror(errno));
+      return EXIT_FAILURE;
+    }
+
+    if(chroot(chdir_dir) == -1) {
+      fprintf(stderr,"could not chroot to dir '%s': %s\n",chdir_dir,strerror(errno));
+      return EXIT_FAILURE;
+    }
+
+    free(chdir_dir);
+  }
+
+  if((cval = cf_cfg_get_value_c(cfg,contexts,1,"UserGroup")) != NULL) {
+    cval1 = cf_array_element_at(cval->value.aval,1);
+    if((gid = cval1->value.ival) == 0 && (gid = get_gid(cval1->value.cval)) == 0) {
+      fprintf(stderr,"config error: cannot set gid!\n");
+      return EXIT_FAILURE;
+    }
+
+    cval1 = cf_array_element_at(cval->value.aval,0);
+    if((uid = cval1->value.ival) == 0 && (uid = get_uid(cval1->value.cval)) == 0) {
+      fprintf(stderr,"config error: cannot set uid!\n");
+      return EXIT_FAILURE;
+    }
+
+    if(setgid(gid) == -1 || setregid(gid,gid) == -1) {
+      fprintf(stderr,"config error: cannot set gid! error: %s\n",strerror(errno));
+      return EXIT_FAILURE;
+    }
+
+    if(setuid(uid) == -1 || setreuid(uid,uid) == -1) {
+      fprintf(stderr,"config error: cannot set uid! error: %s\n",strerror(errno));
+      return EXIT_FAILURE;
+    }
+  }
+  else {
+    if((uid = getuid()) == 0) {
+      fprintf(stderr,"You should not run this server as root! Set UserGroup in cforum.conf to an appropriate value!\n");
+      return EXIT_FAILURE;
+    }
+
+    if((gid = getgid()) == 0) {
+      fprintf(stderr,"You should not run this server with gid 0! Set UserGroup in cforum.conf to an appropriate value!\n");
+      return EXIT_FAILURE;
+    }
+  }
+
+  /* be sure that only one instance runs */
+  setup_server_environment(pidfile,1);
+
+  if(demonize) {
+    /* we daemonize... */
+    switch(pid = fork()) {
+      case -1:
+        fprintf(stderr,"cf_server: could not fork: %s\n",strerror(errno));
+        return EXIT_FAILURE;
+
+      case 0:
+        if(setsid() == -1) {
+          fprintf(stderr,"cf_server: could not detach from shell: %s\n",strerror(errno));
+          exit(-1);
+        }
+        break;
+
+      default:
+        printf("server forked. It's pid is: %d\n",pid);
+        exit(EXIT_SUCCESS);
+    }
+
+    fclose(stdout);
+    fclose(stderr);
+    fclose(stdin);
+  }
+
+  /* be sure that only one instance runs */
+  setup_server_environment(pidfile,0);
+
+
+  /* TODO: Implement main loop */
+
+  remove(pidfile);
+
+  cf_cfg_destroy_contexts(contexts,1);
+  cf_cfg_destroy_cfg(cfg);
+  return EXIT_SUCCESS;
+}
+
+/* eof */
