@@ -155,9 +155,11 @@ UChar **cf_cfg_create_contexts(const char **cnts,size_t num) {
 }
 
 void cf_cfg_destroy_contexts(UChar **cnts,size_t num) {
+  size_t i;
+
   if(cnts == NULL || num <= 0) return;
 
-  for(size_t i=0;i<num;++i) {
+  for(i=0;i<num;++i) {
     if(cnts[i]) free(cnts[i]);
   }
 
