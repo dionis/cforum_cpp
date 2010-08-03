@@ -29,6 +29,15 @@
 #include "utils/arrayutils.h"
 #include "utils/stringutils.h"
 #include "configparser.h"
+#include "serverlib.h"
+
+typedef struct cf_server_context_s {
+  cf_operation_queue_t opqueue;
+  volatile sig_atomic_t shall_run;
+
+  char *std_file,*err_file,*pid_file;
+  FILE *log_std,*log_err;
+} cf_server_context_t;
 
 #endif
 
