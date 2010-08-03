@@ -90,10 +90,13 @@ static void cf_cfg_l_lary_to_cfary(lua_State *l,cf_array_t *ary) {
  */
 static int cf_cfg_l_setvalue(lua_State *l) {
   cf_cfg_t *cfg = cf_cfg_l_to_cfg(l, 1);
-  const char *name = luaL_checkstring(l,-2);
+  const char *name;
   cf_cfg_value_t val;
   double dval;
   int ival;
+
+  if(!cfg) return luaL_error(l,"Error in LUA: %s",lua_tostring(l, -1));
+  name = luaL_checkstring(l,-2);
 
   val.name = cf_to_utf16(name,-1,NULL);
 
@@ -144,8 +147,8 @@ static int cf_cfg_l_createcontext(lua_State *l) {
   cf_cfg_init_cfg(&ncfg);
   ncfg.name = cf_to_utf16(name,-1,NULL);
 
-  cf_array_push(cfg->contexts,&ncfg);
-  ncfgp = cf_array_element_at(cfg->contexts,cfg->contexts->elements - 1);
+  cf_array_push(&cfg->contexts,&ncfg);
+  ncfgp = cf_array_element_at(&cfg->contexts,cfg->contexts.elements - 1);
 
   cf_cfg_l_pushcfg(l,ncfgp);
 

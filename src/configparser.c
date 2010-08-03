@@ -38,10 +38,9 @@ char *cf_cfg_find_file(void) {
 }
 
 void cf_cfg_destroy_cfg(cf_cfg_t *cfg) {
-  if(cfg->contexts) {
-    cf_array_destroy(cfg->contexts);
-    free(cfg->contexts);
-  }
+  if(cfg->contexts.elements) cf_array_destroy(&cfg->contexts);
+  if(cfg->modules.elements) cf_array_destroy(&cfg->modules);
+  if(cfg->handlers.elements) cf_array_destroy(&cfg->handlers);
   if(cfg->values) {
     cf_hash_destroy(cfg->values);
     free(cfg->values);
@@ -58,9 +57,20 @@ void cf_cfg_destroy_value(cf_cfg_value_t *val) {
   }
 }
 
+void cf_cfg_destroy_mod(cf_cfg_mod_t *mod) {
+  if(mod->file) free(mod->file);
+  if(mod->handle) dlclose(mod->handle);
+}
+
+void cf_cfg_destroy_handler(cf_cfg_mod_handler_t *hndl) {
+  (void)hndl;
+}
+
 void cf_cfg_init_cfg(cf_cfg_t *cfg) {
-  cfg->contexts = cf_alloc(NULL,1,sizeof(*cfg->contexts),CF_ALLOC_MALLOC);
-  cf_array_init(cfg->contexts,sizeof(*cfg),(cf_array_destroy_t)cf_cfg_destroy_cfg);
+  cf_array_init(&cfg->contexts,sizeof(*cfg),(cf_array_destroy_t)cf_cfg_destroy_cfg);
+  cf_array_init(&cfg->modules,sizeof(cf_cfg_mod_t),(cf_array_destroy_t)cf_cfg_destroy_mod);
+  cf_array_init(&cfg->handlers,sizeof(cf_cfg_mod_handler_t),(cf_array_destroy_t)cf_cfg_destroy_handler);
+
   cfg->values = cf_hash_new((cf_hash_cleanup_t)cf_cfg_destroy_value);
   cfg->name = NULL;
 }
@@ -129,9 +139,9 @@ cf_cfg_value_t *cf_cfg_get_value_w_pos(cf_cfg_t *cfg,cf_cfg_contexts_t contexts,
 
   if(!cfg->values) return NULL;
 
-  if(clen > 0 && cfg->contexts != NULL && cfg->contexts->elements > 0 && pos < clen) {
-    for(i=0;i<cfg->contexts->elements;++i) {
-      cont = cf_array_element_at(cfg->contexts,i);
+  if(clen > 0 && cfg->contexts.elements > 0 && pos < clen) {
+    for(i=0;i<cfg->contexts.elements;++i) {
+      cont = cf_array_element_at(&cfg->contexts,i);
 
       if(u_strcmp(cont->name,contexts[pos]) == 0) {
         if((val = cf_cfg_get_value_w_pos(cont,contexts,clen,pos+1,name)) == NULL) break;

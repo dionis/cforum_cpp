@@ -18,6 +18,8 @@
 #include <unistd.h>
 #include <string.h>
 
+#include <dlfcn.h>
+
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
@@ -52,6 +54,18 @@ typedef struct cf_cfg_value_s {
   } value; /*!< the value itself */
 } cf_cfg_value_t;
 
+typedef struct cf_cfg_mod_s {
+  char *file;
+  void *handle;
+} cf_cfg_mod_t;
+
+typedef int (*cf_handler_t)(void *);
+
+typedef struct cf_cfg_mod_handler_s {
+  int type;
+  cf_handler_t handler;
+} cf_cfg_mod_handler_t;
+
 /*!
  * This type holds the entire configuration. A configuration consists of
  * contexts (which can contain contexts, too) and values (name-value pairs).
@@ -59,7 +73,9 @@ typedef struct cf_cfg_value_s {
  */
 typedef struct cf_cfg_s {
   UChar *name; /*!< the name of the context. config filename in global (configuration) context */
-  cf_array_t *contexts; /*!< The list of available contexts */
+  cf_array_t contexts; /*!< The list of available contexts */
+  cf_array_t modules; /*!< The list of modules loaded for this context */
+  cf_array_t handlers; /*!< The list of handlers declared for this context */
   cf_hash_t *values; /*!< the values in this context */
 } cf_cfg_t;
 
