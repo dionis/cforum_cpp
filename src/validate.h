@@ -20,6 +20,8 @@
 
 #include <idna.h>
 
+#include "utils/stringutils.h"
+
 /*!
  * scheme list data structure
  */
