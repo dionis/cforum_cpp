@@ -169,6 +169,8 @@ cf_cfg_contexts_t cf_cfg_create_contexts(const char **cnts,size_t num);
  */
 void cf_cfg_destroy_contexts(cf_cfg_contexts_t cnts,size_t num);
 
+int cf_cfg_init_module(cf_cfg_t *cfg,cf_cfg_mod_t *mod);
+
 #endif
 
 /* eof */

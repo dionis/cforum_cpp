@@ -135,6 +135,42 @@ static int cf_cfg_l_setvalue(lua_State *l) {
   return 0;
 }
 
+static int cf_cfg_l_load_module(lua_State *l) {
+  cf_cfg_t *cfg = cf_cfg_l_to_cfg(l, 1);
+  const char *file,*tmp;
+  size_t len;
+  int slash = 0;
+  cf_cfg_mod_t mod;
+
+  if(!cfg) return luaL_error(l,"Error in LUA: %s",lua_tostring(l, -1));
+  file = luaL_checkstring(l,-1);
+
+  if(*file != '/' && *file != '.') {
+    lua_getfield(l, LUA_GLOBALSINDEX, "ModulePath");
+    tmp = luaL_checkstring(l,-1);
+    len = strlen(tmp);
+
+    if(*(tmp + len) != '/') {
+      slash = 1;
+      len += strlen(file) + 2;
+    }
+    else len += strlen(file) + 1;
+
+    mod.file = cf_alloc(NULL,len,sizeof(*mod.file),CF_ALLOC_MALLOC);
+    strcpy(mod.file,tmp);
+    if(slash) strcat(mod.file,"/");
+    strcat(mod.file,file);
+  }
+  else mod.file = strdup(file);
+
+  if((mod.handle = dlopen(mod.file,RTLD_NOW|RTLD_LOCAL)) == NULL) return luaL_error(l,"Error loading module %s: %s",mod.file,dlerror());
+  if(cf_cfg_init_module(cfg,&mod) != 0) return luaL_error(l,"Error initializing module %s!",mod.file);
+
+  cf_array_push(&cfg->modules,&mod);
+
+  return 0;
+}
+
 /*!
  * LUA binding to create a new context
  * \param l The LUA state
@@ -170,6 +206,7 @@ static int cf_cfg_to_s(lua_State *l) {
 static const luaL_reg CForum__methods[] = {
   { "set_value", cf_cfg_l_setvalue },
   { "create_context", cf_cfg_l_createcontext },
+  { "load", cf_cfg_l_load_module },
   { NULL, NULL }
 };
 

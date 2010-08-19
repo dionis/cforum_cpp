@@ -62,6 +62,7 @@ void cf_cfg_destroy_mod(cf_cfg_mod_t *mod) {
   if(mod->handle) dlclose(mod->handle);
 }
 
+/*! not yet used, but already planned in case of future enhancements */
 void cf_cfg_destroy_handler(cf_cfg_mod_handler_t *hndl) {
   (void)hndl;
 }
@@ -73,6 +74,10 @@ void cf_cfg_init_cfg(cf_cfg_t *cfg) {
 
   cfg->values = cf_hash_new((cf_hash_cleanup_t)cf_cfg_destroy_value);
   cfg->name = NULL;
+}
+
+int cf_cfg_init_module(cf_cfg_t *cfg,cf_cfg_mod_t *mod) {
+  return 0;
 }
 
 cf_cfg_t *cf_cfg_new_cfg(void) {
@@ -139,7 +144,7 @@ cf_cfg_value_t *cf_cfg_get_value_w_pos(cf_cfg_t *cfg,cf_cfg_contexts_t contexts,
 
   if(!cfg->values) return NULL;
 
-  if(clen > 0 && cfg->contexts.elements > 0 && pos < clen) {
+  if(clen > 0 && cfg->contexts.elements > 0 && pos < clen && contexts != NULL) {
     for(i=0;i<cfg->contexts.elements;++i) {
       cont = cf_array_element_at(&cfg->contexts,i);
 
@@ -157,7 +162,7 @@ UChar **cf_cfg_create_contexts(const char **cnts,size_t num) {
   size_t i;
   UChar **ret;
 
-  if(ret == NULL || num <= 0) return NULL;
+  if(cnts == NULL || num <= 0) return NULL;
 
   ret = cf_alloc(NULL,num,sizeof(*ret),CF_ALLOC_MALLOC);
   for(i=0;i<num;++i) ret[i] = cf_to_utf16(cnts[i],-1,NULL);
