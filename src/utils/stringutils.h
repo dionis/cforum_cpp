@@ -161,6 +161,10 @@ UChar *cf_to_utf16(const char *src,int32_t len,int32_t *destlen);
  */
 char *cf_to_utf8(const UChar *src,int32_t len,int32_t *destlen);
 
+#ifndef HAS_STRNDUP
+char *strndup(const char *src,size_t len);
+#endif
+
 #endif
 
 /* eof */
