@@ -58,6 +58,7 @@ void cf_cfg_destroy_value(cf_cfg_value_t *val) {
 }
 
 void cf_cfg_destroy_mod(cf_cfg_mod_t *mod) {
+  if(mod->conf->mod_cleanup) mod->conf->mod_cleanup();
   if(mod->file) free(mod->file);
   if(mod->handle) dlclose(mod->handle);
 }
@@ -77,6 +78,17 @@ void cf_cfg_init_cfg(cf_cfg_t *cfg) {
 }
 
 int cf_cfg_init_module(cf_cfg_t *cfg,cf_cfg_mod_t *mod) {
+  int i;
+
+  if((mod->conf = dlsym(mod->handle,"mod_config")) == NULL) {
+    fprintf(stderr,"error loading module configuration: %s",mod->file);
+    return 1;
+  }
+
+  for(i=0;mod->conf->handlers[i].handler;++i) cf_array_push(&cfg->handlers,&mod->conf->handlers[i]);
+
+  if(mod->conf->mod_init) return mod->conf->mod_init();
+
   return 0;
 }
 

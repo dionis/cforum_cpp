@@ -54,10 +54,6 @@ typedef struct cf_cfg_value_s {
   } value; /*!< the value itself */
 } cf_cfg_value_t;
 
-typedef struct cf_cfg_mod_s {
-  char *file;
-  void *handle;
-} cf_cfg_mod_t;
 
 typedef int (*cf_handler_t)(void *);
 
@@ -65,6 +61,22 @@ typedef struct cf_cfg_mod_handler_s {
   int type;
   cf_handler_t handler;
 } cf_cfg_mod_handler_t;
+
+typedef void (*cf_mod_cleanup_t)(void);
+typedef int (*cf_mod_init_t)(void);
+
+typedef struct cf_cfg_mod_config_s {
+  cf_mod_init_t mod_init;
+  cf_cfg_mod_handler_t *handlers;
+  cf_mod_cleanup_t mod_cleanup;
+} cf_cfg_mod_config_t;
+
+typedef struct cf_cfg_mod_s {
+  char *file;
+  void *handle;
+  cf_cfg_mod_config_t *conf;
+} cf_cfg_mod_t;
+
 
 /*!
  * This type holds the entire configuration. A configuration consists of
