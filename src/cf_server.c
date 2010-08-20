@@ -120,7 +120,7 @@ void cleanup_env(cf_server_context_t *cntxt,char *cfgfile,cf_cfg_contexts_t cont
   if(contexts) cf_cfg_destroy_contexts(contexts,num);
 
   if(cntxt) {
-    pthread_mutex_destroy(&cntxt->lock);
+    cf_mutex_destroy(&global_context,&cntxt->lock);
 
     if(cntxt->std_file) free(cntxt->std_file);
     if(cntxt->err_file) free(cntxt->err_file);
@@ -186,7 +186,7 @@ int main(int argc,char *argv[]) {
   global_context.cfg = cfg;
   global_context.contexts = contexts;
   global_context.clen = 1;
-  pthread_mutex_init(&global_context.lock,NULL);
+  cf_mutex_init(&global_context,&global_context.lock,"LOGGING",NULL);
 
   signal(SIGPIPE,SIG_IGN);
   signal(SIGINT,terminate);

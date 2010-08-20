@@ -9,8 +9,7 @@
 
 #include "serverlib.h"
 
-void cf_log(const char *file,int line,const char *func,cf_server_context_t *context,int level,const char *msg,...) {
-  int  ret;
+void cf_log(cf_server_context_t *context,const char *file,int line,const char *func,int level,const char *msg,...) {
   va_list argp;
   cf_cfg_value_t *val = cf_cfg_get_value_c(context->cfg,context->contexts,context->clen,"LogLevel");
   int my_level = 4;
@@ -21,10 +20,7 @@ void cf_log(const char *file,int line,const char *func,cf_server_context_t *cont
   /* we don't log messages the user don't wants to see */
   if(level > my_level) return;
 
-  if((ret = pthread_mutex_lock(&context->lock)) != 0) {
-    fprintf(context->log_err,"Error locking mutex: %s",strerror(ret));
-  }
-
+  CF_THREAD_LM(context,&context->lock);
 
   if(level & CF_LOG_ERROR || level & CF_LOG_WARN) fd = context->log_err;
   else fd = context->log_std;
@@ -48,7 +44,7 @@ void cf_log(const char *file,int line,const char *func,cf_server_context_t *cont
   fflush(fd);
   #endif
 
-  pthread_mutex_unlock(&context->lock);
+  CF_THREAD_UM(context,&context->lock);
 }
 
 
