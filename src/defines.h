@@ -25,6 +25,10 @@
 
 #define CF_LOG_DBG(lvl) (1<<((lvl)+4))
 
+#define CF_SHALL_RUN 1
+#define CF_SHALL_NOT_RUN 0
+
+
 #endif
 
 /* eof */

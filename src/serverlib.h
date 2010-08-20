@@ -30,8 +30,6 @@ typedef struct cf_operation_queue_s {
   pthread_mutex_t lock;
 } cf_operation_queue_t;
 
-#define CF_SHALL_RUN 1
-#define CF_SHALL_NOT_RUN 0
 typedef struct cf_server_context_s {
   cf_operation_queue_t opqueue;
   volatile sig_atomic_t shall_run;
