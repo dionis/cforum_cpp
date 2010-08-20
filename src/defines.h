@@ -29,6 +29,9 @@
 #define CF_SHALL_RUN 1
 #define CF_SHALL_NOT_RUN 0
 
+#define CF_MOD_MAGIC_MAJOR 4
+#define CF_MOD_MAGIC_MINOR 0
+#define CF_MOD_MAGIC ((CF_MOD_MAGIC_MAJOR<<8)|(CF_MOD_MAGIC_MINOR))
 
 #endif
 

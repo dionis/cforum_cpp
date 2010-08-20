@@ -38,10 +38,14 @@
  */
 typedef void (*cf_hash_cleanup_t)(void *);
 
+/*!
+ * Data structure for the keylist of the hash
+ */
 typedef struct cf_hash_keylist_s {
-  char *key;
-  size_t keylen;
-  struct cf_hash_keylist_s *next,*prev;
+  char *key; /*!< The key */
+  size_t keylen; /*!< The size of the key */
+  struct cf_hash_keylist_s *next, /*!< A pointer to the next key (NULL if none) */
+    *prev; /*!< A pointer the previous key (NULL if none) */
 } cf_hash_keylist_t;
 
 /*!
@@ -72,8 +76,10 @@ typedef struct cf_hashentry_s {
   struct cf_hashentry_s *prev;
 } cf_hash_entry_t;
 
+/*! The list head for the key list */
 typedef struct {
-  cf_hash_keylist_t *elems,*last;
+  cf_hash_keylist_t *elems, /*!< A pointer to the first key element */
+    *last; /*!< Pointer to the last key element (for fast insertion) */
 } cf_hash_keylist_head_t;
 
 /*!

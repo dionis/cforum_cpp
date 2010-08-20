@@ -162,6 +162,12 @@ UChar *cf_to_utf16(const char *src,int32_t len,int32_t *destlen);
 char *cf_to_utf8(const UChar *src,int32_t len,int32_t *destlen);
 
 #ifndef HAS_STRNDUP
+/*!
+ * Duplicate up to \c len characters in \c src
+ * \param src The source string
+ * \param len The max length of the strings copied
+ * \return Returns the new string (caller has to free() it!)
+ */
 char *strndup(const char *src,size_t len);
 #endif
 

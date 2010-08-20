@@ -57,13 +57,20 @@ void cf_cfg_destroy_value(cf_cfg_value_t *val) {
   }
 }
 
+/*!
+ * Destroys/cleans up a module
+ * \param mod The module to destroy
+ */
 void cf_cfg_destroy_mod(cf_cfg_mod_t *mod) {
   if(mod->conf->mod_cleanup) mod->conf->mod_cleanup();
   if(mod->file) free(mod->file);
   if(mod->handle) dlclose(mod->handle);
 }
 
-/*! not yet used, but already planned in case of future enhancements */
+/*!
+ * not yet used, but already planned in case of future enhancements
+ * \param hndl The module handler
+ */
 void cf_cfg_destroy_handler(cf_cfg_mod_handler_t *hndl) {
   (void)hndl;
 }
@@ -77,11 +84,17 @@ void cf_cfg_init_cfg(cf_cfg_t *cfg) {
   cfg->name = NULL;
 }
 
+/*! Initializes a module */
 int cf_cfg_init_module(cf_cfg_t *cfg,cf_cfg_mod_t *mod) {
   int i;
 
   if((mod->conf = dlsym(mod->handle,"mod_config")) == NULL) {
     fprintf(stderr,"error loading module configuration: %s",mod->file);
+    return 1;
+  }
+
+  if(mod->conf->mod_magic_num != CF_MOD_MAGIC) {
+    fprintf(stderr,"Error loading module %s: wrong magic number!",mod->file);
     return 1;
   }
 
@@ -181,7 +194,7 @@ UChar **cf_cfg_create_contexts(const char **cnts,size_t num) {
   return ret;
 }
 
-void cf_cfg_destroy_contexts(UChar **cnts,size_t num) {
+void cf_cfg_destroy_contexts(cf_cfg_contexts_t cnts,size_t num) {
   size_t i;
 
   if(cnts == NULL || num <= 0) return;

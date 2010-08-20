@@ -1,5 +1,5 @@
 /*!
- * \file cfcgi.h
+ * \file cgi.h
  * \author Christian Kruse, <cjk@wwwtech.de>
  * \brief Classic Forum CGI-Library
  *
