@@ -13,14 +13,17 @@
 #define SIZE_T_FMT "%zd"
 
 
-#define CF_LOG_CRITICAL 1
-#define CF_LOG_ERROR    2
-#define CF_LOG_INFO     4
-#define CF_LOG_DEBUG    8
-
-
 #define CF_ERR_ILPARAM 1
 #define CF_ERR_UNICODE 2
+
+#define CF_DEBUG
+
+#define CF_LOG_ERROR  1
+#define CF_LOG_WARN   2
+#define CF_LOG_INFO   4
+#define CF_LOG_NOTICE 8
+
+#define CF_LOG_DBG(lvl) (1<<((lvl)+4))
 
 #endif
 
