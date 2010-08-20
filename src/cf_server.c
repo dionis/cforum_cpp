@@ -89,6 +89,8 @@ void usage(void) {
 
 void terminate(int sig) {
   (void)sig;
+  CF_LOG(&global_context,CF_LOG_WARN|CF_LOG_INFO,"Shutting down server!");
+  global_context.shall_run = CF_SHALL_NOT_RUN;
 }
 
 gid_t get_gid(const UChar *gname_u) {
@@ -118,6 +120,8 @@ void cleanup_env(cf_server_context_t *cntxt,char *cfgfile,cf_cfg_contexts_t cont
   if(contexts) cf_cfg_destroy_contexts(contexts,num);
 
   if(cntxt) {
+    pthread_mutex_destroy(&cntxt->lock);
+
     if(cntxt->std_file) free(cntxt->std_file);
     if(cntxt->err_file) free(cntxt->err_file);
     if(cntxt->pid_file) {
@@ -178,6 +182,11 @@ int main(int argc,char *argv[]) {
 
   if((cfg = cf_cfg_read_config(cfgfile)) == NULL) return EXIT_FAILURE;
   contexts = cf_cfg_create_contexts(cnts,1);
+
+  global_context.cfg = cfg;
+  global_context.contexts = contexts;
+  global_context.clen = 1;
+  pthread_mutex_init(&global_context.lock,NULL);
 
   signal(SIGPIPE,SIG_IGN);
   signal(SIGINT,terminate);
@@ -282,9 +291,11 @@ int main(int argc,char *argv[]) {
         return EXIT_SUCCESS;
     }
 
+    #ifndef CF_DEBUG
     fclose(stdout);
     fclose(stderr);
     fclose(stdin);
+    #endif
   }
 
   cval = cf_cfg_get_value_c(cfg,contexts,1,"ErrorLog");
