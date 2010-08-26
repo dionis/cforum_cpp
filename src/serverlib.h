@@ -9,6 +9,8 @@
 #ifndef CF_SERVERLIB_H
 #define CF_SERVERLIB_H
 
+#include <pth.h>
+
 typedef struct cf_server_context_s cf_server_context_t;
 typedef struct cf_operation_queue_s  cf_operation_queue_t;
 typedef struct cf_operation_s cf_operation_t;
