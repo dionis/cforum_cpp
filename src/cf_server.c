@@ -157,6 +157,7 @@ int main(int argc,char *argv[]) {
   gid_t gid;
   uid_t uid;
   pid_t pid;
+  size_t i;
 
   memset(&global_context,0,sizeof(global_context));
 
@@ -175,7 +176,6 @@ int main(int argc,char *argv[]) {
         demonize = 1;
         break;
       default:
-        printf("default: %d (%d)\n",c,lid);
         usage();
     }
   }
@@ -186,6 +186,7 @@ int main(int argc,char *argv[]) {
   global_context.cfg = cfg;
   global_context.contexts = contexts;
   global_context.clen = 1;
+
   cf_mutex_init(&global_context,&global_context.lock,"LOGGING",NULL);
 
   signal(SIGPIPE,SIG_IGN);
@@ -313,8 +314,49 @@ int main(int argc,char *argv[]) {
     return EXIT_FAILURE;
   }
 
+  if((cval = cf_cfg_get_value_c(cfg,contexts,1,"Listen")) == NULL) {
+    CF_LOG(&global_context,CF_LOG_ERROR,"No listen sockets defined!");
+    cleanup_env(&global_context,cfgfile,contexts,1,cfg);
+    return EXIT_FAILURE;
+  }
 
-  /* TODO: Implement main loop */
+  /* create server listeners */
+  if(cval->type == CF_CFG_VALUE_STR) {
+    if(cf_srv_create_listener(&global_context,cval->value.cval) != 0) {
+      CF_LOG(&global_context,CF_LOG_ERROR,"Listen has to be an array of sockets or a string!");
+      cleanup_env(&global_context,cfgfile,contexts,1,cfg);
+      return EXIT_FAILURE;
+    }
+  }
+  else if(cval->type == CF_CFG_VALUE_ARY) {
+    for(i=0;i<cval->value.aval->elements;++i) {
+      cval1 = cf_array_element_at(cval->value.aval,i);
+
+      if(cval1->type != CF_CFG_VALUE_STR) {
+        CF_LOG(&global_context,CF_LOG_ERROR,"Listen array value %d is no string!",i);
+        cleanup_env(&global_context,cfgfile,contexts,1,cfg);
+        return EXIT_FAILURE;
+      }
+
+      if(cf_srv_create_listener(&global_context,cval1->value.cval) != 0) {
+        CF_LOG(&global_context,CF_LOG_ERROR,"Listen has to be an array of sockets or a string!");
+        cleanup_env(&global_context,cfgfile,contexts,1,cfg);
+        return EXIT_FAILURE;
+      }
+    }
+  }
+  else {
+    CF_LOG(&global_context,CF_LOG_ERROR,"Listen has to be an array of sockets or a string!");
+    cleanup_env(&global_context,cfgfile,contexts,1,cfg);
+    return EXIT_FAILURE;
+  }
+
+  while(global_context.shall_run) {
+    if(cf_main_loop(&global_context) != 0) {
+      CF_LOG(&global_context,CF_LOG_ERROR,"cf_main_loop returned != 0!");
+      global_context.shall_run = 0;
+    }
+  }
 
   remove(global_context.pid_file);
 

@@ -31,6 +31,7 @@
 #include "configparser.h"
 #include "serverlib.h"
 
+int cf_main_loop(cf_server_context_t *context);
 
 #endif
 
