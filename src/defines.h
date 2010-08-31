@@ -33,6 +33,8 @@
 #define CF_MOD_MAGIC_MINOR 0
 #define CF_MOD_MAGIC ((CF_MOD_MAGIC_MAJOR<<8)|(CF_MOD_MAGIC_MINOR))
 
+#define CF_LISTENQ 5
+
 #endif
 
 /* eof */
