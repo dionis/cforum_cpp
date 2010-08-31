@@ -9,21 +9,28 @@
 #ifndef CF_SERVERLIB_H
 #define CF_SERVERLIB_H
 
-#include <pth.h>
-
 typedef struct cf_server_context_s cf_server_context_t;
-typedef struct cf_operation_queue_s  cf_operation_queue_t;
+typedef void *(*cf_operator_t)(void *);
+
 typedef struct cf_operation_s cf_operation_t;
+typedef struct cf_operation_queue_s cf_operation_queue_t;
 
 #include "config.h"
 #include "defines.h"
+
+#include <signal.h>
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 #include "cf_pthread.h"
 
 #include "utils/listutils.h"
 #include "configparser.h"
 
-typedef void *(*cf_operator_t)(void *);
 
 struct cf_operation_s {
   cf_operator_t operator;
@@ -36,8 +43,23 @@ struct cf_operation_queue_s {
   cf_mutex_t lock;
 };
 
+void cf_opqueue_init(cf_server_context_t *context,cf_operation_queue_t *queue,const char *name);
+int cf_opqueue_append_op(cf_server_context_t *context,cf_operation_queue_t *queue,cf_operation_t *op,int statc);
+void cf_opqeue_destroy(cf_server_context_t *context,cf_operation_queue_t *queue);
+
+typedef struct cf_listener_s {
+  cf_operator_t listener;
+  int sock;
+  struct sockaddr *addr;
+  socklen_t size;
+} cf_listener_t;
+
+
 struct cf_server_context_s {
   cf_operation_queue_t opqueue;
+
+  cf_list_head_t listeners;
+
   volatile sig_atomic_t shall_run;
 
   cf_cfg_t *cfg;
@@ -54,6 +76,11 @@ struct cf_server_context_s {
 
 void cf_log(cf_server_context_t *context,const char *file,int line,const char *func,int level,const char *msg,...);
 #define CF_LOG(context,level,msg,...) cf_log((context),__FILE__,__LINE__,__FUNCTION__,(level),(msg),## __VA_ARGS__)
+
+void cf_srv_append_client(cf_server_context_t *context,int connfd,cf_operator_t listener);
+int cf_srv_create_listener(cf_server_context_t *context,UChar *sockdesc);
+
+void *cf_srv_http_request(void *arg);
 
 #endif
 
