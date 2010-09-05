@@ -12,7 +12,7 @@
 int cf_main_loop(cf_server_context_t *context) {
   fd_set rfds;
   cf_list_element_t *elem;
-  int sock,ret,connfd;
+  int sock = -1,ret,connfd;
   cf_listener_t *srv;
   struct timeval timeout;
   socklen_t size;
@@ -49,11 +49,11 @@ int cf_main_loop(cf_server_context_t *context) {
 
         /* accept-error? */
         if(connfd <= 0) {
-          CF_LOG(context,CF_LOG_ERROR,"accept: %s\n",strerror(errno));
+          CF_ERROR(context,"accept: %s\n",strerror(errno));
           return 0;
         }
 
-        cf_srv_append_client(context,connfd,srv->listener);
+        cf_srv_append_client(context,connfd,srv);
       }
     }
   }

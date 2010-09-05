@@ -89,7 +89,9 @@ void usage(void) {
 
 void terminate(int sig) {
   (void)sig;
-  CF_LOG(&global_context,CF_LOG_WARN|CF_LOG_INFO,"Shutting down server!");
+
+  CF_LOG(&global_context,CF_LOG_DBG(4),"Called terminate()!");
+  CF_LOG(&global_context,CF_LOG_WARN,"Shutting down server!");
   global_context.shall_run = CF_SHALL_NOT_RUN;
 }
 
@@ -122,15 +124,13 @@ void cleanup_env(cf_server_context_t *cntxt,char *cfgfile,cf_cfg_contexts_t cont
   if(cntxt) {
     cf_mutex_destroy(&global_context,&cntxt->lock);
 
-    if(cntxt->std_file) free(cntxt->std_file);
-    if(cntxt->err_file) free(cntxt->err_file);
+    if(cntxt->log_file) free(cntxt->log_file);
     if(cntxt->pid_file) {
       remove(cntxt->pid_file);
       free(cntxt->pid_file);
     }
 
-    if(cntxt->log_std) fclose(cntxt->log_std);
-    if(cntxt->log_err) fclose(cntxt->log_err);
+    if(cntxt->log) fclose(cntxt->log);
   }
 
   if(cfg) {
@@ -291,22 +291,31 @@ int main(int argc,char *argv[]) {
         cleanup_env(&global_context,cfgfile,contexts,1,cfg);
         return EXIT_SUCCESS;
     }
+  }
 
-    #ifndef CF_DEBUG
+  if((cval = cf_cfg_get_value_c(cfg,contexts,1,"Logfile")) == NULL) {
+    cleanup_env(&global_context,cfgfile,contexts,1,cfg);
+    fprintf(stderr,"No error log file defined!\n");
+    return EXIT_FAILURE;
+  }
+  global_context.log_file = cf_to_utf8(cval->value.cval,-1,NULL);
+  if((global_context.log = fopen(global_context.log_file,"a")) == NULL) {
+    fprintf(stderr,"Error opening file %s: %s",global_context.log_file,strerror(errno));
+    cleanup_env(&global_context,cfgfile,contexts,1,cfg);
+    return EXIT_FAILURE;
+  }
+
+  #ifndef CF_DEBUG
+  if(daemonize) {
     fclose(stdout);
     fclose(stderr);
     fclose(stdin);
-    #endif
   }
-
-  cval = cf_cfg_get_value_c(cfg,contexts,1,"ErrorLog");
-  global_context.err_file = cf_to_utf8(cval->value.cval,-1,NULL);
-  cval = cf_cfg_get_value_c(cfg,contexts,1,"StdLog");
-  global_context.std_file = cf_to_utf8(cval->value.cval,-1,NULL);
+  #endif
 
   global_context.shall_run = 1;
-  global_context.log_std = fopen(global_context.std_file,"w");
-  global_context.log_err = fopen(global_context.err_file,"w");
+
+  cf_opqueue_init(&global_context,&global_context.opqueue,"clients queue");
 
   /* be sure that only one instance runs */
   if(setup_server_environment(global_context.pid_file,0) == -1) {
@@ -315,15 +324,15 @@ int main(int argc,char *argv[]) {
   }
 
   if((cval = cf_cfg_get_value_c(cfg,contexts,1,"Listen")) == NULL) {
-    CF_LOG(&global_context,CF_LOG_ERROR,"No listen sockets defined!");
+    CF_ERROR(&global_context,"No listen sockets defined!");
     cleanup_env(&global_context,cfgfile,contexts,1,cfg);
     return EXIT_FAILURE;
   }
 
   /* create server listeners */
   if(cval->type == CF_CFG_VALUE_STR) {
-    if(cf_srv_create_listener(&global_context,cval->value.cval) != 0) {
-      CF_LOG(&global_context,CF_LOG_ERROR,"Listen has to be an array of sockets or a string!");
+    if(cf_srv_create_listener(&global_context,cval->value.cval) < 0) {
+      CF_ERROR(&global_context,"Listen has to be an array of sockets or a string!");
       cleanup_env(&global_context,cfgfile,contexts,1,cfg);
       return EXIT_FAILURE;
     }
@@ -333,32 +342,34 @@ int main(int argc,char *argv[]) {
       cval1 = cf_array_element_at(cval->value.aval,i);
 
       if(cval1->type != CF_CFG_VALUE_STR) {
-        CF_LOG(&global_context,CF_LOG_ERROR,"Listen array value %d is no string!",i);
+        CF_ERROR(&global_context,"Listen array value %d is no string!",i);
         cleanup_env(&global_context,cfgfile,contexts,1,cfg);
         return EXIT_FAILURE;
       }
 
       if(cf_srv_create_listener(&global_context,cval1->value.cval) != 0) {
-        CF_LOG(&global_context,CF_LOG_ERROR,"Listen has to be an array of sockets or a string!");
+        CF_ERROR(&global_context,"Listen has to be an array of sockets or a string!");
         cleanup_env(&global_context,cfgfile,contexts,1,cfg);
         return EXIT_FAILURE;
       }
     }
   }
   else {
-    CF_LOG(&global_context,CF_LOG_ERROR,"Listen has to be an array of sockets or a string!");
+    CF_ERROR(&global_context,"Listen has to be an array of sockets or a string!");
     cleanup_env(&global_context,cfgfile,contexts,1,cfg);
     return EXIT_FAILURE;
   }
 
+  CF_INFO(&global_context,"Listeners set up, entering main event loop");
+
   while(global_context.shall_run) {
     if(cf_main_loop(&global_context) != 0) {
-      CF_LOG(&global_context,CF_LOG_ERROR,"cf_main_loop returned != 0!");
+      CF_ERROR(&global_context,"cf_main_loop returned != 0!");
       global_context.shall_run = 0;
     }
   }
 
-  remove(global_context.pid_file);
+  CF_LOG(&global_context,CF_LOG_WARN,"Shutting down server!");
 
   cleanup_env(&global_context,cfgfile,contexts,1,cfg);
   return EXIT_SUCCESS;

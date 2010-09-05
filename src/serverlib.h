@@ -27,6 +27,7 @@ typedef struct cf_operation_queue_s cf_operation_queue_t;
 #include <arpa/inet.h>
 
 #include "cf_pthread.h"
+#include "readline.h"
 
 #include "utils/listutils.h"
 #include "configparser.h"
@@ -52,8 +53,13 @@ typedef struct cf_listener_s {
   int sock;
   struct sockaddr *addr;
   socklen_t size;
+  cf_rline_t *rbuff;
 } cf_listener_t;
 
+typedef struct cf_listener_arg_s {
+  int sock;
+  cf_listener_t *listener;
+} cf_listener_arg_t;
 
 struct cf_server_context_s {
   cf_operation_queue_t opqueue;
@@ -66,18 +72,22 @@ struct cf_server_context_s {
   cf_cfg_contexts_t contexts;
   size_t clen;
 
-  char *std_file,*err_file,*pid_file;
+  char *log_file,*pid_file;
 
   cf_mutex_t lock;
-  FILE *log_std,*log_err;
+  FILE *log;
 };
 
 
 
 void cf_log(cf_server_context_t *context,const char *file,int line,const char *func,int level,const char *msg,...);
 #define CF_LOG(context,level,msg,...) cf_log((context),__FILE__,__LINE__,__FUNCTION__,(level),(msg),## __VA_ARGS__)
+#define CF_ERROR(context,msg,...) cf_log((context),__FILE__,__LINE__,__FUNCTION__,CF_LOG_ERROR,(msg),## __VA_ARGS__)
+#define CF_WARN(context,msg,...) cf_log((context),__FILE__,__LINE__,__FUNCTION__,CF_LOG_WARN,(msg),## __VA_ARGS__)
+#define CF_INFO(context,msg,...) cf_log((context),__FILE__,__LINE__,__FUNCTION__,CF_LOG_INFO,(msg),## __VA_ARGS__)
+#define CF_NOTICE(context,msg,...) cf_log((context),__FILE__,__LINE__,__FUNCTION__,CF_LOG_NOTICE,(msg),## __VA_ARGS__)
 
-void cf_srv_append_client(cf_server_context_t *context,int connfd,cf_operator_t listener);
+void cf_srv_append_client(cf_server_context_t *context,int connfd,cf_listener_t *listener);
 int cf_srv_create_listener(cf_server_context_t *context,UChar *sockdesc);
 
 void *cf_srv_http_request(void *arg);
