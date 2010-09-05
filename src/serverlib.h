@@ -25,6 +25,7 @@ typedef struct cf_operation_queue_s cf_operation_queue_t;
 #include <sys/un.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <netdb.h>
 
 #include "cf_pthread.h"
 #include "readline.h"
@@ -52,6 +53,7 @@ typedef struct cf_listener_s {
   cf_operator_t listener;
   int sock;
   struct sockaddr *addr;
+  struct addrinfo *ai;
   socklen_t size;
   cf_rline_t *rbuff;
 } cf_listener_t;
@@ -80,7 +82,7 @@ struct cf_server_context_s {
 
 
 
-void cf_log(cf_server_context_t *context,const char *file,int line,const char *func,int level,const char *msg,...);
+void cf_log(cf_server_context_t *context,const char *file,int line,const char *func,unsigned int level,const char *msg,...);
 #define CF_LOG(context,level,msg,...) cf_log((context),__FILE__,__LINE__,__FUNCTION__,(level),(msg),## __VA_ARGS__)
 #define CF_ERROR(context,msg,...) cf_log((context),__FILE__,__LINE__,__FUNCTION__,CF_LOG_ERROR,(msg),## __VA_ARGS__)
 #define CF_WARN(context,msg,...) cf_log((context),__FILE__,__LINE__,__FUNCTION__,CF_LOG_WARN,(msg),## __VA_ARGS__)

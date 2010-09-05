@@ -9,16 +9,16 @@
 
 #include "serverlib.h"
 
-void cf_log(cf_server_context_t *context,const char *file,int line,const char *func,int level,const char *msg,...) {
+void cf_log(cf_server_context_t *context,const char *file,int line,const char *func,unsigned int level,const char *msg,...) {
   va_list argp;
   cf_cfg_value_t *val = cf_cfg_get_value_c(context->cfg,context->contexts,context->clen,"LogLevel");
-  int my_level = 4;
+  unsigned int my_level = (unsigned int)-1;
   char *clevel,buff[512];
   time_t t = 0;
   struct tm tm;
   size_t n;
 
-  if(val != NULL) level = val->value.ival;
+  if(val != NULL) level = (unsigned int)val->value.ival;
 
   /* we don't log messages the user don't wants to see; but errors should always be logged */
   if(level > my_level && level > CF_LOG_ERROR) return;
@@ -96,13 +96,11 @@ void cf_srv_append_client(cf_server_context_t *context,int connfd,cf_listener_t 
 }
 
 int cf_srv_create_listener(cf_server_context_t *context,UChar *sockdesc) {
-  struct sockaddr_in *inaddr;
   struct sockaddr_un *unaddr;
   struct sockaddr *addr;
 
-  #ifdef IPV6
-  struct sockaddr_in6 *in6addr;
-  #endif
+  char buff[512];
+  struct addrinfo hints, *res = NULL;
 
   int sock,is_unix = 0,one = 1,port = 6666;
   char *sockdsc = cf_to_utf8(sockdesc,-1,NULL),*ptr,*ptr1;
@@ -127,14 +125,47 @@ int cf_srv_create_listener(cf_server_context_t *context,UChar *sockdesc) {
     addr = (struct sockaddr *)unaddr;
     lstner.size = sizeof(*unaddr);
   }
-  else if(strncmp(sockdsc,"inet4:",6) == 0) {
-    if((sock = socket(AF_INET,SOCK_STREAM,0)) == -1) {
-      CF_ERROR(context,"Error creating socket: %s",strerror(errno));
+  else if(strncmp(sockdsc,"inet:",5) == 0) {
+    ptr = sockdsc + 5;
+    if(*ptr == '[') {
+      for(ptr1=ptr++;*ptr1 && *ptr1 != ']';++ptr1);
+
+      if(*ptr1 != '\0') {
+        if(*(ptr1+1) != '\0') port = atoi(ptr1+2);
+        *ptr1 = '\0';
+      }
+    }
+
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_family   = AF_UNSPEC;
+    hints.ai_protocol = IPPROTO_TCP;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags    = AI_PASSIVE;
+
+    snprintf(buff,512,"%d",port);
+
+    if(*ptr == '*') {
+      CF_LOG(context,CF_LOG_DBG(5),"getaddrinfo(NULL,%s)",buff);
+      if(getaddrinfo(NULL,buff,&hints,&res) != 0) {
+        CF_ERROR(context,"Error in getaddrinfo(): %s",strerror(errno));
+        free(sockdsc);
+        return -1;
+      }
+    }
+    else {
+      CF_LOG(context,CF_LOG_DBG(5),"getaddrinfo(%s,%s)",ptr,buff);
+      if(getaddrinfo(ptr,buff,&hints,&res) != 0) {
+        CF_ERROR(context,"Error in getaddrinfo(): %s",strerror(errno));
+        free(sockdsc);
+        return -1;
+      }
+    }
+
+    if((sock = socket(res->ai_family, res->ai_socktype, res->ai_protocol)) == -1) {
+      CF_ERROR(context,"Error in socket(): %s (%d)",strerror(errno),errno);
       free(sockdsc);
       return -1;
     }
-
-    ptr = sockdsc + 6;
 
     if((setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one))) == -1) {
       CF_ERROR(context,"Error in setsockopt(): %s",strerror(errno));
@@ -143,34 +174,9 @@ int cf_srv_create_listener(cf_server_context_t *context,UChar *sockdesc) {
       return -1;
     }
 
-    for(ptr1=ptr;*ptr1 && *ptr1 != ':';++ptr1);
-
-    if(*ptr1 != '\0') {
-      port = atoi(ptr1+1);
-      *ptr1 = '\0';
-    }
-
-    inaddr = cf_alloc(NULL,1,sizeof(*inaddr),CF_ALLOC_CALLOC);
-
-    if(*ptr == '*') inaddr->sin_addr.s_addr = htonl(INADDR_ANY);
-    else {
-      if(inet_aton(ptr,&(inaddr->sin_addr)) != 0) {
-        CF_ERROR(context,"inet_aton(%s): %s",ptr,strerror(errno));
-        free(sockdsc);
-        close(sock);
-        return -1;
-      }
-    }
-    inaddr->sin_family = AF_INET;
-    inaddr->sin_port   = htons(port);
-
-    addr = (struct sockaddr *)inaddr;
-    lstner.size = sizeof(*inaddr);
+    addr = (struct sockaddr *)res->ai_addr;
+    lstner.size = res->ai_addrlen;
   }
-  #ifdef IPV6
-  else if(strncmp(sockdsc,"inet6:",6) == 0) {
-  }
-  #endif
   else {
     CF_ERROR(context,"error: %s is an unknown socket type!",sockdsc);
     free(sockdsc);
@@ -199,6 +205,7 @@ int cf_srv_create_listener(cf_server_context_t *context,UChar *sockdesc) {
    */
   if(is_unix) chmod(unaddr->sun_path,S_IRWXU|S_IRWXG|S_IRWXO);
 
+  if(res) lstner.ai = res;
   lstner.addr = addr;
   lstner.sock = sock;
   lstner.listener = cf_srv_http_request;
