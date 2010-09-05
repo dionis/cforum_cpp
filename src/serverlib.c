@@ -206,6 +206,8 @@ int cf_srv_create_listener(cf_server_context_t *context,UChar *sockdesc) {
   if(is_unix) chmod(unaddr->sun_path,S_IRWXU|S_IRWXG|S_IRWXO);
 
   if(res) lstner.ai = res;
+  else lstner.ai = NULL;
+
   lstner.addr = addr;
   lstner.sock = sock;
   lstner.listener = cf_srv_http_request;
