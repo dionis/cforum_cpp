@@ -360,6 +360,8 @@ int main(int argc,char *argv[]) {
     return EXIT_FAILURE;
   }
 
+  /* TODO: run plugins to create additional listeners */
+
   CF_INFO(&global_context,"Listeners set up, entering main event loop");
 
   while(global_context.shall_run) {
