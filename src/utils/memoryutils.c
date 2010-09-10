@@ -43,6 +43,12 @@ void *cf_alloc(void *ptr,size_t nmemb,size_t size,int type) {
   return l_ptr;
 }
 
+void cf_mem_init_growth(cf_mem_pool_t *pool,size_t growth) {
+  pool->len      = 0;
+  pool->reserved = 0;
+  pool->growth   = growth;
+  pool->content  = NULL;
+}
 
 void cf_mem_cleanup(cf_mem_pool_t *pool) {
   pool->len      = 0;

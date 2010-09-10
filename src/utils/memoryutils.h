@@ -69,7 +69,7 @@ typedef struct s_mem_pool {
  * \param pool The memory pool object pointer
  * \param growth The growth factor
  */
-void cf_mem_init_growth(cf_mem_pool_t *pool,unsigned growth);
+void cf_mem_init_growth(cf_mem_pool_t *pool,size_t growth);
 
 /*!
  * \brief This function cleans up a memory pool.
