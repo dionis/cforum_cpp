@@ -55,13 +55,14 @@ typedef struct cf_listener_s {
   struct sockaddr *addr;
   struct addrinfo *ai;
   socklen_t size;
-  cf_rline_t *rbuff;
 } cf_listener_t;
 
-typedef struct cf_listener_arg_s {
+typedef struct cf_client_s {
   int sock;
   cf_listener_t *listener;
-} cf_listener_arg_t;
+  cf_rline_t rbuff;
+  cf_mem_pool_t wbuff;
+} cf_srv_client_t;
 
 struct cf_server_context_s {
   cf_operation_queue_t opqueue;

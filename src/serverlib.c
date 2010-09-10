@@ -39,7 +39,7 @@ void cf_log(cf_server_context_t *context,const char *file,int line,const char *f
     case CF_LOG_NOTICE:
       clevel = "NOTICE";
       break;
-    
+
     default:
       clevel = "DEBUG";
   }
@@ -85,10 +85,13 @@ void cf_log(cf_server_context_t *context,const char *file,int line,const char *f
 
 void cf_srv_append_client(cf_server_context_t *context,int connfd,cf_listener_t *listener) {
   cf_operation_t op;
-  cf_listener_arg_t *arg = cf_alloc(NULL,1,sizeof(*arg),CF_ALLOC_MALLOC);
+  cf_srv_client_t *arg = cf_alloc(NULL,1,sizeof(*arg),CF_ALLOC_MALLOC);
 
   arg->listener = listener;
   arg->sock = connfd;
+  memset(&arg->rbuff,0,sizeof(arg->rbuff));
+  cf_mem_init(&arg->wbuff);
+
   op.operator = listener->listener;
   op.arg = listener;
 
@@ -214,11 +217,6 @@ int cf_srv_create_listener(cf_server_context_t *context,UChar *sockdesc) {
   cf_list_append(&context->listeners,&lstner,sizeof(lstner));
 
   return sock;
-}
-
-void *cf_srv_http_request(void *arg) {
-  (void)arg;
-  return NULL;
 }
 
 /* eof */
