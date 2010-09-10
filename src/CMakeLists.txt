@@ -19,7 +19,7 @@ target_link_libraries(cfcgi cfhash cfutils)
 
 # libcfconfigparser
 add_library(cfconfigparser SHARED configparser.c configparser_lua.c)
-target_link_libraries(cfconfigparser cfutils cfhash lua)
+target_link_libraries(cfconfigparser cfutils cfhash ${LUA_LIBRARIES})
 if(HAVE_LIBDL)
   target_link_libraries(cfconfigparser dl)
 endif(HAVE_LIBDL)

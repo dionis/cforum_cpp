@@ -13,6 +13,7 @@ include(CheckIncludeFile)
 include(CheckTypeSize)
 include(UsePkgConfig)
 include(CMakeInstallDirs)
+include(FindLua51)
 
 option(ENABLE_DEBUG "enable debugging mode" OFF)
 
@@ -24,7 +25,7 @@ else(ENABLE_DEBUG STREQUAL "ON")
   set(DEBUG OFF)
 endif(ENABLE_DEBUG STREQUAL "ON")
 
-add_definitions(-W -Wall -funsigned-char -I. -D_REENTRANT -D_GNU_SOURCE)
+add_definitions(-W -Wall -funsigned-char -I. -D_REENTRANT -D_GNU_SOURCE -I{LUA_INCLUDE_DIR})
 
 CHECK_FUNCTION_EXISTS(kqueue HAVE_KQUEUE)
 CHECK_FUNCTION_EXISTS(epoll HAVE_EPOLL)
@@ -33,6 +34,10 @@ CHECK_FUNCTION_EXISTS(select HAVE_SELECT)
 if(NOT HAVE_KQUEUE AND NOT HAVE_EPOLL AND NOT HAVE_SELECT)
   message(FATAL_ERROR "Could not find kqueue(2), nor epoll(4) neither select(2)")
 endif(NOT HAVE_KQUEUE AND NOT HAVE_EPOLL AND NOT HAVE_SELECT)
+
+if(NOT LUA51_FOUND)
+  message(FATAL_ERROR "Could not find LUA 5.1")
+endif(NOT LUA51_FOUND)
 
 # Differences between UNIX systems:
 #   Some define dlopen()/... in -ldl
