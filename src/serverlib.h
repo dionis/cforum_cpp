@@ -16,7 +16,6 @@ typedef struct cf_operation_s cf_operation_t;
 typedef struct cf_operation_queue_s cf_operation_queue_t;
 
 #include "config.h"
-#include "defines.h"
 
 #include <signal.h>
 

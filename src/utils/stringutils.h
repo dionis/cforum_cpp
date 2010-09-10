@@ -10,7 +10,6 @@
 #define CF_STRING_UTILS_H
 
 #include "config.h"
-#include "defines.h"
 
 #include <string.h>
 #include <stdlib.h>

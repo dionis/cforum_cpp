@@ -7,13 +7,6 @@
  * vice versa
  */
 
-#include "config.h"
-#include "defines.h"
-
-#include <ctype.h>
-#include <sys/types.h>
-
-#include "stringutils.h"
 #include "datautils.h"
 
 u_int64_t cf_uchr_to_uint64(const UChar *str,const int32_t len,int *errcode) {

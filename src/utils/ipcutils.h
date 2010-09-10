@@ -10,7 +10,6 @@
 #define CF_IPC_UTILS_H
 
 #include "config.h"
-#include "defines.h"
 
 #include <stdlib.h>
 #include <unistd.h>

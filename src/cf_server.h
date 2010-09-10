@@ -10,7 +10,6 @@
 #define CF_SERVER_H
 
 #include "config.h"
-#include "defines.h"
 
 #include <stdio.h>
 #include <stdlib.h>

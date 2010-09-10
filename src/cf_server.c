@@ -78,7 +78,7 @@ void usage(void) {
     "where options are:\n" \
     "\t-p, --pid-file          Path to the pid file (optional)\n" \
     "\t-c, --config-file       Path to the configuration file\n" \
-    "\t-d, --daemonize         Detach process from shell\n" \
+    "\t-d, --demonize          Detach process from shell\n" \
     "\t-h, --help              Show this help screen\n\n" \
     "One of both must be set: config-file option or CF_CONF_FILE\n" \
     "environment variable\n\n"
@@ -142,7 +142,7 @@ void cleanup_env(cf_server_context_t *cntxt,char *cfgfile,cf_cfg_contexts_t cont
 static struct option server_cmdline_options[] = {
   { "pid-file",         1, NULL, 'p' },
   { "config-file",      1, NULL, 'c' },
-  { "daemonize",        0, NULL, 'd' },
+  { "demonize",         0, NULL, 'd' },
   { "help",             0, NULL, 'h' },
   { NULL,               0, NULL, 0   }
 };
@@ -271,7 +271,7 @@ int main(int argc,char *argv[]) {
   }
 
   if(demonize) {
-    /* we daemonize... */
+    /* we demonize... */
     switch(pid = fork()) {
       case -1:
         fprintf(stderr,"cf_server: could not fork: %s\n",strerror(errno));
@@ -306,7 +306,7 @@ int main(int argc,char *argv[]) {
   }
 
   #ifndef CF_DEBUG
-  if(daemonize) {
+  if(demonize) {
     fclose(stdout);
     fclose(stderr);
     fclose(stdin);

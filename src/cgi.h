@@ -19,7 +19,6 @@
 #define CF_CGI_H
 
 #include "config.h"
-#include "defines.h"
 
 #include <sys/types.h>
 #include <stdio.h>

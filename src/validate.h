@@ -12,7 +12,6 @@
 #define CF_VALIDATE_H
 
 #include "config.h"
-#include "defines.h"
 
 #include <stdlib.h>
 #include <string.h>

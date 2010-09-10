@@ -10,7 +10,14 @@
 #ifndef CF_DATAUTILS_H
 #define CF_DATAUTILS_H
 
+#include "config.h"
+
 #include <unicode/uchar.h>
+#include <ctype.h>
+#include <sys/types.h>
+
+#include "stringutils.h"
+
 
 /*!
  * convert a string to an uint64

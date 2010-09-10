@@ -14,7 +14,6 @@
 #define CF_HASHLIB_H
 
 #include "config.h"
-#include "defines.h"
 
 #include <stdlib.h>
 #include <string.h>

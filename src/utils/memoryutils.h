@@ -10,7 +10,6 @@
 #ifndef CF_MEMORY_UTILS_H
 #define CF_MEMORY_UTILS_H
 
-#include "defines.h"
 #include "config.h"
 
 #include <stdlib.h>

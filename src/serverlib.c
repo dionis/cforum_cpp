@@ -18,6 +18,12 @@ void cf_log(cf_server_context_t *context,const char *file,int line,const char *f
   struct tm tm;
   size_t n;
 
+  #ifndef CF_DEBUG
+  (void)file;
+  (void)line;
+  (void)func;
+  #endif
+
   if(val != NULL) level = (unsigned int)val->value.ival;
 
   /* we don't log messages the user don't wants to see; but errors should always be logged */

@@ -10,7 +10,6 @@
 #ifndef CF_UTILS_H
 #define CF_UTILS_H
 
-#include "defines.h"
 #include "config.h"
 
 #include <stdlib.h>

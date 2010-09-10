@@ -12,7 +12,6 @@
 #define CF_PTHREAD_H
 
 #include "config.h"
-#include "defines.h"
 
 #include <pthread.h>
 

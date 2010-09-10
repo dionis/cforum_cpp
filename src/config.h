@@ -21,6 +21,29 @@
 #define CF_FLOAT_EQ(x,v) ((((v) - CF_FLT_EPSILON) < (x)) && ((x) < ((v) + CF_FLT_EPSILON)))
 #define CF_DOUBL_EQ(x,v) ((((v) - CF_DBL_EPSILON) < (x)) && ((x) < ((v) + CF_DBL_EPSILON)))
 
+#define SIZE_T_FMT "%zd"
+
+
+#define CF_ERR_ILPARAM 1
+#define CF_ERR_UNICODE 2
+
+#define CF_LOG_ERROR  1
+#define CF_LOG_WARN   2
+#define CF_LOG_INFO   4
+#define CF_LOG_NOTICE 8
+
+#define CF_LOG_DBG(lvl) (1<<((lvl)+4))
+#define CF_LOG_LOCK CF_LOG_DBG(3)
+
+#define CF_SHALL_RUN 1
+#define CF_SHALL_NOT_RUN 0
+
+#define CF_MOD_MAGIC_MAJOR 4
+#define CF_MOD_MAGIC_MINOR 0
+#define CF_MOD_MAGIC ((CF_MOD_MAGIC_MAJOR<<8)|(CF_MOD_MAGIC_MINOR))
+
+#define CF_LISTENQ 5
+
 
 #endif
 

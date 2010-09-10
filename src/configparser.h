@@ -10,6 +10,8 @@
 #ifndef CF_CONFIGPARSER_H
 #define CF_CONFIGPARSER_H
 
+#include "config.h"
+
 #include <unicode/uchar.h>
 #include <unicode/ustring.h>
 
