@@ -44,7 +44,7 @@ int cf_remove_path(const char *path);
  */
 int cf_make_path(const char *path,mode_t mode);
 
-#ifdef HAS_NO_GETLINE
+#ifndef HAVE_GETLINE
 /*!
  * Read a complete line from a file
  * \param lineptr A reference to a char * pointer, line will be stored in it
@@ -55,7 +55,7 @@ int cf_make_path(const char *path,mode_t mode);
 size_t getline(char **lineptr,size_t *n,FILE *stream);
 #endif
 
-#ifdef HAS_NO_GETDELIM
+#ifndef HAVE_GETDELIM
 /*!
  * This function reads from a file until 'delim' has been found
  * \param lineptr A reference to a char * pointer, line will be stored in it
@@ -65,26 +65,6 @@ size_t getline(char **lineptr,size_t *n,FILE *stream);
  * \return The number of bytes read or -1 on failure
  */
 size_t getdelim(char **lineptr,size_t *n,int delim,FILE *stream);
-#endif
-
-#ifdef NOSTRDUP
-/*!
- * This function duplicates a string, allocating memory on heap
- * \param str The string to duplicate
- * \return The new string or NULL on failure
- * \attention YOU have to \c free() the string again!
- */
-u_char *strdup(const char *str);
-#endif
-
-#ifdef NOSTRNDUP
-/*!
- * This function duplicates \c len bytes of a string, allocating memory on heap
- * \param str The string to duplicate
- * \return The new string or NULL on failure
- * \attention YOU have to \c free() the string again!
- */
-u_char *strndup(const char *str,size_t len);
 #endif
 
 
