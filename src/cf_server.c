@@ -377,7 +377,7 @@ int main(int argc,char *argv[]) {
     }
   }
 
-  cf_main_loop_cleanup(&global_context);
+  cf_main_loop_destroy(&global_context);
 
   CF_LOG(&global_context,CF_LOG_WARN,"Shutting down server!");
 

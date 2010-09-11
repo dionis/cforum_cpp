@@ -14,6 +14,7 @@ char *cf_cfg_find_file(void) {
     "./cforum.lua",
     "/etc/cforum.lua",
     "/usr/local/etc/cforum.lua",
+    CF_PREFIX "/etc/cforum.lua",
     NULL
   };
 
