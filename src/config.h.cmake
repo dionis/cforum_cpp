@@ -44,6 +44,12 @@
 
 #define CF_LISTENQ 5
 
+#cmakedefine CF_PREFIX "${CF_PREFIX}"
+
+#cmakedefine HAVE_STRDUP
+#cmakedefine HAVE_STRNDUP
+#cmakedefine HAVE_GETLINE
+#cmakedefine HAVE_GETDELIM
 
 #endif
 

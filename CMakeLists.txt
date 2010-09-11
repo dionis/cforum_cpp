@@ -5,6 +5,8 @@ endif(COMMAND cmake_policy)
 
 project(cforum C)
 
+
+set(CF_PREFIX "${CMAKE_INSTALL_PREFIX}")
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules/")
 include(CheckLibraryExists)
 include(CheckSymbolExists)
