@@ -30,7 +30,9 @@
 #include "configparser.h"
 #include "serverlib.h"
 
+int cf_main_loop_init(cf_server_context_t *context);
 int cf_main_loop(cf_server_context_t *context);
+int cf_main_loop_destroy(cf_server_context_t *context);
 
 #endif
 

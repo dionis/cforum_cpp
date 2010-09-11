@@ -364,12 +364,20 @@ int main(int argc,char *argv[]) {
 
   CF_INFO(&global_context,"Listeners set up, entering main event loop");
 
+  if(cf_main_loop_init(&global_context) != 0) {
+    CF_ERROR(&global_context,"cf_main_loop_init() returned not 0!");
+    cleanup_env(&global_context,cfgfile,contexts,1,cfg);
+    return EXIT_FAILURE;
+  }
+
   while(global_context.shall_run) {
     if(cf_main_loop(&global_context) != 0) {
       CF_ERROR(&global_context,"cf_main_loop returned != 0!");
       global_context.shall_run = 0;
     }
   }
+
+  cf_main_loop_cleanup(&global_context);
 
   CF_LOG(&global_context,CF_LOG_WARN,"Shutting down server!");
 

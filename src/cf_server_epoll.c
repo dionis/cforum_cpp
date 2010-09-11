@@ -7,7 +7,15 @@
  * the Linux epoll(7) API.
  */
 
+int cf_main_loop_init(cf_server_context_t *context) {
+  return 0;
+}
+
 int cf_main_loop(cf_server_context_t *context) {
+  return 0;
+}
+
+int cf_main_loop_destroy(cf_server_context_t *context) {
   return 0;
 }
 

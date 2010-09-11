@@ -15,6 +15,25 @@
 static int kq = -1,nchanges = 0;
 static struct kevent change;
 
+int cf_main_loop_init(cf_server_context_t *context) {
+  cf_list_element_t *elem;
+  cf_listener_t *srv;
+
+  kq = kqueue();
+  if(kq == -1) {
+    CF_ERROR(context,"Error in kqueue(): %s",strerror(errno));
+    return -1;
+  }
+
+  memset(&change,0,sizeof(change));
+  for(elem = context->listeners.elements;elem;elem = elem->next,++nchanges) {
+    srv = (cf_listener_t *)elem->data;
+    EV_SET(&change,srv->sock,EVFILT_READ,EV_ADD|EV_ENABLE,0, 0, 0);
+  }
+
+  return 0;
+}
+
 int cf_main_loop(cf_server_context_t *context) {
   struct kevent *event;
   cf_list_element_t *elem;
@@ -22,20 +41,6 @@ int cf_main_loop(cf_server_context_t *context) {
   struct timespec timeout;
   int numev,i,connfd;
   socklen_t size;
-
-  if(kq == -1) {
-    kq = kqueue();
-    if(kq == -1) {
-      CF_ERROR(context,"Error in kqueue(): %s",strerror(errno));
-      return -1;
-    }
-
-    memset(&change,0,sizeof(change));
-    for(elem = context->listeners.elements;elem;elem = elem->next,++nchanges) {
-      srv = (cf_listener_t *)elem->data;
-      EV_SET(&change,srv->sock,EVFILT_READ,EV_ADD|EV_ENABLE,0, 0, 0);
-    }
-  }
 
   event = cf_alloc(NULL,nchanges,sizeof(*event),CF_ALLOC_CALLOC);
 
@@ -73,6 +78,11 @@ int cf_main_loop(cf_server_context_t *context) {
 
   free(event);
 
+  return 0;
+}
+
+int cf_main_loop_cleanup(cf_server_context_t *context) {
+  close(kq);
   return 0;
 }
 
