@@ -10,9 +10,11 @@
 #include "serverlib.h"
 
 int cf_main_loop_init(cf_server_context_t *context) {
+  (void)context;
   return 0;
 }
 int cf_main_loop_destroy(cf_server_context_t *context) {
+  (void)context;
   return 0;
 }
 

@@ -89,6 +89,11 @@ void cf_log(cf_server_context_t *context,const char *file,int line,const char *f
   CF_THREAD_UM(context,&context->lock);
 }
 
+void cf_cleanup_client(void *arg) {
+  cf_srv_client_t *cl = (cf_srv_client_t *)arg;
+  cf_mem_cleanup(&cl->wbuff);
+}
+
 void cf_srv_append_client(cf_server_context_t *context,int connfd,cf_listener_t *listener) {
   cf_operation_t op;
   cf_srv_client_t *arg = cf_alloc(NULL,1,sizeof(*arg),CF_ALLOC_MALLOC);
@@ -99,7 +104,8 @@ void cf_srv_append_client(cf_server_context_t *context,int connfd,cf_listener_t 
   cf_mem_init(&arg->wbuff);
 
   op.operator = listener->listener;
-  op.arg = listener;
+  op.arg = arg;
+  op.cleanup = cf_cleanup_client;
 
   cf_opqueue_append_op(context,&context->opqueue,&op,0);
 }
@@ -223,6 +229,11 @@ int cf_srv_create_listener(cf_server_context_t *context,UChar *sockdesc) {
   cf_list_append(&context->listeners,&lstner,sizeof(lstner));
 
   return sock;
+}
+
+void cf_destroy_listener(void *arg) {
+  cf_listener_t *lst = (cf_listener_t *)arg;
+  freeaddrinfo(lst->ai);
 }
 
 /* eof */

@@ -26,7 +26,17 @@ int cf_opqueue_append_op(cf_server_context_t *context,cf_operation_queue_t *queu
   return 0;
 }
 
+static void destroy_op(void *data) {
+  cf_operation_t *op = (cf_operation_t *)data;
+  if(op->arg) {
+    if(op->cleanup) op->cleanup(op->arg);
+    free(op->arg);
+  }
+}
+
 void cf_opqeue_destroy(cf_server_context_t *context,cf_operation_queue_t *queue) {
+  cf_list_destroy(&queue->operations,destroy_op);
+  cf_mutex_destroy(context,&queue->lock);
 }
 
 /* eof */

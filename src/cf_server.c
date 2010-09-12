@@ -131,6 +131,10 @@ void cleanup_env(cf_server_context_t *cntxt,char *cfgfile,cf_cfg_contexts_t cont
     }
 
     if(cntxt->log) fclose(cntxt->log);
+
+    cf_opqeue_destroy(cntxt,&cntxt->opqueue);
+
+    cf_list_destroy(&cntxt->listeners,cf_destroy_listener);
   }
 
   if(cfg) {

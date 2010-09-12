@@ -11,6 +11,7 @@
 
 typedef struct cf_server_context_s cf_server_context_t;
 typedef void *(*cf_operator_t)(void *);
+typedef void (*cf_operator_cleanup_t)(void *);
 
 typedef struct cf_operation_s cf_operation_t;
 typedef struct cf_operation_queue_s cf_operation_queue_t;
@@ -35,6 +36,7 @@ typedef struct cf_operation_queue_s cf_operation_queue_t;
 
 struct cf_operation_s {
   cf_operator_t operator;
+  cf_operator_cleanup_t cleanup;
   void *arg;
 };
 
@@ -91,6 +93,7 @@ void cf_log(cf_server_context_t *context,const char *file,int line,const char *f
 
 void cf_srv_append_client(cf_server_context_t *context,int connfd,cf_listener_t *listener);
 int cf_srv_create_listener(cf_server_context_t *context,UChar *sockdesc);
+void cf_destroy_listener(void *arg);
 
 void *cf_srv_http_request(void *arg);
 
