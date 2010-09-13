@@ -28,7 +28,7 @@ int cf_main_loop_init(cf_server_context_t *context) {
   memset(&change,0,sizeof(change));
   for(elem = context->listeners.elements;elem;elem = elem->next,++nchanges) {
     srv = (cf_listener_t *)elem->data;
-    EV_SET(&change,srv->sock,EVFILT_READ,EV_ADD|EV_ENABLE,0, 0, 0);
+    EV_SET(&change,srv->sock,EVFILT_READ,EV_ADD|EV_ENABLE,0, 0, srv);
   }
 
   return 0;
@@ -36,7 +36,6 @@ int cf_main_loop_init(cf_server_context_t *context) {
 
 int cf_main_loop(cf_server_context_t *context) {
   struct kevent *event;
-  cf_list_element_t *elem;
   cf_listener_t *srv;
   struct timespec timeout;
   int numev,i,connfd;
@@ -57,21 +56,19 @@ int cf_main_loop(cf_server_context_t *context) {
   }
   else if(numev > 0) {
     for(i=0;i<numev;++i) {
-      for(elem = context->listeners.elements;elem;elem = elem->next) {
-        srv = (cf_listener_t *)elem->data;
+      srv = (cf_listener_t *)event[i].udata;
 
-        if((uintptr_t)srv->sock == event[i].ident) {
-          size = srv->size;
-          connfd = accept(srv->sock,srv->addr,&size);
+      if((uintptr_t)srv->sock == event[i].ident) {
+        size = srv->size;
+        connfd = accept(srv->sock,srv->addr,&size);
 
-          /* accept-error? */
-          if(connfd <= 0) {
-            CF_ERROR(context,"accept: %s\n",strerror(errno));
-            return 0;
-          }
-
-          cf_srv_append_client(context,connfd,srv);
+        /* accept-error? */
+        if(connfd <= 0) {
+          CF_ERROR(context,"accept: %s\n",strerror(errno));
+          return 0;
         }
+
+        cf_srv_append_client(context,connfd,srv);
       }
     }
   }
