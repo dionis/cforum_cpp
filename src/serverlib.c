@@ -50,7 +50,8 @@ void cf_log(cf_server_context_t *context,const char *file,int line,const char *f
       clevel = "DEBUG";
   }
 
-  CF_THREAD_LM(context,&context->lock);
+  if(pthread_mutex_lock(&context->lock.mutex) != 0) fprintf(context->log,"Error locking mutex: %s",strerror(errno));
+  //CF_THREAD_LM(context,&context->lock);
 
   if(time(&t) != (time_t)-1) {
     localtime_r(&t,&tm);
@@ -86,7 +87,7 @@ void cf_log(cf_server_context_t *context,const char *file,int line,const char *f
   fflush(context->log);
   #endif
 
-  CF_THREAD_UM(context,&context->lock);
+  pthread_mutex_unlock(&context->lock.mutex);
 }
 
 void cf_cleanup_client(void *arg) {

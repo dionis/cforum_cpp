@@ -14,6 +14,7 @@
 #include "config.h"
 
 #include <pthread.h>
+#include <sys/time.h>
 
 /*!
  * This struct is used to store a mutex and it's name

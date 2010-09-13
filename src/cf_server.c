@@ -131,9 +131,9 @@ void cleanup_env(cf_server_context_t *cntxt,char *cfgfile,cf_cfg_contexts_t cont
     }
 
     if(cntxt->log) fclose(cntxt->log);
+    if(cntxt->opqueue.name) cf_opqeue_destroy(cntxt,&cntxt->opqueue);
 
-    if(cntxt->opqueue.operations.elements) cf_opqeue_destroy(cntxt,&cntxt->opqueue);
-
+    cf_array_destroy(&cntxt->workers);
     cf_list_destroy(&cntxt->listeners,cf_destroy_listener);
   }
 
@@ -320,6 +320,7 @@ int main(int argc,char *argv[]) {
   global_context.shall_run = 1;
 
   cf_opqueue_init(&global_context,&global_context.opqueue,"clients queue");
+  cf_array_init(&global_context.workers,sizeof(pthread_t),NULL);
 
   /* be sure that only one instance runs */
   if(setup_server_environment(global_context.pid_file,0) == -1) {
@@ -385,7 +386,10 @@ int main(int argc,char *argv[]) {
     else cf_threading_adjust_threads(&global_context);
   }
 
-  cf_threading_cleaup_threads(&global_context);
+  cf_opqeue_destroy(&global_context,&global_context.opqueue);
+  memset(&global_context.opqueue,0,sizeof(global_context.opqueue));
+
+  cf_threading_cleanup_threads(&global_context);
   cf_main_loop_destroy(&global_context);
 
   CF_LOG(&global_context,CF_LOG_WARN,"Shutting down server!");

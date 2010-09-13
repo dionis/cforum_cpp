@@ -22,7 +22,7 @@ option(ENABLE_DEBUG "enable debugging mode" OFF)
 # Copy flags for config.h
 if(ENABLE_DEBUG STREQUAL "ON")
   set(DEBUG ON)
-  add_definitions(-DCF_DEBUG -O0 -g)
+  add_definitions(-DCF_DEBUG -DCF_LOCK_DEBUG -O0 -g)
 else(ENABLE_DEBUG STREQUAL "ON")
   set(DEBUG OFF)
 endif(ENABLE_DEBUG STREQUAL "ON")

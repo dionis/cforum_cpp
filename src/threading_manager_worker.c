@@ -95,6 +95,7 @@ int cf_threading_init_threads(cf_server_context_t *context) {
       return -1;
     }
 
+    cf_array_push(&context->workers,&thread);
     CF_NOTICE(context,"created worker %d now!",++context->opqueue.num_workers);
   }
 
@@ -123,6 +124,7 @@ int cf_threading_adjust_threads(cf_server_context_t *context) {
       return -1;
     }
 
+    cf_array_push(&context->workers,&thread);
     CF_NOTICE(context,"created worker %d now!",++context->opqueue.num_workers);
   }
 
@@ -131,8 +133,15 @@ int cf_threading_adjust_threads(cf_server_context_t *context) {
   return 0;
 }
 
-int cf_threading_cleaup_threads(cf_server_context_t *context) {
-  (void)context;
+int cf_threading_cleanup_threads(cf_server_context_t *context) {
+  size_t i;
+  pthread_t *thr;
+
+  for(i=0;i<context->workers.elements;++i) {
+    thr = cf_array_element_at(&context->workers,i);
+    pthread_join(*thr,NULL);
+  }
+
   return 0;
 }
 

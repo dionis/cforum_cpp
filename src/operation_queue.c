@@ -12,6 +12,7 @@
 void cf_opqueue_init(cf_server_context_t *context,cf_operation_queue_t *queue,const char *name) {
   queue->num_operations = 0;
   queue->num_workers = 0;
+  queue->name = strdup(name);
 
   cf_list_init(&queue->operations);
   cf_mutex_init(context,&queue->lock,name,NULL);
@@ -40,11 +41,12 @@ static void destroy_op(void *data) {
 
 void cf_opqeue_destroy(cf_server_context_t *context,cf_operation_queue_t *queue) {
   CF_THREAD_LM(context,&queue->lock);
-
   cf_list_destroy(&queue->operations,destroy_op);
   queue->shall_run = 0;
 
+  CF_THREAD_UM(context,&queue->lock);
   CF_THREAD_CD_BC(context,&queue->cond);
+  CF_THREAD_LM(context,&queue->lock);
 
   do {
     CF_THREAD_UM(context,&queue->lock);
@@ -54,6 +56,7 @@ void cf_opqeue_destroy(cf_server_context_t *context,cf_operation_queue_t *queue)
 
   CF_THREAD_UM(context,&queue->lock);
 
+  free(queue->name);
   cf_mutex_destroy(context,&queue->lock);
   cf_cond_destroy(context,&queue->cond);
 }
@@ -87,6 +90,10 @@ void *cf_opqueue_worker(void *arg) {
     }
     else CF_THREAD_UM(myarg->context,&myarg->queue->lock);
   }
+
+  CF_THREAD_LM(myarg->context,&myarg->queue->lock);
+  myarg->queue->num_workers--;
+  CF_THREAD_UM(myarg->context,&myarg->queue->lock);
 
   free(arg);
 

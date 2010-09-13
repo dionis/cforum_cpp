@@ -41,8 +41,10 @@ struct cf_operation_s {
 };
 
 struct cf_operation_queue_s {
-  size_t num_operations, num_workers;
+  size_t num_operations,num_workers;
+
   volatile sig_atomic_t shall_run;
+  char *name;
 
   cf_list_head_t operations;
   cf_mutex_t lock;
@@ -77,6 +79,7 @@ typedef struct cf_client_s {
 
 struct cf_server_context_s {
   cf_operation_queue_t opqueue;
+  cf_array_t workers;
 
   cf_list_head_t listeners;
 
