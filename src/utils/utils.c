@@ -83,13 +83,13 @@ int cf_make_path(const char *path,mode_t mode) {
   return 0;
 }
 
-#ifdef HAS_NO_GETLINE
+#ifndef HAVE_GETLINE
 size_t getline(char **lineptr,size_t *n,FILE *stream) {
   return getdelim(lineptr,n,'\n',stream);
 }
 #endif
 
-#ifdef HAS_NO_GETDELIM
+#ifndef HAVE_GETDELIM
 size_t getdelim(char **lineptr,size_t *n,int delim,FILE *stream) {
   GString buf = {NULL,0,0};
   register char c;
@@ -112,7 +112,7 @@ size_t getdelim(char **lineptr,size_t *n,int delim,FILE *stream) {
 }
 #endif
 
-#ifdef NOSTRDUP
+#ifndef HAVE_STRDUP
 char *strdup(const char *str) {
   size_t len = strlen(str);
   char *buff = cf_alloc(NULL,1,len+1,CF_ALLOC_MALLOC);
@@ -123,7 +123,7 @@ char *strdup(const char *str) {
 }
 #endif
 
-#ifdef NOSTRNDUP
+#ifndef HAVE_STRNDUP
 char *strndup(const char *str,size_t len) {
   char *buff = cf_alloc(NULL,1,len+1,CF_ALLOC_MALLOC);
 
