@@ -18,14 +18,19 @@ include(CMakeInstallDirs)
 include(FindLua51)
 
 option(ENABLE_DEBUG "enable debugging mode" OFF)
+option(ENABLE_LOCK_DEBUG "enable lock debugging" OFF)
 
 # Copy flags for config.h
 if(ENABLE_DEBUG STREQUAL "ON")
   set(DEBUG ON)
-  add_definitions(-DCF_DEBUG -DCF_LOCK_DEBUG -O0 -g)
+  add_definitions(-DCF_DEBUG -O0 -g)
 else(ENABLE_DEBUG STREQUAL "ON")
   set(DEBUG OFF)
 endif(ENABLE_DEBUG STREQUAL "ON")
+
+if(ENABLE_LOCK_DEBUG STREQUAL "ON")
+  add_definitions(-DCF_LOCK_DEBUG)
+endif(ENABLE_LOCK_DEBUG STREQUAL "ON")
 
 add_definitions(-W -Wall -funsigned-char -I. -D_REENTRANT -D_GNU_SOURCE -I${LUA_INCLUDE_DIR})
 

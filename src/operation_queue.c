@@ -13,6 +13,7 @@ void cf_opqueue_init(cf_server_context_t *context,cf_operation_queue_t *queue,co
   queue->num_operations = 0;
   queue->num_workers = 0;
   queue->name = strdup(name);
+  queue->shall_run = 1;
 
   cf_list_init(&queue->operations);
   cf_mutex_init(context,&queue->lock,name,NULL);
@@ -22,8 +23,8 @@ void cf_opqueue_init(cf_server_context_t *context,cf_operation_queue_t *queue,co
 int cf_opqueue_append_op(cf_server_context_t *context,cf_operation_queue_t *queue,cf_operation_t *op,int statc) {
   CF_THREAD_LM(context,&queue->lock);
 
-  if(statc) cf_list_append_static(&context->opqueue.operations,&op,sizeof(op));
-  else cf_list_append(&context->opqueue.operations,&op,sizeof(op));
+  if(statc) cf_list_append_static(&context->opqueue.operations,op,sizeof(*op));
+  else cf_list_append(&context->opqueue.operations,op,sizeof(*op));
 
   CF_THREAD_UM(context,&queue->lock);
   CF_THREAD_CD_SG(context,&queue->cond);
@@ -33,6 +34,7 @@ int cf_opqueue_append_op(cf_server_context_t *context,cf_operation_queue_t *queu
 
 static void destroy_op(void *data) {
   cf_operation_t *op = (cf_operation_t *)data;
+
   if(op->arg) {
     if(op->cleanup) op->cleanup(op->arg);
     free(op->arg);
