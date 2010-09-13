@@ -61,6 +61,8 @@ typedef int (*cf_handler_t)(void *);
 
 /*! A list of handler types */
 typedef enum {
+  /* Just a dummy to prevent compiler errors due to empty enums. Should be removed later. */
+  __dummy
 } cf_cfg_mod_handler_type_t;
 
 /*! A module handler configuration */
