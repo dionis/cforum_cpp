@@ -131,6 +131,10 @@ void cleanup_env(cf_server_context_t *cntxt,char *cfgfile,cf_cfg_contexts_t cont
     }
 
     if(cntxt->log) fclose(cntxt->log);
+    if(cntxt->opqueue.name) cf_opqeue_destroy(cntxt,&cntxt->opqueue);
+
+    cf_array_destroy(&cntxt->workers);
+    cf_list_destroy(&cntxt->listeners,cf_destroy_listener);
   }
 
   if(cfg) {
@@ -300,12 +304,12 @@ int main(int argc,char *argv[]) {
 
   if((cval = cf_cfg_get_value_c(cfg,contexts,1,"Logfile")) == NULL) {
     cleanup_env(&global_context,cfgfile,contexts,1,cfg);
-    fprintf(stderr,"No error log file defined!\n");
+    fprintf(stderr,"No log file defined!\n");
     return EXIT_FAILURE;
   }
   global_context.log_file = cf_to_utf8(cval->value.cval,-1,NULL);
   if((global_context.log = fopen(global_context.log_file,"a")) == NULL) {
-    fprintf(stderr,"Error opening file %s: %s",global_context.log_file,strerror(errno));
+    fprintf(stderr,"Error opening file %s: %s\n",global_context.log_file,strerror(errno));
     cleanup_env(&global_context,cfgfile,contexts,1,cfg);
     return EXIT_FAILURE;
   }
@@ -321,6 +325,7 @@ int main(int argc,char *argv[]) {
   global_context.shall_run = 1;
 
   cf_opqueue_init(&global_context,&global_context.opqueue,"clients queue");
+  cf_array_init(&global_context.workers,sizeof(pthread_t),NULL);
 
   /* be sure that only one instance runs */
   if(setup_server_environment(global_context.pid_file,0) == -1) {
@@ -375,13 +380,21 @@ int main(int argc,char *argv[]) {
     return EXIT_FAILURE;
   }
 
+  /* now init threading */
+  cf_threading_init_threads(&global_context);
+
   while(global_context.shall_run) {
     if(cf_main_loop(&global_context) != 0) {
       CF_ERROR(&global_context,"cf_main_loop returned != 0!");
       global_context.shall_run = 0;
     }
+    else cf_threading_adjust_threads(&global_context);
   }
 
+  cf_opqeue_destroy(&global_context,&global_context.opqueue);
+  memset(&global_context.opqueue,0,sizeof(global_context.opqueue));
+
+  cf_threading_cleanup_threads(&global_context);
   cf_main_loop_destroy(&global_context);
 
   CF_LOG(&global_context,CF_LOG_WARN,"Shutting down server!");

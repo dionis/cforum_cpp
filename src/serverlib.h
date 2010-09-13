@@ -11,6 +11,7 @@
 
 typedef struct cf_server_context_s cf_server_context_t;
 typedef void *(*cf_operator_t)(void *);
+typedef void (*cf_operator_cleanup_t)(void *);
 
 typedef struct cf_operation_s cf_operation_t;
 typedef struct cf_operation_queue_s cf_operation_queue_t;
@@ -35,18 +36,31 @@ typedef struct cf_operation_queue_s cf_operation_queue_t;
 
 struct cf_operation_s {
   cf_operator_t operator;
+  cf_operator_cleanup_t cleanup;
   void *arg;
 };
 
 struct cf_operation_queue_s {
-  size_t num_operations;
+  size_t num_operations,num_workers;
+
+  volatile sig_atomic_t shall_run;
+  char *name;
+
   cf_list_head_t operations;
   cf_mutex_t lock;
+
+  cf_cond_t cond;
 };
+
+typedef struct cf_opqueue_arg_s {
+  cf_operation_queue_t *queue;
+  cf_server_context_t *context;
+} cf_opqueue_arg_t;
 
 void cf_opqueue_init(cf_server_context_t *context,cf_operation_queue_t *queue,const char *name);
 int cf_opqueue_append_op(cf_server_context_t *context,cf_operation_queue_t *queue,cf_operation_t *op,int statc);
 void cf_opqeue_destroy(cf_server_context_t *context,cf_operation_queue_t *queue);
+void *cf_opqueue_worker(void *arg);
 
 typedef struct cf_listener_s {
   cf_operator_t listener;
@@ -65,6 +79,7 @@ typedef struct cf_client_s {
 
 struct cf_server_context_s {
   cf_operation_queue_t opqueue;
+  cf_array_t workers;
 
   cf_list_head_t listeners;
 
@@ -91,6 +106,7 @@ void cf_log(cf_server_context_t *context,const char *file,int line,const char *f
 
 void cf_srv_append_client(cf_server_context_t *context,int connfd,cf_listener_t *listener);
 int cf_srv_create_listener(cf_server_context_t *context,UChar *sockdesc);
+void cf_destroy_listener(void *arg);
 
 void *cf_srv_http_request(void *arg);
 

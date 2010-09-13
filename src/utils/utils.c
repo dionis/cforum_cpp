@@ -83,54 +83,32 @@ int cf_make_path(const char *path,mode_t mode) {
   return 0;
 }
 
-#ifdef HAS_NO_GETLINE
+#ifndef HAVE_GETLINE
 size_t getline(char **lineptr,size_t *n,FILE *stream) {
   return getdelim(lineptr,n,'\n',stream);
 }
 #endif
 
-#ifdef HAS_NO_GETDELIM
+#ifndef HAVE_GETDELIM
 size_t getdelim(char **lineptr,size_t *n,int delim,FILE *stream) {
-  GString buf = {NULL,0,0};
-  register char c;
+  cf_mem_pool_t buf = CF_MEMPOOL_INITIALIZER;
+  unsigned char c;
 
   while(!feof(stream) && !ferror(stream)) {
     c = fgetc(stream);
-    g_string_append_c(&buf,c);
+    cf_mem_append(&buf,&c,sizeof(c));
 
     if(c == delim) break;
   }
 
   if(*lineptr) free(*lineptr);
 
-  *lineptr = buf.str;
+  *lineptr = (char *)buf.content;
   *n       = buf.len;
 
   if(feof(stream) || ferror(stream)) return -1;
 
   return buf.len;
-}
-#endif
-
-#ifdef NOSTRDUP
-char *strdup(const char *str) {
-  size_t len = strlen(str);
-  char *buff = cf_alloc(NULL,1,len+1,CF_ALLOC_MALLOC);
-
-  memcpy(buff,str,len+1);
-
-  return buff;
-}
-#endif
-
-#ifdef NOSTRNDUP
-char *strndup(const char *str,size_t len) {
-  char *buff = cf_alloc(NULL,1,len+1,CF_ALLOC_MALLOC);
-
-  memcpy(buff,str,len);
-  buff[len-1] = '\0';
-
-  return buff;
 }
 #endif
 

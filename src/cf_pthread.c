@@ -195,12 +195,12 @@ void cf_rwlock_unlock(cf_server_context_t *context,const char *file,const int li
   /* why does this happen? It shouldn't… */
   if(diff < 0) diff = 0;
 
-  cf_log(CF_ERR,file,line,"PTHREAD RWLOCK UNLOCK '%s' %lld\n",rwlock->name,diff);
+  cf_log(context,file,line,func,CF_LOG_LOCK,"PTHREAD RWLOCK UNLOCK '%s' %lld\n",rwlock->name,diff);
   #endif
 }
 
 
-void cf_cond_init(cf_server_context_t *context,const char *name,cf_cond_t *cond,const pthread_condattr_t *attr,const pthread_mutexattr_t *mattr) {
+void cf_cond_init(cf_server_context_t *context,cf_cond_t *cond,const char *name,const pthread_condattr_t *attr,const pthread_mutexattr_t *mattr) {
   (void)context;
   cond->name = strdup(name);
   pthread_mutex_init(&cond->lock,mattr);
@@ -251,7 +251,7 @@ void cf_cond_signal(cf_server_context_t *context,const char *file,const int line
   /* why does this happen? It shouldn't… */
   if(diff < 0) diff = 0;
 
-  cf_log(context,file,line,func,CF_LOG_LOCK,"PTHREAD COND SIGNAL '%s' %lld\n",lock->name,diff);
+  cf_log(context,file,line,func,CF_LOG_LOCK,"PTHREAD COND SIGNAL '%s' %lld\n",cond->name,diff);
   #endif
 }
 
@@ -291,7 +291,7 @@ void cf_cond_broadcast(cf_server_context_t *context,const char *file,const int l
   /* why does this happen? It shouldn't… */
   if(diff < 0) diff = 0;
 
-  cf_log(context,file,line,func,CF_LOG_LOCK,"PTHREAD COND BROADCAST '%s' %lld\n",lock->name,diff);
+  cf_log(context,file,line,func,CF_LOG_LOCK,"PTHREAD COND BROADCAST '%s' %lld\n",cond->name,diff);
   #endif
 }
 
@@ -307,7 +307,7 @@ void cf_cond_wait(cf_server_context_t *context,const char *file,const int line,c
   #ifdef CF_LOCK_DEBUG
   if(gettimeofday(&tv1,&tz) == -1) return;
 
-  cf_log(context,file,line,func,"PTHREAD COND WAIT '%s'\n",cond->name);
+  cf_log(context,file,line,func,CF_LOG_LOCK,"PTHREAD COND WAIT '%s'\n",cond->name);
   #endif
 
   if((status = pthread_mutex_lock(&cond->lock)) != 0) {
@@ -331,7 +331,7 @@ void cf_cond_wait(cf_server_context_t *context,const char *file,const int line,c
   /* why does this happen? It shouldn't… */
   if(diff < 0) diff = 0;
 
-  cf_log(context,file,line,func,CF_LOG_LOCK,"PTHREAD COND WAIT '%s' %lld\n",lock->name,diff);
+  cf_log(context,file,line,func,CF_LOG_LOCK,"PTHREAD COND WAIT '%s' %lld\n",cond->name,diff);
   #endif
 }
 
@@ -345,7 +345,7 @@ int cf_cond_timedwait(cf_server_context_t *context,const char *file,const int li
   int status;
 
   #ifdef CF_LOCK_DEBUG
-  if(gettimeofday(&tv1,&tz) == -1) return;
+  if(gettimeofday(&tv1,&tz) == -1) return -1;
 
   cf_log(context,file,line,func,CF_LOG_LOCK,"PTHREAD COND WAIT '%s'\n",cond->name);
   #endif
@@ -365,7 +365,7 @@ int cf_cond_timedwait(cf_server_context_t *context,const char *file,const int li
   pthread_mutex_unlock(&cond->lock);
 
   #ifdef CF_LOCK_DEBUG
-  if(gettimeofday(&tv2,&tz) == -1) return;
+  if(gettimeofday(&tv2,&tz) == -1) return -1;
 
   diff  = tv2.tv_sec * 1000 + tv2.tv_usec;
   diff -= tv1.tv_sec * 1000 + tv1.tv_usec;
@@ -373,7 +373,7 @@ int cf_cond_timedwait(cf_server_context_t *context,const char *file,const int li
   /* why does this happen? It shouldn't… */
   if(diff < 0) diff = 0;
 
-  cf_log(context,file,line,func,"PTHREAD COND TIMEDWAIT '%s' %lld\n",lock->name,diff);
+  cf_log(context,file,line,func,CF_LOG_LOCK,"PTHREAD COND TIMEDWAIT '%s' %lld\n",cond->name,diff);
   #endif
 
   return status;

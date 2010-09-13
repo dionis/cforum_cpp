@@ -34,6 +34,10 @@ int cf_main_loop_init(cf_server_context_t *context);
 int cf_main_loop(cf_server_context_t *context);
 int cf_main_loop_destroy(cf_server_context_t *context);
 
+int cf_threading_init_threads(cf_server_context_t *context);
+int cf_threading_adjust_threads(cf_server_context_t *context);
+int cf_threading_cleanup_threads(cf_server_context_t *context);
+
 #endif
 
 /* eof */

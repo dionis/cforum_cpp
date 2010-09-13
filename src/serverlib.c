@@ -18,7 +18,7 @@ void cf_log(cf_server_context_t *context,const char *file,int line,const char *f
   struct tm tm;
   size_t n;
 
-  #ifndef CF_DEBUG
+  #ifndef CF_DEBUG /* parameters not needed in non-debug mode */
   (void)file;
   (void)line;
   (void)func;
@@ -50,7 +50,8 @@ void cf_log(cf_server_context_t *context,const char *file,int line,const char *f
       clevel = "DEBUG";
   }
 
-  CF_THREAD_LM(context,&context->lock);
+  if(pthread_mutex_lock(&context->lock.mutex) != 0) fprintf(context->log,"Error locking mutex: %s",strerror(errno));
+  //CF_THREAD_LM(context,&context->lock);
 
   if(time(&t) != (time_t)-1) {
     localtime_r(&t,&tm);
@@ -86,7 +87,12 @@ void cf_log(cf_server_context_t *context,const char *file,int line,const char *f
   fflush(context->log);
   #endif
 
-  CF_THREAD_UM(context,&context->lock);
+  pthread_mutex_unlock(&context->lock.mutex);
+}
+
+void cf_cleanup_client(void *arg) {
+  cf_srv_client_t *cl = (cf_srv_client_t *)arg;
+  cf_mem_cleanup(&cl->wbuff);
 }
 
 void cf_srv_append_client(cf_server_context_t *context,int connfd,cf_listener_t *listener) {
@@ -99,7 +105,8 @@ void cf_srv_append_client(cf_server_context_t *context,int connfd,cf_listener_t 
   cf_mem_init(&arg->wbuff);
 
   op.operator = listener->listener;
-  op.arg = listener;
+  op.arg = arg;
+  op.cleanup = cf_cleanup_client;
 
   cf_opqueue_append_op(context,&context->opqueue,&op,0);
 }
@@ -223,6 +230,11 @@ int cf_srv_create_listener(cf_server_context_t *context,UChar *sockdesc) {
   cf_list_append(&context->listeners,&lstner,sizeof(lstner));
 
   return sock;
+}
+
+void cf_destroy_listener(void *arg) {
+  cf_listener_t *lst = (cf_listener_t *)arg;
+  freeaddrinfo(lst->ai);
 }
 
 /* eof */

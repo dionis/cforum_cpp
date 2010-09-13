@@ -182,7 +182,7 @@ char *cf_to_utf8(const UChar *src,int32_t len,int32_t *destlen) {
 #ifndef HAVE_STRNDUP
 char *strndup(const char *src,size_t len) {
   char *dst = cf_alloc(NULL,sizeof(*dst),len+1,CF_ALLOC_MALLOC);
-  strncpy(dst,src,len);
+  memcpy(dst,src,len);
   dst[len] = 0;
 
   return dst;

@@ -18,6 +18,7 @@ include(CMakeInstallDirs)
 include(FindLua51)
 
 option(ENABLE_DEBUG "enable debugging mode" OFF)
+option(ENABLE_LOCK_DEBUG "enable lock debugging" OFF)
 
 # Copy flags for config.h
 if(ENABLE_DEBUG STREQUAL "ON")
@@ -27,10 +28,14 @@ else(ENABLE_DEBUG STREQUAL "ON")
   set(DEBUG OFF)
 endif(ENABLE_DEBUG STREQUAL "ON")
 
-add_definitions(-W -Wall -funsigned-char -I. -D_REENTRANT -D_GNU_SOURCE -I{LUA_INCLUDE_DIR})
+if(ENABLE_LOCK_DEBUG STREQUAL "ON")
+  add_definitions(-DCF_LOCK_DEBUG)
+endif(ENABLE_LOCK_DEBUG STREQUAL "ON")
+
+add_definitions(-W -Wall -funsigned-char -I. -D_REENTRANT -D_GNU_SOURCE -I${LUA_INCLUDE_DIR})
 
 CHECK_FUNCTION_EXISTS(kqueue HAVE_KQUEUE)
-CHECK_FUNCTION_EXISTS(epoll HAVE_EPOLL)
+CHECK_FUNCTION_EXISTS(epoll_create HAVE_EPOLL)
 CHECK_FUNCTION_EXISTS(select HAVE_SELECT)
 
 if(NOT HAVE_KQUEUE AND NOT HAVE_EPOLL AND NOT HAVE_SELECT)

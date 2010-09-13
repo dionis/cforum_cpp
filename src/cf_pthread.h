@@ -14,6 +14,7 @@
 #include "config.h"
 
 #include <pthread.h>
+#include <sys/time.h>
 
 /*!
  * This struct is used to store a mutex and it's name
@@ -145,7 +146,7 @@ void cf_rwlock_unlock(cf_server_context_t *context,const char *file,const int li
  * \param attr The attribute for the conditional (can be NULL)
  * \param mattr The attribute for the mutex (can be NULL)
  */
-void cf_cond_init(cf_server_context_t *context,const char *name,cf_cond_t *cond,const pthread_condattr_t *attr,const pthread_mutexattr_t *mattr);
+void cf_cond_init(cf_server_context_t *context,cf_cond_t *cond,const char *name,const pthread_condattr_t *attr,const pthread_mutexattr_t *mattr);
 
 /*!
  * This function destroys a thread conditional
