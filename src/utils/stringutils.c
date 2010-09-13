@@ -189,15 +189,4 @@ char *strndup(const char *src,size_t len) {
 }
 #endif
 
-#ifndef HAVE_STRDUP
-char *strdup(const char *str) {
-  size_t len = strlen(str);
-  char *buff = cf_alloc(NULL,sizeof(*buff),len+1,CF_ALLOC_MALLOC);
-
-  memcpy(buff,str,len+1);
-
-  return buff;
-}
-#endif
-
 /* eof */
