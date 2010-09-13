@@ -58,18 +58,16 @@ int cf_main_loop(cf_server_context_t *context) {
     for(i=0;i<numev;++i) {
       srv = (cf_listener_t *)event[i].udata;
 
-      if((uintptr_t)srv->sock == event[i].ident) {
-        size = srv->size;
-        connfd = accept(srv->sock,srv->addr,&size);
+      size = srv->size;
+      connfd = accept(srv->sock,srv->addr,&size);
 
-        /* accept-error? */
-        if(connfd <= 0) {
-          CF_ERROR(context,"accept: %s\n",strerror(errno));
-          return 0;
-        }
-
-        cf_srv_append_client(context,connfd,srv);
+      /* accept-error? */
+      if(connfd <= 0) {
+        CF_ERROR(context,"accept: %s\n",strerror(errno));
+        return 0;
       }
+
+      cf_srv_append_client(context,connfd,srv);
     }
   }
 
