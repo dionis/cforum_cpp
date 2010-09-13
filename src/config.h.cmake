@@ -23,6 +23,7 @@
 
 #define SIZE_T_FMT "%zd"
 
+#define SCHEDULING SCHED_OTHER
 
 #define CF_ERR_ILPARAM 1
 #define CF_ERR_UNICODE 2

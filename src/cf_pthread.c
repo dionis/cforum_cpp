@@ -200,7 +200,7 @@ void cf_rwlock_unlock(cf_server_context_t *context,const char *file,const int li
 }
 
 
-void cf_cond_init(cf_server_context_t *context,const char *name,cf_cond_t *cond,const pthread_condattr_t *attr,const pthread_mutexattr_t *mattr) {
+void cf_cond_init(cf_server_context_t *context,cf_cond_t *cond,const char *name,const pthread_condattr_t *attr,const pthread_mutexattr_t *mattr) {
   (void)context;
   cond->name = strdup(name);
   pthread_mutex_init(&cond->lock,mattr);

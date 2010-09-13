@@ -18,7 +18,7 @@ void cf_log(cf_server_context_t *context,const char *file,int line,const char *f
   struct tm tm;
   size_t n;
 
-  #ifndef CF_DEBUG
+  #ifndef CF_DEBUG /* parameters not needed in non-debug mode */
   (void)file;
   (void)line;
   (void)func;

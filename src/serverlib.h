@@ -41,14 +41,24 @@ struct cf_operation_s {
 };
 
 struct cf_operation_queue_s {
-  size_t num_operations;
+  size_t num_operations, num_workers;
+  volatile sig_atomic_t shall_run;
+
   cf_list_head_t operations;
   cf_mutex_t lock;
+
+  cf_cond_t cond;
 };
+
+typedef struct cf_opqueue_arg_s {
+  cf_operation_queue_t *queue;
+  cf_server_context_t *context;
+} cf_opqueue_arg_t;
 
 void cf_opqueue_init(cf_server_context_t *context,cf_operation_queue_t *queue,const char *name);
 int cf_opqueue_append_op(cf_server_context_t *context,cf_operation_queue_t *queue,cf_operation_t *op,int statc);
 void cf_opqeue_destroy(cf_server_context_t *context,cf_operation_queue_t *queue);
+void *cf_opqueue_worker(void *arg);
 
 typedef struct cf_listener_s {
   cf_operator_t listener;

@@ -29,7 +29,7 @@ add_library(cfserver SHARED serverlib.c cf_pthread.c operation_queue.c http_serv
 target_link_libraries(cfserver cfutils cfconfigparser cfreadline ${CMAKE_THREAD_LIBS_INIT})
 
 # cf_server: use kqueue or epoll if possible, else select
-list(APPEND SRC cf_server.c)
+list(APPEND SRC cf_server.c threading_manager_worker.c)
 if(HAVE_KQUEUE)
   list(APPEND SRC cf_server_kqueue.c)
 elseif(HAVE_EPOLL)
