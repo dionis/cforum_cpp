@@ -12,7 +12,7 @@ context:set_value("MainFileMaxBytes",250000);    -- start archiving at 250k byte
 context:set_value("MainFileMaxPostings", 2000);  -- max number of postings before archiver starts
 context:set_value("MainFileMaxThreads", 150);
 
-context = CForum:create_context("fo_server")
+context = CForum:create_context("cf_server")
 context:set_value("AuthNames", "/var/cforum/registered_names_forum1.db")
 context:set_value("Socket", "/tmp/cforum.sock")
 context:set_value("RunArchiver", 1800)
@@ -23,11 +23,10 @@ context:set_value("MaxThreads", 120)
 
 context:set_value("UserGroup", {"ckruse", "users"})
 
-context:set_value("Chroot","/home/ckruse/tmp/cforum/chroot/")
+context:set_value("Chroot","/chroot/cforum/")
 context:set_value("PIDFile", "/var/run/cf_pid")
-context:set_value("LogMaxSize", 2097152)
+context:set_value("LogfileMaxSize", 2097152)
 
-context:set_value("ErrorLog", "/var/log/cf_errors")
-context:set_value("StdLog", "/var/log/cf_stdlog")
+context:set_value("Logfile", "/var/log/cforum.log")
 
 -- eof
