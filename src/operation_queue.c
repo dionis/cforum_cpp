@@ -26,6 +26,8 @@ int cf_opqueue_append_op(cf_server_context_t *context,cf_operation_queue_t *queu
   if(statc) cf_list_append_static(&context->opqueue.operations,op,sizeof(*op));
   else cf_list_append(&context->opqueue.operations,op,sizeof(*op));
 
+  queue->num_operations++;
+
   CF_THREAD_UM(context,&queue->lock);
   CF_THREAD_CD_SG(context,&queue->cond);
 
@@ -78,6 +80,8 @@ void *cf_opqueue_worker(void *arg) {
     if(myarg->queue->num_operations > 0) {
       el = myarg->queue->operations.elements;
       cf_list_delete(&myarg->queue->operations,el);
+      myarg->queue->num_operations--;
+
       CF_THREAD_UM(myarg->context,&myarg->queue->lock);
 
       CF_LOG(myarg->context,CF_LOG_DBG(1),"(%p) Working on %p",pthread_self(),op);
