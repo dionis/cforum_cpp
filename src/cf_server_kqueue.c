@@ -18,6 +18,7 @@ static struct kevent change;
 int cf_main_loop_init(cf_server_context_t *context) {
   cf_list_element_t *elem;
   cf_listener_t *srv;
+  cf_socket_t *sock;
 
   kq = kqueue();
   if(kq == -1) {
@@ -28,8 +29,30 @@ int cf_main_loop_init(cf_server_context_t *context) {
   memset(&change,0,sizeof(change));
   for(elem = context->listeners.elements;elem;elem = elem->next,++nchanges) {
     srv = (cf_listener_t *)elem->data;
-    EV_SET(&change,srv->sock,EVFILT_READ,EV_ADD|EV_ENABLE,0, 0, srv);
+
+    sock = cf_alloc(NULL,1,sizeof(*sock),CF_ALLOC_MALLOC);
+    sock->type = CF_SOCKET_TYPE_LISTENER;
+    sock->data = srv;
+
+    EV_SET(&change,srv->sock,EVFILT_READ,EV_ADD|EV_ENABLE,0, 0, sock);
   }
+
+  return 0;
+}
+
+int cf_main_loop_add_socket(cf_server_context_t *context,cf_srv_client_t *client,enum cf_selector_mode_e mode) {
+  cf_socket_t *sock = cf_alloc(NULL,1,sizeof(*sock),CF_ALLOC_MALLOC);
+  sock->type = CF_SOCKET_TYPE_CLIENT;
+  sock->data = client;
+  int filter = 0;
+
+  (void)context; /* not needed yet */
+
+  if(mode & CF_MODE_READ) filter |= EVFILT_READ;
+  if(mode & CF_MODE_WRITE) filter |= EVFILT_WRITE;
+
+  EV_SET(&change,client->sock,filter,EV_ADD|EV_ENABLE,0, 0, sock);
+  ++nchanges;
 
   return 0;
 }
@@ -40,6 +63,7 @@ int cf_main_loop(cf_server_context_t *context) {
   struct timespec timeout;
   int numev,i,connfd;
   socklen_t size;
+  cf_srv_client_t *client;
 
   event = cf_alloc(NULL,nchanges,sizeof(*event),CF_ALLOC_CALLOC);
 
@@ -56,9 +80,10 @@ int cf_main_loop(cf_server_context_t *context) {
   }
   else if(numev > 0) {
     for(i=0;i<numev;++i) {
-      srv = (cf_listener_t *)event[i].udata;
+      cf_socket_t *sock = (cf_socket_t *)event[i].udata;
+      if(sock->type == CF_SOCKET_TYPE_LISTENER) {
+        srv = (cf_listener_t *)sock->data;
 
-      if((uintptr_t)srv->sock == event[i].ident) {
         size = srv->size;
         connfd = accept(srv->sock,srv->addr,&size);
 
@@ -68,7 +93,18 @@ int cf_main_loop(cf_server_context_t *context) {
           return 0;
         }
 
-        cf_srv_append_client(context,connfd,srv);
+        cf_set_nonblocking(connfd);
+        client = cf_srv_get_client(connfd,srv);
+        cf_main_loop_add_socket(context,client,CF_MODE_READ);
+      }
+      else {
+        /* TODO: handle client: read, write or dispatch */
+        if(event[i].filter & EVFILT_READ) {
+          
+        }
+        if(event[i].filter & EVFILT_WRITE) {
+        }
+
       }
     }
   }

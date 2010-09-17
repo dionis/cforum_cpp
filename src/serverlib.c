@@ -95,8 +95,7 @@ void cf_cleanup_client(void *arg) {
   cf_mem_cleanup(&cl->wbuff);
 }
 
-void cf_srv_append_client(cf_server_context_t *context,int connfd,cf_listener_t *listener) {
-  cf_operation_t op;
+cf_srv_client_t *cf_srv_get_client(int connfd,cf_listener_t *listener) {
   cf_srv_client_t *arg = cf_alloc(NULL,1,sizeof(*arg),CF_ALLOC_MALLOC);
 
   arg->listener = listener;
@@ -104,7 +103,13 @@ void cf_srv_append_client(cf_server_context_t *context,int connfd,cf_listener_t 
   memset(&arg->rbuff,0,sizeof(arg->rbuff));
   cf_mem_init(&arg->wbuff);
 
-  op.operator = listener->listener;
+  return arg;
+}
+
+void cf_srv_append_client(cf_server_context_t *context,cf_srv_client_t *arg) {
+  cf_operation_t op;
+
+  op.operator = arg->listener->listener;
   op.arg = arg;
   op.cleanup = cf_cleanup_client;
 
@@ -235,6 +240,32 @@ int cf_srv_create_listener(cf_server_context_t *context,UChar *sockdesc) {
 void cf_destroy_listener(void *arg) {
   cf_listener_t *lst = (cf_listener_t *)arg;
   freeaddrinfo(lst->ai);
+}
+
+int cf_set_nonblocking(int fd) {
+  int flags;
+
+  #ifdef O_NONBLOCK /* If they have O_NONBLOCK, use the Posix way to do it */
+  if((flags = fcntl(fd, F_GETFL, 0)) == -1) flags = 0;
+  return fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+
+  #else /* Otherwise, use the old way of doing it */
+  flags = 1;
+  return ioctl(fd, FIOBIO, &flags);
+  #endif
+}
+
+int cf_set_blocking(int fd) {
+  int flags;
+
+  #ifdef O_NONBLOCK /* If they have O_NONBLOCK, use the Posix way to do it */
+  if((flags = fcntl(fd, F_GETFL, 0)) == -1) flags = 0;
+  return fcntl(fd, F_SETFL, flags & ~O_NONBLOCK);
+
+  #else /* Otherwise, use the old way of doing it */
+  flags = 0;
+  return ioctl(fd, FIOBIO, &flags);
+  #endif
 }
 
 /* eof */
