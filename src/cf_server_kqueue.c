@@ -57,11 +57,24 @@ int cf_main_loop_add_socket(cf_server_context_t *context,cf_srv_client_t *client
   return 0;
 }
 
+int cf_mainloop_remove_socket(cf_server_context_t *context,cf_srv_client_t *client,enum cf_selector_mode_e mode) {
+  int filter = 0;
+
+  (void)context; /* not needed yet */
+
+  if(mode & CF_MODE_READ) filter |= EVFILT_READ;
+  if(mode & CF_MODE_WRITE) filter |= EVFILT_WRITE;
+
+  EV_SET(&change,client->sock,mode,EV_DELETE,0,0,0);
+
+  return 0;
+}
+
 int cf_main_loop(cf_server_context_t *context) {
   struct kevent *event;
   cf_listener_t *srv;
   struct timespec timeout;
-  int numev,i,connfd;
+  int numev,i,connfd,ret;
   socklen_t size;
   cf_srv_client_t *client;
 
@@ -99,10 +112,41 @@ int cf_main_loop(cf_server_context_t *context) {
       }
       else {
         /* TODO: handle client: read, write or dispatch */
+        client = (cf_srv_client_t *)sock->data;
+
         if(event[i].filter & EVFILT_READ) {
-          
+          ret = cf_read_nonblocking(client->sock,&client->rbuff,1024);
+          if(ret == 0) { /* nothing to do, just wait and read more */
+          }
+          else if(ret == 1) { /* dispatch */
+          }
+          else { /* must be an error: remove from kqueue */
+            cf_mainloop_remove_socket(context,client,CF_MODE_WRITE|CF_MODE_WRITE);
+            cf_cleanup_client(client);
+            free(client);
+            free(sock);
+          }
         }
+
         if(event[i].filter & EVFILT_WRITE) {
+          //ret = cf_write_nonblocking(sock->sock,&sock->rbuff,1024);
+          ret = 0;
+          /* nothing to do, just wait and write more */
+          if(ret > 0) {
+          }
+
+          /* write buffer's empty. Remove it from the write queue */
+          else if(ret == -1) cf_mainloop_remove_socket(context,client,CF_MODE_WRITE);
+
+          /* 0 means, nothing written (because of different reasons, e.g. EWOULDBLOCK);
+           * it's not > 0 (bytes written), it's not -1 (write buffer empty), so it has
+           * to be an error – remove from kqueue */
+          else if(ret != 0) {
+            cf_mainloop_remove_socket(context,client,CF_MODE_WRITE|CF_MODE_WRITE);
+            cf_cleanup_client(client);
+            free(client);
+            free(sock);
+          }
         }
       }
     }

@@ -92,7 +92,10 @@ void cf_log(cf_server_context_t *context,const char *file,int line,const char *f
 
 void cf_cleanup_client(void *arg) {
   cf_srv_client_t *cl = (cf_srv_client_t *)arg;
+
   cf_mem_cleanup(&cl->wbuff);
+  cf_mem_cleanup(&cl->rbuff);
+  close(cl->sock);
 }
 
 cf_srv_client_t *cf_srv_get_client(int connfd,cf_listener_t *listener) {
@@ -100,7 +103,7 @@ cf_srv_client_t *cf_srv_get_client(int connfd,cf_listener_t *listener) {
 
   arg->listener = listener;
   arg->sock = connfd;
-  memset(&arg->rbuff,0,sizeof(arg->rbuff));
+  cf_mem_init(&arg->rbuff);
   cf_mem_init(&arg->wbuff);
 
   return arg;
@@ -266,6 +269,15 @@ int cf_set_blocking(int fd) {
   flags = 0;
   return ioctl(fd, FIOBIO, &flags);
   #endif
+}
+
+int cf_read_nonblocking(int sock,cf_mem_pool_t *pool,size_t nbytes) {
+  (void)sock; (void)pool; (void)nbytes;
+  return 0;
+}
+int cf_write_nonblocking(int sock,cf_mem_pool_t *pool,char *pos,size_t nbytes) {
+  (void)sock; (void)pool; (void)pos; (void)nbytes;
+  return 0;
 }
 
 /* eof */

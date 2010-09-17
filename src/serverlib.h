@@ -74,7 +74,7 @@ typedef struct cf_listener_s {
 typedef struct cf_client_s {
   int sock;
   cf_listener_t *listener;
-  cf_rline_t rbuff;
+  cf_mem_pool_t rbuff;
   cf_mem_pool_t wbuff;
 } cf_srv_client_t;
 
@@ -141,6 +141,11 @@ int cf_threading_cleanup_threads(cf_server_context_t *context);
 
 int cf_set_blocking(int fd);
 int cf_set_nonblocking(int fd);
+
+int cf_read_nonblocking(int sock,cf_mem_pool_t *pool,size_t nbytes);
+int cf_write_nonblocking(int sock,cf_mem_pool_t *pool,char *pos,size_t nbytes);
+
+void cf_cleanup_client(void *arg);
 
 #endif
 
