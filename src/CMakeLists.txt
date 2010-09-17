@@ -25,6 +25,7 @@ if(HAVE_LIBDL)
 endif(HAVE_LIBDL)
 
 # libcfserver
+# use kqueue or epoll if possible, else select
 if(HAVE_KQUEUE)
   SET(SRC cf_server_kqueue.c)
 elseif(HAVE_EPOLL)
@@ -36,7 +37,7 @@ endif()
 add_library(cfserver SHARED serverlib.c cf_pthread.c operation_queue.c http_server.c threading_manager_worker.c ${SRC})
 target_link_libraries(cfserver cfutils cfconfigparser cfreadline ${CMAKE_THREAD_LIBS_INIT})
 
-# cf_server: use kqueue or epoll if possible, else select
+# cf_server
 add_executable(cf_server cf_server.c)
 target_link_libraries(cf_server cfutils cfconfigparser cfhash cfutils cfserver ${CMAKE_THREAD_LIBS_INIT})
 

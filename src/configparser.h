@@ -196,7 +196,20 @@ cf_cfg_contexts_t cf_cfg_create_contexts(const char **cnts,size_t num);
  */
 void cf_cfg_destroy_contexts(cf_cfg_contexts_t cnts,size_t num);
 
+/*!
+ * Function to init a module
+ * \param cfg The configuration
+ * \param mod The module structure
+ */
 int cf_cfg_init_module(cf_cfg_t *cfg,cf_cfg_mod_t *mod);
+
+/*!
+ * Function to load modules in given contexts
+ * \param cfg The configuration
+ * \param contexts The contexts
+ * \param clen The number of contexts
+ */
+int cf_cfg_load_modules(cf_cfg_t *cfg,cf_cfg_contexts_t contexts,size_t clen);
 
 #endif
 

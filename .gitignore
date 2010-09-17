@@ -6,4 +6,5 @@ Makefile
 .#*
 *.so
 /docs/
+build
 

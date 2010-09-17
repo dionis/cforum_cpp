@@ -187,6 +187,11 @@ int main(int argc,char *argv[]) {
   if((cfg = cf_cfg_read_config(cfgfile)) == NULL) return EXIT_FAILURE;
   contexts = cf_cfg_create_contexts(cnts,1);
 
+  if(cf_cfg_load_modules(cfg,contexts,1) != 0) {
+    cleanup_env(&global_context,cfgfile,contexts,1,cfg);
+    return EXIT_FAILURE;
+  }
+
   global_context.cfg = cfg;
   global_context.contexts = contexts;
   global_context.clen = 1;

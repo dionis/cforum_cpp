@@ -104,7 +104,6 @@ int cf_main_loop(cf_server_context_t *context) {
         }
         if(event[i].filter & EVFILT_WRITE) {
         }
-
       }
     }
   }

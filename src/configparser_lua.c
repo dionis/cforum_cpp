@@ -163,15 +163,6 @@ static int cf_cfg_l_load_module(lua_State *l) {
   }
   else mod.file = strdup(file);
 
-  if((mod.handle = dlopen(mod.file,RTLD_NOW|RTLD_LOCAL)) == NULL) {
-    free(mod.file);
-    return luaL_error(l,"Error loading module %s: %s",file,dlerror());
-  }
-  if(cf_cfg_init_module(cfg,&mod) != 0) {
-    free(mod.file);
-    return luaL_error(l,"Error initializing module %s!",file);
-  }
-
   cf_array_push(&cfg->modules,&mod);
 
   return 0;

@@ -26,6 +26,7 @@ typedef struct cf_operation_queue_s cf_operation_queue_t;
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <fcntl.h>
 
 #include "cf_pthread.h"
 #include "readline.h"

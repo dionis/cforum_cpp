@@ -155,6 +155,41 @@ cf_cfg_t *cf_cfg_read_config(const char *filename) {
   return cfg;
 }
 
+int cf_cfg_load_modules(cf_cfg_t *cfg,cf_cfg_contexts_t contexts,size_t clen) {
+  size_t i,ret;
+  cf_cfg_mod_t *mod;
+  cf_cfg_t *cntx;
+
+  /* first: load modules for this context */
+  for(i=0;i<cfg->modules.elements;++i) {
+    mod = cf_array_element_at(&cfg->modules,i);
+
+    if((mod->handle = dlopen(mod->file,RTLD_NOW|RTLD_LOCAL)) == NULL) {
+      fprintf(stderr,"Error loading module %s: %s",mod->file,dlerror());
+      return -1;
+    }
+
+    if(cf_cfg_init_module(cfg,mod) != 0) {
+      fprintf(stderr,"Error initializing module %s!",mod->file);
+      return -1;
+    }
+  }
+
+  if(contexts) {
+    for(i=0;i<cfg->contexts.elements;++i) {
+      cntx = cf_array_element_at(&cfg->contexts,i);
+      if(u_strcmp(cntx->name,contexts[0]) == 0) {
+        if(clen-1 > 0) ret = cf_cfg_load_modules(cntx,&contexts[1],clen-1);
+        else ret = cf_cfg_load_modules(cntx,NULL,0);
+
+        if(ret != 0) return ret;
+      }
+    }
+  }
+
+  return 0;
+}
+
 cf_cfg_value_t *cf_cfg_get_value_c(cf_cfg_t *cfg,cf_cfg_contexts_t contexts,size_t clen,const char *name) {
   UChar *n = cf_to_utf16(name,-1,NULL);
   cf_cfg_value_t *val = cf_cfg_get_value_w_pos(cfg,contexts,clen,0,n);
