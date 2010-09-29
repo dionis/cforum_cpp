@@ -28,11 +28,11 @@ else(ENABLE_DEBUG STREQUAL "ON")
   set(DEBUG OFF)
 endif(ENABLE_DEBUG STREQUAL "ON")
 
+add_definitions(-W -Wall -Werror -funsigned-char -I. -D_REENTRANT -D_GNU_SOURCE -I${LUA_INCLUDE_DIR})
+
 if(ENABLE_LOCK_DEBUG STREQUAL "ON")
   add_definitions(-DCF_LOCK_DEBUG)
 endif(ENABLE_LOCK_DEBUG STREQUAL "ON")
-
-add_definitions(-W -Wall -funsigned-char -I. -D_REENTRANT -D_GNU_SOURCE -I${LUA_INCLUDE_DIR})
 
 CHECK_FUNCTION_EXISTS(kqueue HAVE_KQUEUE)
 CHECK_FUNCTION_EXISTS(epoll_create HAVE_EPOLL)

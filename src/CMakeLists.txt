@@ -26,19 +26,20 @@ if(HAVE_LIBDL)
 endif(HAVE_LIBDL)
 
 # libcfserver
-add_library(cfserver SHARED serverlib.c cf_pthread.c operation_queue.c http_server.c)
+# use kqueue or epoll if possible, else select
+if(HAVE_KQUEUE)
+  SET(SRC cf_server_kqueue.c)
+elseif(HAVE_EPOLL)
+  SET(SRC cf_server_epoll.c)
+else()
+  SET(SRC cf_server_select.c)
+endif()
+
+add_library(cfserver SHARED serverlib.c cf_pthread.c operation_queue.c http_server.c threading_manager_worker.c ${SRC})
 target_link_libraries(cfserver cfutils cfconfigparser cfreadline ${CMAKE_THREAD_LIBS_INIT})
 
-# cf_server: use kqueue or epoll if possible, else select
-list(APPEND SRC cf_server.c threading_manager_worker.c)
-if(HAVE_KQUEUE)
-  list(APPEND SRC cf_server_kqueue.c)
-elseif(HAVE_EPOLL)
-  list(APPEND SRC cf_server_epoll.c)
-else()
-  list(APPEND SRC cf_server_select.c)
-endif()
-add_executable(cf_server ${SRC})
+# cf_server
+add_executable(cf_server cf_server.c)
 target_link_libraries(cf_server cfutils cfconfigparser cfhash cfutils cfserver ${CMAKE_THREAD_LIBS_INIT})
 
 install(

@@ -26,6 +26,7 @@ typedef struct cf_operation_queue_s cf_operation_queue_t;
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <fcntl.h>
 
 #include "cf_pthread.h"
 #include "readline.h"
@@ -73,7 +74,7 @@ typedef struct cf_listener_s {
 typedef struct cf_client_s {
   int sock;
   cf_listener_t *listener;
-  cf_rline_t rbuff;
+  cf_mem_pool_t rbuff;
   cf_mem_pool_t wbuff;
 } cf_srv_client_t;
 
@@ -104,11 +105,47 @@ void cf_log(cf_server_context_t *context,const char *file,int line,const char *f
 #define CF_INFO(context,msg,...) cf_log((context),__FILE__,__LINE__,__FUNCTION__,CF_LOG_INFO,(msg),## __VA_ARGS__)
 #define CF_NOTICE(context,msg,...) cf_log((context),__FILE__,__LINE__,__FUNCTION__,CF_LOG_NOTICE,(msg),## __VA_ARGS__)
 
-void cf_srv_append_client(cf_server_context_t *context,int connfd,cf_listener_t *listener);
+cf_srv_client_t *cf_srv_get_client(int connfd,cf_listener_t *listener);
+void cf_srv_append_client(cf_server_context_t *context,cf_srv_client_t *arg);
+
 int cf_srv_create_listener(cf_server_context_t *context,UChar *sockdesc);
 void cf_destroy_listener(void *arg);
 
 void *cf_srv_http_request(void *arg);
+
+/* cf_server API */
+int cf_main_loop_init(cf_server_context_t *context);
+int cf_main_loop(cf_server_context_t *context);
+int cf_main_loop_destroy(cf_server_context_t *context);
+
+enum cf_socket_type_e {
+  CF_SOCKET_TYPE_LISTENER=0,
+  CF_SOCKET_TYPE_CLIENT
+};
+
+typedef struct {
+  enum cf_socket_type_e type;
+  void *data;
+} cf_socket_t;
+
+enum cf_selector_mode_e {
+  CF_MODE_READ  = 1,
+  CF_MODE_WRITE = 2
+};
+
+int cf_main_loop_add_socket(cf_server_context_t *context,cf_srv_client_t *client,enum cf_selector_mode_e mode);
+
+int cf_threading_init_threads(cf_server_context_t *context);
+int cf_threading_adjust_threads(cf_server_context_t *context);
+int cf_threading_cleanup_threads(cf_server_context_t *context);
+
+int cf_set_blocking(int fd);
+int cf_set_nonblocking(int fd);
+
+int cf_read_nonblocking(int sock,cf_mem_pool_t *pool,size_t nbytes);
+int cf_write_nonblocking(int sock,cf_mem_pool_t *pool,char *pos,size_t nbytes);
+
+void cf_cleanup_client(void *arg);
 
 #endif
 
