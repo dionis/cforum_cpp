@@ -1,4 +1,8 @@
-include_directories (BEFORE ${CMAKE_CURRENT_SOURCE_DIR}/.. ${CMAKE_CURRENT_SOURCE_DIR})
+#############################################################################
+# CMakeLists.txt for the Classic Forum Utilities
+#############################################################################
+
+include_directories (BEFORE "${CMAKE_CURRENT_SOURCE_DIR}/.." "${CMAKE_CURRENT_SOURCE_DIR}")
 
 add_library(
     cfutils
@@ -12,6 +16,7 @@ add_library(
     treeutils.c
     utils.c
 )
+
 target_link_libraries(cfutils ${ICU_LIBRARY})
 
 install(
@@ -25,7 +30,7 @@ install(
     treeutils.h
     utils.h
   DESTINATION
-    ${CMAKE_INSTALL_PREFIX}/include/cforum/utils
+    "${CMAKE_INSTALL_PREFIX}/include/cforum/utils"
 )
 
 # eof

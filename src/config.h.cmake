@@ -10,16 +10,16 @@
 #ifndef CF_CONFIG_H
 #define CF_CONFIG_H
 
+/* C99 defines DBL_EPSILON & FLT_EPSILON in float.h */
+#include <float.h>
+
 #define CF_BUFSIZ 1024 /*!< Default buffer size */
 #define CF_BUFSIZ_MEMPOOL CF_BUFSIZ /*!< Default memory pool buffer size */
 
 #define CF_PRERESERVE 5 /*!< default prereservation count (e.g. for arrays) */
 
-#define CF_DBL_EPSILON    2.2204460492503131e-016 /* smallest value for 1.0+DBL_EPSILON != 1.0 */
-#define CF_FLT_EPSILON    1.192092896e-07F /* smallest value for 1.0+FLT_EPSILON != 1.0 */
-
-#define CF_FLOAT_EQ(x,v) ((((v) - CF_FLT_EPSILON) < (x)) && ((x) < ((v) + CF_FLT_EPSILON)))
-#define CF_DOUBL_EQ(x,v) ((((v) - CF_DBL_EPSILON) < (x)) && ((x) < ((v) + CF_DBL_EPSILON)))
+#define CF_FLOAT_EQ(x,v) ((((v) - FLT_EPSILON) < (x)) && ((x) < ((v) + FLT_EPSILON)))
+#define CF_DOUBL_EQ(x,v) ((((v) - DBL_EPSILON) < (x)) && ((x) < ((v) + DBL_EPSILON)))
 
 #define SIZE_T_FMT "%zd"
 
