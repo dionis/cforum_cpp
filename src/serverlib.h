@@ -99,11 +99,13 @@ struct cf_server_context_s {
 
 
 void cf_log(cf_server_context_t *context,const char *file,int line,const char *func,unsigned int level,const char *msg,...);
-#define CF_LOG(context,level,msg,...) cf_log((context),__FILE__,__LINE__,__FUNCTION__,(level),(msg),## __VA_ARGS__)
-#define CF_ERROR(context,msg,...) cf_log((context),__FILE__,__LINE__,__FUNCTION__,CF_LOG_ERROR,(msg),## __VA_ARGS__)
-#define CF_WARN(context,msg,...) cf_log((context),__FILE__,__LINE__,__FUNCTION__,CF_LOG_WARN,(msg),## __VA_ARGS__)
-#define CF_INFO(context,msg,...) cf_log((context),__FILE__,__LINE__,__FUNCTION__,CF_LOG_INFO,(msg),## __VA_ARGS__)
-#define CF_NOTICE(context,msg,...) cf_log((context),__FILE__,__LINE__,__FUNCTION__,CF_LOG_NOTICE,(msg),## __VA_ARGS__)
+/* first variadic argument is message, but can't explicitely include since
+   C99 does not allow empty varags to be specified with variadic macros. */
+#define CF_LOG(context,level,...) cf_log((context),__FILE__,__LINE__,__FUNCTION__,(level),## __VA_ARGS__)
+#define CF_ERROR(context,...) cf_log((context),__FILE__,__LINE__,__FUNCTION__,CF_LOG_ERROR,## __VA_ARGS__)
+#define CF_WARN(context,...) cf_log((context),__FILE__,__LINE__,__FUNCTION__,CF_LOG_WARN,## __VA_ARGS__)
+#define CF_INFO(context,...) cf_log((context),__FILE__,__LINE__,__FUNCTION__,CF_LOG_INFO,## __VA_ARGS__)
+#define CF_NOTICE(context,...) cf_log((context),__FILE__,__LINE__,__FUNCTION__,CF_LOG_NOTICE,## __VA_ARGS__)
 
 cf_srv_client_t *cf_srv_get_client(int connfd,cf_listener_t *listener);
 void cf_srv_append_client(cf_server_context_t *context,cf_srv_client_t *arg);
