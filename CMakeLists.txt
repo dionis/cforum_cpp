@@ -32,8 +32,9 @@ set(CMAKE_C_FLAGS_RELWITHDEBINFO "-O2 -g")
 set(CMAKE_C_FLAGS_MINSIZEREL "-Os")
 
 # Add default definitions
-#     FIXME: do we really need _GNU_SOURCE? portability?
-#            why do we need _REENTRANT?
+#   _GNU_SOURCE: allows us to use system implementation of strdup etc. if
+#                available (else we provide our own)
+#   _REENTRANT:  select reentrant functions by default (thread safety)
 add_definitions(-D_REENTRANT -D_GNU_SOURCE)
 
 # Fine-grained debugging options
