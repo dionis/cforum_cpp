@@ -42,7 +42,18 @@ namespace CForum {
     }
 
     std::string Number::toJSON() {
-      return std::string("");
+      std::string str;
+      std::ostringstream ostr(str);
+
+
+      if(_type == JSONNumberTypeDouble) {
+        ostr << _ddata;
+      }
+      else {
+        ostr << _idata;
+      }
+
+      return str;
     }
 
     int64_t Number::getIValue() {

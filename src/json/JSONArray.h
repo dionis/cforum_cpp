@@ -33,6 +33,10 @@
 
 #include "config.h"
 
+#include <sstream>
+#include <iostream>
+#include <string>
+
 #include <vector>
 
 #include "JSONElement.h"
@@ -43,7 +47,6 @@ namespace CForum {
     public:
       Array();
 
-      virtual void fromJSON(const std::string &);
       virtual std::string toJSON();
       virtual ~Array();
 

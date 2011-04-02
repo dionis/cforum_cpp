@@ -33,12 +33,17 @@
 
 #include "config.h"
 
+#include <sstream>
+#include <iostream>
+#include <string>
+
 #include <map>
 
 #include <unicode/unistr.h>
 #include <unicode/bytestream.h>
 
 #include "JSONElement.h"
+#include "JSONString.h"
 
 namespace CForum {
   namespace JSON {

@@ -33,8 +33,13 @@
 
 #include "config.h"
 
+#include <sstream>
+#include <iostream>
+#include <string>
+
 #include <unicode/unistr.h>
 #include <unicode/bytestream.h>
+#include <unicode/uchriter.h>
 
 #include "JSONElement.h"
 
@@ -49,6 +54,8 @@ namespace CForum {
 
       virtual std::string toJSON();
       virtual ~String();
+
+      static std::string toJSONString(const UnicodeString &);
 
     protected:
       UnicodeString _data;

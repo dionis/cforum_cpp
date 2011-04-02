@@ -39,7 +39,11 @@ namespace CForum {
     }
 
     std::string Boolean::toJSON() {
-      return std::string("");
+      if(_data) {
+        return std::string("true");
+      }
+
+      return std::string("false");
     }
 
     bool Boolean::getValue() {

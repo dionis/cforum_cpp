@@ -42,9 +42,6 @@ namespace CForum {
       return _type;
     }
 
-    void Element::fromJSON(const std::string &json) {
-    }
-
     std::string Element::toJSON() {
       return std::string("");
     }

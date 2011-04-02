@@ -43,7 +43,66 @@ namespace CForum {
     }
 
     std::string String::toJSON() {
-      return std::string("");
+      return String::toJSONString(_data);
+    }
+
+    std::string String::toJSONString(const UnicodeString &str) {
+      std::string json("{");
+      std::ostringstream ostr(json);
+      char buff[50];
+      size_t len;
+
+      const UChar *data = str.getBuffer();
+
+      UCharCharacterIterator cit(data,str.length());
+      UChar c = cit.first();
+
+      do {
+        if(c != CharacterIterator::DONE) {
+          if(c < 127) {
+            switch(c) {
+            case '"':
+              ostr << "\\\"";
+
+            case '\\':
+              ostr << "\\\\";
+
+            case '/':
+              ostr << "\\/";
+
+            case '\b':
+              ostr << "\\b";
+
+            case '\f':
+              ostr << "\\f";
+
+            case '\n':
+              ostr << "\\n";
+
+            case '\r':
+              ostr << "\\r";
+
+            case '\t':
+              ostr << "\\t";
+
+            default:
+              ostr << (char)c;
+            }
+          }
+          else {
+            len = snprintf(buff,49,"%04x",c);
+            buff[len] = 0;
+            ostr << buff;
+          }
+
+          c = cit.next();
+        }
+      } while(c != CharacterIterator::DONE);
+
+      ostr << "\"";
+
+      return json;
+
     }
 
     String::~String() {

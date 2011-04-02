@@ -36,7 +36,29 @@ namespace CForum {
     }
 
     std::string Object::toJSON() {
-      return std::string("");
+      std::string json("{");
+      std::ostringstream ostr(json);
+
+      bool isfirst = true;
+
+      std::map<UnicodeString,Element *>::iterator end = _data.end();
+      std::map<UnicodeString,Element *>::iterator it;
+
+      for(it = _data.begin(); it != end; ++it) {
+        if(!isfirst) {
+          ostr << ",";
+        }
+
+        isfirst = false;
+
+        ostr << String::toJSONString(it->first);
+        ostr << ": ";
+        ostr << it->second->toJSON();
+      }
+
+      ostr << "}";
+
+      return json;
     }
 
     std::map<UnicodeString,Element *> &Object::getValue() {

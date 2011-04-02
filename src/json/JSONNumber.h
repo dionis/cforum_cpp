@@ -31,6 +31,10 @@
 #ifndef JSON_NUMBER_H
 #define JSON_NUMBER_H
 
+#include <sstream>
+#include <iostream>
+#include <string>
+
 #include "config.h"
 
 #include "JSONElement.h"

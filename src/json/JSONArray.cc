@@ -35,11 +35,22 @@ namespace CForum {
     Array::Array() : Element(JSONTypeArray), _data() {
     }
 
-    void Array::fromJSON(const std::string &json) {
-    }
-
     std::string Array::toJSON() {
-      return std::string("");
+      std::string json("[");
+      std::ostringstream ostr(json);
+
+      int sz = _data.size();
+
+      for(int i=0;i<sz;++i) {
+        ostr << _data[i]->toJSON();
+        if(i < sz - 1) {
+          ostr << ",";
+        }
+      }
+
+      ostr << "]";
+
+      return json;
     }
 
     std::vector<Element *> &Array::getValue() {

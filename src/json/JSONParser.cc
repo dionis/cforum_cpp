@@ -134,7 +134,6 @@ namespace CForum {
 
     const char *Parser::readDoubleQuoteString(const char *str,const char *end,Parser::Token &tok) {
       const char *ptr;
-      UChar chr;
       tok.data = UnicodeString();
 
       for(ptr=str;ptr < end;++ptr) {
@@ -263,25 +262,6 @@ namespace CForum {
       return str;
     }
 
-    const char *to_type_str(enum JSONTokenType t) {
-      switch(t) {
-      case JSONTokenTypeObjectBegin: return "JSONTokenTypeObjectBegin";
-      case JSONTokenTypeObjectEnd:   return "JSONTokenTypeObjectEnd";
-      case JSONTokenTypeArrayBegin:  return "JSONTokenTypeArrayBegin";
-      case JSONTokenTypeArrayEnd:    return "JSONTokenTypeArrayEnd";
-      case JSONTokenTypeString:      return "JSONTokenTypeString";
-      case JSONTokenTypeNull:        return "JSONTokenTypeNull";
-      case JSONTokenTypeNumberInt:   return "JSONTokenTypeNumberInt";
-      case JSONTokenTypeNumberFloat: return "JSONTokenTypeNumberFloat";
-      case JSONTokenTypeTrue:        return "JSONTokenTypeTrue";
-      case JSONTokenTypeFalse:       return "JSONTokenTypeFalse";
-      case JSONTokenTypeColon:       return "JSONTokenTypeColon";
-      case JSONTokenTypeComma:       return "JSONTokenTypeComma";
-      }
-
-      return "unknown";
-    }
-
     const char *Parser::readArray(Array *elem,const char *str,const char *end) {
       Token tok;
       Element *data;
@@ -348,10 +328,6 @@ namespace CForum {
 
       Object *obj;
       Array *ary;
-      Boolean *bl;
-      String *strg;
-      Number *num;
-      Null *nll;
 
       tok.type = JSONTokenTypeUnknown;
       tok.dval = 0.0;
