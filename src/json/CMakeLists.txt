@@ -9,8 +9,8 @@ add_library(cfjson SHARED
   JSONArray.cc
   JSONElement.cc
   JSONNull.cc
-  JSONObject.cc
   JSONString.cc
+  JSONObject.cc
   JSONBoolean.cc
   JSONNumber.cc
   JSONParser.cc
