@@ -1,7 +1,7 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
  * \brief Configuration parser implementation
- * \package JSON
+ * \package configparser
  *
  * This implements the configuration parser interface
  */
