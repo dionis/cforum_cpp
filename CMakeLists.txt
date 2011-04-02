@@ -37,12 +37,6 @@ set(CMAKE_C_FLAGS_MINSIZEREL "-Os")
 #   _REENTRANT:  select reentrant functions by default (thread safety)
 add_definitions(-D_REENTRANT -D_GNU_SOURCE)
 
-# Fine-grained debugging options
-option(ENABLE_LOCK_DEBUG, "enable lock debugging" OFF)
-if(ENABLE_LOCK_DEBUG STREQUAL "ON")
-	add_definitions(-DCF_LOCK_DEBUG)
-endif()
-
 # Include Useful Macros
 include(CheckLibraryExists)
 include(CheckSymbolExists)
