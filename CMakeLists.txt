@@ -8,7 +8,7 @@ if(COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW)
 endif()
 
-project(cforum C)
+project(cforum CXX C)
 
 # Set a default build type for single-configuration
 # CMake generators if no build type is set.
@@ -103,20 +103,13 @@ if(NOT CMAKE_USE_PTHREADS_INIT)
 endif()
 # usage: target_link_libraries(myexe ${CMAKE_THREAD_LIBS_INIT})
 
-# kqueue / epoll / select
-check_function_exists(kqueue HAVE_KQUEUE)
-check_function_exists(epoll_create HAVE_EPOLL)
-check_function_exists(select HAVE_SELECT)
 
-if(NOT HAVE_KQUEUE AND NOT HAVE_EPOLL AND NOT HAVE_SELECT)
-  message(FATAL_ERROR "Could not find kqueue(2), nor epoll(4) neither select(2)")
-endif()
 
 # Find required packages
-find_package(Lua51 REQUIRED)
+find_package(v8 REQUIRED)
 find_package(IDN REQUIRED)
 find_package(ICU REQUIRED)
-include_directories("${LUA_INCLUDE_DIR}" "${IDN_INCLUDE_DIR}" "${ICU_INCLUDE}")
+include_directories("${IDN_INCLUDE_DIR}" "${ICU_INCLUDE}")
 
 add_subdirectory(src)
 

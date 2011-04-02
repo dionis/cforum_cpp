@@ -7,4 +7,5 @@ Makefile
 *.so
 /docs/
 build
+*.swp
 
