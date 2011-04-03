@@ -58,8 +58,10 @@ namespace CForum {
       int64_t getIValue();
       double getDValue();
 
+      enum JSONNumberType getNumberType();
+
     protected:
-      int _type;
+      enum JSONNumberType _ntype;
       double _ddata;
       int _idata;
     };

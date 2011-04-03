@@ -32,20 +32,24 @@
 
 namespace CForum {
   namespace JSON {
-    Number::Number() : Element(JSONTypeNumber), _type(JSONNumberTypeInt), _ddata(0), _idata(0) {
+    Number::Number() : Element(JSONTypeNumber), _ntype(JSONNumberTypeInt), _ddata(0), _idata(0) {
     }
 
-    Number::Number(double dval) : Element(JSONTypeNumber), _type(JSONNumberTypeDouble), _ddata(dval), _idata(0) {
+    Number::Number(double dval) : Element(JSONTypeNumber), _ntype(JSONNumberTypeDouble), _ddata(dval), _idata(0) {
     }
 
-    Number::Number(int64_t ival) : Element(JSONTypeNumber), _type(JSONNumberTypeInt), _ddata(0), _idata(ival) {
+    Number::Number(int64_t ival) : Element(JSONTypeNumber), _ntype(JSONNumberTypeInt), _ddata(0), _idata(ival) {
+    }
+
+    enum JSONNumberType Number::getNumberType() {
+      return _ntype;
     }
 
     std::string Number::toJSON() {
       std::ostringstream ostr;
 
 
-      if(_type == JSONNumberTypeDouble) {
+      if(_ntype == JSONNumberTypeDouble) {
         ostr << _ddata;
       }
       else {
