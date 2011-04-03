@@ -36,13 +36,14 @@ namespace CForum {
     }
 
     std::string Object::toJSON() {
-      std::string json("{");
-      std::ostringstream ostr(json);
+      std::ostringstream ostr;
 
       bool isfirst = true;
 
       std::map<UnicodeString,Element *>::iterator end = _data.end();
       std::map<UnicodeString,Element *>::iterator it;
+
+      ostr << "{";
 
       for(it = _data.begin(); it != end; ++it) {
         if(!isfirst) {
@@ -52,13 +53,13 @@ namespace CForum {
         isfirst = false;
 
         ostr << String::toJSONString(it->first);
-        ostr << ": ";
+        ostr << ":";
         ostr << it->second->toJSON();
       }
 
       ostr << "}";
 
-      return json;
+      return ostr.str();
     }
 
     std::map<UnicodeString,Element *> &Object::getValue() {

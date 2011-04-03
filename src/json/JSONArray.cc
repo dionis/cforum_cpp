@@ -36,10 +36,11 @@ namespace CForum {
     }
 
     std::string Array::toJSON() {
-      std::string json("[");
-      std::ostringstream ostr(json);
+      std::ostringstream ostr;
 
       int sz = _data.size();
+
+      ostr << "[";
 
       for(int i=0;i<sz;++i) {
         ostr << _data[i]->toJSON();
@@ -50,7 +51,7 @@ namespace CForum {
 
       ostr << "]";
 
-      return json;
+      return ostr.str();
     }
 
     std::vector<Element *> &Array::getValue() {

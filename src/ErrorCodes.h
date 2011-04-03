@@ -48,6 +48,8 @@ namespace CForum {
     ErrorCodeJSONObjectKeyMustBeString    = 0x4d8dfcc6,
     ErrorCodeJSONObjectColonMustFollowKey = 0x4d8dfccc,
     ErrorCodeJSONObjectCommaOrEOOMissing  = 0x4d8dfcd2,
+    ErrorCodeJSONFloatNumberError         = 0x4d986b4c,
+    ErrorCodeArraySyntaxError             = 0x4d986b70,
     ErrorCodeJSONUnknownTokenType         = 0x4d8e06a1
   };
 }

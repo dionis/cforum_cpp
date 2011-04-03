@@ -35,7 +35,7 @@ namespace CForum {
     String::String() : Element(JSONTypeString), _data() {
     }
 
-    String::String(UnicodeString &str) : _data(str) {
+    String::String(UnicodeString &str) : Element(JSONTypeString), _data(str) {
     }
 
     const UnicodeString &String::getData() {
@@ -47,8 +47,7 @@ namespace CForum {
     }
 
     std::string String::toJSONString(const UnicodeString &str) {
-      std::string json("{");
-      std::ostringstream ostr(json);
+      std::ostringstream ostr;
       char buff[50];
       size_t len;
 
@@ -56,6 +55,8 @@ namespace CForum {
 
       UCharCharacterIterator cit(data,str.length());
       UChar c = cit.first();
+
+      ostr << "\"";
 
       do {
         if(c != CharacterIterator::DONE) {
@@ -86,7 +87,9 @@ namespace CForum {
               ostr << "\\t";
 
             default:
-              ostr << (char)c;
+              buff[0] = (char)c;
+              buff[1] = '\0';
+              ostr << buff;
             }
           }
           else {
@@ -101,7 +104,7 @@ namespace CForum {
 
       ostr << "\"";
 
-      return json;
+      return ostr.str();
 
     }
 

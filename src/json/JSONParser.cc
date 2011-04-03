@@ -191,6 +191,8 @@ namespace CForum {
     }
 
     const char *Parser::getNextToken(const char *str,const char *end,Parser::Token &tok) {
+      const char *ptr;
+
       str = eatWhitespacesAndComments(str,end);
 
       switch(*str) {
@@ -233,7 +235,13 @@ namespace CForum {
       case '7':
       case '8':
       case '9':
-        if(*(str+1) == '.') {
+        for(ptr=str;ptr<end && isdigit(*ptr);++ptr);
+
+        if(*ptr == '.') {
+          if(!isdigit(*(ptr+1))) {
+            throw JSONSyntaxErrorException("Syntax error in float: a digit must follow the dot",ErrorCodeJSONFloatNumberError);
+          }
+
           tok.type = JSONTokenTypeNumberFloat;
           tok.dval = strtod(str,(char **)&str);
         }
@@ -277,7 +285,7 @@ namespace CForum {
           str = getNextToken(str,end,tok);
 
           if(tok.type != JSONTokenTypeComma && tok.type != JSONTokenTypeArrayEnd) {
-            throw JSONSyntaxErrorException("Syntax error in array",0); // TODO: proper exception
+            throw JSONSyntaxErrorException("Syntax error in array",ErrorCodeArraySyntaxError);
           }
         }
         else {
