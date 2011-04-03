@@ -1,3 +1,9 @@
+2011-04-03 Christian Kruse <cjk@wwwtech.de>
+	* *: Completely rewrote everything ;-) Now using C++ for the
+		viewers/posters and CouchDB as database interface. See
+		<http://ck.kennt-wayne.de/2011/mar/classic-forum-couchdb>
+		for details.
+
 2010-07-17 Christian Kruse <cjk@wwwtech.de>
 	* src/hashlib.[ch]: Removed a senseless free() call in
 		cf_hash_destroy, made all key parameters const
