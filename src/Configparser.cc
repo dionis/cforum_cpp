@@ -85,14 +85,5 @@ namespace CForum {
 
 }
 
-int main(int argc,char *argv[]) {
-  CForum::Configparser *parser = CForum::Configparser::instance();
-  std::string test;
-
-  parser->parse();
-
-  return 0;
-}
-
 
 /* eof */
