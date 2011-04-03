@@ -12,6 +12,8 @@ add_subdirectory(exceptions)
 add_subdirectory(jsevaluator)
 #add_subdirectory(couchdb)
 
+add_subdirectory(tests)
+
 add_library(cfconfigparser SHARED Configparser.cc)
 target_link_libraries(cfconfigparser cfjsevaluator ${ICU_LIBRARY})
 
