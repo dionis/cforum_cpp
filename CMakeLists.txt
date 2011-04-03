@@ -104,6 +104,7 @@ find_package(v8 REQUIRED)
 find_package(IDN REQUIRED)
 find_package(ICU REQUIRED)
 find_package(CPPUNIT REQUIRED)
+find_package(CURL REQUIRED)
 
 include_directories("${IDN_INCLUDE_DIR}" "${ICU_INCLUDE}")
 
