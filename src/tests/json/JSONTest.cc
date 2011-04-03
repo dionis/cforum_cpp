@@ -36,18 +36,47 @@ CPPUNIT_TEST_SUITE_REGISTRATION(JSONTest);
 void JSONTest::testParser() {
   CForum::JSON::Parser *pr = new CForum::JSON::Parser();
   CForum::JSON::Object *root;
-  const char *str = "{\"test-array\":[\"test-value\",3],\"test-bool-false\":false,\"test-bool-true\":true,\"test-null\":null,\"test-num-float\":10.3,\"test-num-int\":10,\"test-string\":\"test-value\"}";
+  const char *str = "{\"test-array\":[\"test-value\",3],\"test-bool-false\":false,\"test-bool-true\":true,\"test-null\":null,\"test-num-float\":23.23,\"test-num-int\":23,\"test-string\":\"test-value\"}";
 
-  try {
-    pr->parse(str,(CForum::JSON::Element **)&root);
-  }
-  catch(CForum::JSON::JSONException &e) {
-    printf("error: %s\n",e.getMessage().c_str());
-    throw e;
-  }
+  pr->parse(str,(CForum::JSON::Element **)&root);
 
+  std::map<UnicodeString,CForum::JSON::Element *> &mp = root->getValue();
 
+  CForum::JSON::Array *ary = (CForum::JSON::Array *)mp[UnicodeString("test-array")];
+  std::vector <CForum::JSON::Element *> &vc = ary->getValue();
 
+  CPPUNIT_ASSERT_EQUAL((int)vc.size(),2);
+  CPPUNIT_ASSERT_EQUAL(vc[0]->getType(),CForum::JSON::JSONTypeString);
+
+  std::string str_val,str_val1("test-value");
+  ((CForum::JSON::String *)vc[0])->getValue().toUTF8String(str_val);
+
+  CPPUNIT_ASSERT_EQUAL(str_val,str_val1);
+
+  CPPUNIT_ASSERT_EQUAL(vc[1]->getType(),CForum::JSON::JSONTypeNumber);
+  CPPUNIT_ASSERT_EQUAL((int)((CForum::JSON::Number *)vc[1])->getNumberType(),(int)CForum::JSON::JSONNumberTypeInt);
+  CPPUNIT_ASSERT_EQUAL((int)((CForum::JSON::Number *)vc[1])->getIValue(),3);
+
+  CForum::JSON::Boolean *b = (CForum::JSON::Boolean *)mp[UnicodeString("test-bool-false")];
+  CPPUNIT_ASSERT(!b->getValue());
+
+  b = (CForum::JSON::Boolean *)mp[UnicodeString("test-bool-true")];
+  CPPUNIT_ASSERT(b->getValue());
+
+  CForum::JSON::Number *n = (CForum::JSON::Number *)mp[UnicodeString("test-num-float")];
+  CPPUNIT_ASSERT_EQUAL(n->getDValue(),23.23);
+
+  n = (CForum::JSON::Number *)mp[UnicodeString("test-num-int")];
+  CPPUNIT_ASSERT_EQUAL((int)n->getIValue(),23);
+
+  CForum::JSON::String *xstr = (CForum::JSON::String *)mp[UnicodeString("test-string")];
+  str_val = "";
+  xstr->getValue().toUTF8String(str_val);
+  str_val1 = "test-value";
+
+  CPPUNIT_ASSERT_EQUAL(str_val1,str_val);
+
+  delete root;
 }
 
 void JSONTest::testGenerator() {
@@ -64,8 +93,8 @@ void JSONTest::testGenerator() {
 
 
   dt[UnicodeString("test-string")] = new CForum::JSON::String(str);
-  dt[UnicodeString("test-num-int")] = new CForum::JSON::Number((int64_t)10);
-  dt[UnicodeString("test-num-float")] = new CForum::JSON::Number((double)10.3);
+  dt[UnicodeString("test-num-int")] = new CForum::JSON::Number((int64_t)23);
+  dt[UnicodeString("test-num-float")] = new CForum::JSON::Number((double)23.23);
   dt[UnicodeString("test-bool-true")] = new CForum::JSON::Boolean(true);
   dt[UnicodeString("test-bool-false")] = new CForum::JSON::Boolean(false);
   dt[UnicodeString("test-null")] = new CForum::JSON::Null();
@@ -75,7 +104,7 @@ void JSONTest::testGenerator() {
 
   delete root;
 
-  CPPUNIT_ASSERT_EQUAL(test,std::string("{\"test-array\":[\"test-value\",3],\"test-bool-false\":false,\"test-bool-true\":true,\"test-null\":null,\"test-num-float\":10.3,\"test-num-int\":10,\"test-string\":\"test-value\"}"));
+  CPPUNIT_ASSERT_EQUAL(test,std::string("{\"test-array\":[\"test-value\",3],\"test-bool-false\":false,\"test-bool-true\":true,\"test-null\":null,\"test-num-float\":23.23,\"test-num-int\":23,\"test-string\":\"test-value\"}"));
 }
 
 
