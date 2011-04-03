@@ -38,7 +38,7 @@ namespace CForum {
     String::String(UnicodeString &str) : Element(JSONTypeString), _data(str) {
     }
 
-    const UnicodeString &String::getData() {
+    const UnicodeString &String::getValue() {
       return _data;
     }
 
