@@ -1,7 +1,7 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
  * \brief CouchDB interface implementation
- * \package JSON
+ * \package couchdb
  *
  * This implements the CouchDB interface
  */
@@ -32,33 +32,6 @@
 
 namespace CForum {
   namespace CouchDB {
-    Document::Document() {
-    }
-
-    Document::Document(const Document &) {
-    }
-
-    Document::Document(const UnicodeString &json_str) {
-    }
-
-    Document::Document(const std::string &json_str) {
-    }
-
-    virtual Document Document::getKey(const std::string &key) {
-    }
-
-    virtual void Document::setKey(const std::string &key,const Document &doc) {
-    }
-
-    UnicodeString Document::toJSON() {
-      return UnicodeString();
-    }
-
-    virtual ~Document::Document() {
-    }
-
-
-
     Server::Server() : _host(), _db(), _port(0), _curl(NULL), _connect(1) {}
     Server::Server(const std::string &db) : _host("localhost"), _db(db), _port(5984), _curl(NULL), _connect(1) {}
     Server::Server(const std::string &db,const std::string &host) : _host(host), _db(db), _port(5984), _curl(NULL), _connect(1) {}

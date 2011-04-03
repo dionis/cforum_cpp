@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief CouchDB interface definition
- * \package CouchDB
+ * \brief CouchDB document interface implementation
+ * \package couchdb
  *
- * This defines the CouchDB interface
+ * This implements the CouchDB document interface
  */
 
 /*
@@ -28,52 +28,41 @@
  * THE SOFTWARE.
  */
 
-#ifndef COUCH_INTERFACE_H
-#define COUCH_INTERFACE_H
-
-#include <unicode/unistr.h>
-#include <string>
-
-#include <curl/curl.h>
-
 #include "Document.h"
 
 namespace CForum {
   namespace CouchDB {
-    class Server {
-    public:
-      Server(const std::string &);
-      Server(const std::string &,const std::string &);
-      Server(const std::string &,const std::string &,int);
+    Document::Document() {
+    }
 
-      std::string getHost();
-      std::string setHost(const std::string &);
+    Document::Document(const Document &doc) {
+    }
 
-      std::string getDatabase();
-      std::string setDatabase(const std::string &);
+    Document::Document(const UnicodeString &json_str) {
+    }
 
-      int getPort();
-      int setPort(int);
+    Document::Document(const std::string &json_str) {
+    }
 
-      void putDocument(Document &);
-      std::string getDocument(std::string &);
-      void deleteDocument(Document &);
+    Document Document::getKey(const std::string &key) {
+    }
 
-    private:
-      Server();
+    Document Document::getKey(const UnicodeString &key) {
+    }
 
-      void connect();
+    void Document::setKey(const std::string &key,const Document &doc) {
+    }
 
-    protected:
-      std::string _host,_db;
-      int _port;
-      CURL *_curl;
-      int _connect;
+    void Document::setKey(const UnicodeString &key,const Document &doc) {
+    }
 
-    };
+    UnicodeString Document::toJSON() {
+      return UnicodeString();
+    }
+
+    Document::~Document() {
+    }
   }
 }
-
-#endif
 
 /* eof */

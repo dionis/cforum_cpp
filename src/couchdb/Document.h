@@ -1,7 +1,7 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
  * \brief CouchDB interface definition
- * \package CouchDB
+ * \package couchdb
  *
  * This defines the CouchDB interface
  */
@@ -28,51 +28,35 @@
  * THE SOFTWARE.
  */
 
-#ifndef COUCH_INTERFACE_H
-#define COUCH_INTERFACE_H
+#ifndef DOCUMENT_H
+#define DOCUMENT_H
 
 #include <unicode/unistr.h>
 #include <string>
 
-#include <curl/curl.h>
-
-#include "Document.h"
-
 namespace CForum {
   namespace CouchDB {
-    class Server {
+
+    class Document {
     public:
-      Server(const std::string &);
-      Server(const std::string &,const std::string &);
-      Server(const std::string &,const std::string &,int);
+      Document();
+      Document(const Document &);
+      Document(const UnicodeString &);
+      Document(const std::string &);
 
-      std::string getHost();
-      std::string setHost(const std::string &);
+      virtual Document getKey(const std::string &);
+      virtual Document getKey(const UnicodeString &);
+      virtual void setKey(const std::string &,const Document &);
+      virtual void setKey(const UnicodeString &,const Document &);
 
-      std::string getDatabase();
-      std::string setDatabase(const std::string &);
+      virtual UnicodeString toJSON();
 
-      int getPort();
-      int setPort(int);
-
-      void putDocument(Document &);
-      std::string getDocument(std::string &);
-      void deleteDocument(Document &);
-
-    private:
-      Server();
-
-      void connect();
-
-    protected:
-      std::string _host,_db;
-      int _port;
-      CURL *_curl;
-      int _connect;
-
+      virtual ~Document();
     };
+
   }
 }
+
 
 #endif
 

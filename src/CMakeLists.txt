@@ -10,7 +10,7 @@ include_directories(BEFORE "${CMAKE_CURRENT_BINARY_DIR}" "${CMAKE_CURRENT_SOURCE
 add_subdirectory(json)
 add_subdirectory(exceptions)
 add_subdirectory(jsevaluator)
-#add_subdirectory(couchdb)
+add_subdirectory(couchdb)
 
 add_subdirectory(tests)
 
