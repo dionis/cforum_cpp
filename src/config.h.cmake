@@ -22,6 +22,8 @@
 #define CF_MOD_MAGIC_MINOR 0
 #define CF_MOD_MAGIC ((CF_MOD_MAGIC_MAJOR<<8)|(CF_MOD_MAGIC_MINOR))
 
+#define CF_VERSION "4.0a1"
+
 #cmakedefine CF_PREFIX "${CF_PREFIX}"
 
 #cmakedefine HAVE_STRDUP
