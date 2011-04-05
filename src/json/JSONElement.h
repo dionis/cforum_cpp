@@ -54,7 +54,7 @@ namespace CForum {
       virtual std::string toJSON();
       virtual ~Element();
 
-      enum JSONType getType();
+      enum JSONType getType() const;
 
     protected:
       enum JSONType _type;

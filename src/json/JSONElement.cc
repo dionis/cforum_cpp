@@ -38,7 +38,7 @@ namespace CForum {
     Element::Element(enum JSONType type) : _type(type) {
     }
 
-    enum JSONType Element::getType() {
+    enum JSONType Element::getType() const {
       return _type;
     }
 
