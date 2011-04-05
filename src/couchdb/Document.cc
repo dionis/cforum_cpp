@@ -32,35 +32,71 @@
 
 namespace CForum {
   namespace CouchDB {
-    Document::Document() {
+    Document::Document() : root(new JSON::Object()) {
     }
 
-    Document::Document(const Document &doc) {
+    Document::Document(const Document &doc) : root(NULL) {
     }
 
-    Document::Document(const UnicodeString &json_str) {
+    Document::Document(const UnicodeString &json_str) : root(NULL) {
+      std::string str;
+      JSON::Parser *prsr = new JSON::Parser();
+
+      json_str.toUTF8String(str);
+      prsr->parse(str.c_str(),(JSON::Element **)&root);
+
+      delete prsr;
     }
 
-    Document::Document(const std::string &json_str) {
+    Document::Document(const std::string &json_str) : root(NULL) {
+      JSON::Parser *prsr = new JSON::Parser();
+      prsr->parse(json_str.c_str(),(JSON::Element **)&root);
     }
 
-    Document Document::getKey(const std::string &key) {
+    JSON::Element *Document::getValue(const char *key) {
+      return getValue(UnicodeString(key));
     }
 
-    Document Document::getKey(const UnicodeString &key) {
+    JSON::Element *Document::getValue(const std::string &key) {
+      UnicodeString str(key.c_str());
+      return getValue(str);
     }
 
-    void Document::setKey(const std::string &key,const Document &doc) {
+    JSON::Element *Document::getValue(const UnicodeString &key) {
+      if(root) {
+        std::map<UnicodeString,JSON::Element *> mp = root->getValue();
+        return mp[key];
+      }
+
+      return NULL;
     }
 
-    void Document::setKey(const UnicodeString &key,const Document &doc) {
+    void Document::setValue(const std::string &key,JSON::Element *doc) {
+      UnicodeString str(key.c_str());
+      setValue(str,doc);
     }
 
-    UnicodeString Document::toJSON() {
-      return UnicodeString();
+    void Document::setValue(const UnicodeString &key,JSON::Element *doc) {
+      if(doc->getType() != JSON::JSONTypeObject) {
+        throw CouchErrorException(); // TODO: proper exception
+      }
+
+      std::map<UnicodeString,JSON::Element *> mp = root->getValue();
+      mp[key] = doc;
+    }
+
+    std::string Document::toJSON() {
+      if(root) {
+        return root->toJSON();
+      }
+
+      return std::string();
     }
 
     Document::~Document() {
+      if(root != NULL) {
+        delete root;
+      }
     }
   }
 }

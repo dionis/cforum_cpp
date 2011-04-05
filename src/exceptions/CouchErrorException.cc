@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief CouchDB interface definition
- * \package CouchDB
+ * \brief CouchDB error exception
+ * \package couchdb
  *
- * This defines the CouchDB interface
+ * This implements the CouchDB error exception interface
  */
 
 /*
@@ -28,61 +28,16 @@
  * THE SOFTWARE.
  */
 
-#ifndef COUCH_INTERFACE_H
-#define COUCH_INTERFACE_H
 
-#include "config.h"
-
-#include <unicode/unistr.h>
-#include <string>
-
-#include <curl/curl.h>
-
-#include "Document.h"
+#include "CouchErrorException.h"
 
 namespace CForum {
   namespace CouchDB {
-    class Server {
-    public:
-      Server(const std::string &);
-      Server(const std::string &,const std::string &);
-      Server(const std::string &,const std::string &,int);
-
-      std::string getHost();
-      std::string setHost(const std::string &);
-
-      std::string getDatabase();
-      std::string setDatabase(const std::string &);
-
-      int getPort();
-      int setPort(int);
-
-      void putDocument(const Document &);
-
-      Document getDocument(const std::string &);
-      Document getDocument(const UnicodeString &);
-
-      void deleteDocument(const Document &);
-      void deleteDocument(const std::string &);
-
-      void setAuth(const std::string &,const std::string &);
-
-    private:
-      Server();
-
-      void connect();
-
-    protected:
-      std::string _host,_db,_user,_pass;
-      bool _authed;
-      int _port;
-      CURL *_curl;
-      int _connect;
-
-    };
+    CouchErrorException::CouchErrorException() : CForumException() {}
+    CouchErrorException::CouchErrorException(int code) : CForumException(code) {}
+    CouchErrorException::CouchErrorException(const char *msg,int code) : CForumException(msg,code) {}
+    CouchErrorException::CouchErrorException(const std::string &msg,int code) : CForumException(msg,code) {}
   }
 }
-
-#endif
 
 /* eof */

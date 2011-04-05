@@ -11,6 +11,7 @@ add_library(cfexceptions SHARED
   JSEvaluatorException.cc
   JSONSyntaxException.cc
   JSONException.cc
+  CouchErrorException.cc
 )
 
 # eof

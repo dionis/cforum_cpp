@@ -31,8 +31,13 @@
 #ifndef DOCUMENT_H
 #define DOCUMENT_H
 
+#include "config.h"
+
 #include <unicode/unistr.h>
 #include <string>
+
+#include "json/JSONParser.h"
+#include "exceptions/CouchErrorException.h"
 
 namespace CForum {
   namespace CouchDB {
@@ -44,14 +49,19 @@ namespace CForum {
       Document(const UnicodeString &);
       Document(const std::string &);
 
-      virtual Document getKey(const std::string &);
-      virtual Document getKey(const UnicodeString &);
-      virtual void setKey(const std::string &,const Document &);
-      virtual void setKey(const UnicodeString &,const Document &);
+      virtual JSON::Element *getValue(const char *);
+      virtual JSON::Element *getValue(const std::string &);
+      virtual JSON::Element *getValue(const UnicodeString &);
 
-      virtual UnicodeString toJSON();
+      virtual void setValue(const std::string &,JSON::Element *);
+      virtual void setValue(const UnicodeString &,JSON::Element *);
+
+      virtual std::string toJSON();
 
       virtual ~Document();
+
+    private:
+      JSON::Object *root;
     };
 
   }

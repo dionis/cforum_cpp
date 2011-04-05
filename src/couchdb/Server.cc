@@ -32,10 +32,16 @@
 
 namespace CForum {
   namespace CouchDB {
-    Server::Server() : _host(), _db(), _port(0), _curl(NULL), _connect(1) {}
-    Server::Server(const std::string &db) : _host("localhost"), _db(db), _port(5984), _curl(NULL), _connect(1) {}
-    Server::Server(const std::string &db,const std::string &host) : _host(host), _db(db), _port(5984), _curl(NULL), _connect(1) {}
-    Server::Server(const std::string &db,const std::string &host,const int port) : _host(host), _db(db), _port(port), _curl(NULL), _connect(1) {}
+    Server::Server() : _host(), _db(), _user(), _pass(), _authed(false), _port(0), _curl(NULL), _connect(1) {}
+    Server::Server(const std::string &db) : _host("localhost"), _db(db), _user(), _pass(), _authed(false), _port(5984), _curl(NULL), _connect(1) {}
+    Server::Server(const std::string &db,const std::string &host) : _host(host), _db(db), _user(), _pass(), _authed(false), _port(5984), _curl(NULL), _connect(1) {}
+    Server::Server(const std::string &db,const std::string &host,const int port) : _host(host), _db(db), _user(), _pass(), _authed(false), _port(port), _curl(NULL), _connect(1) {}
+
+    void Server::setAuth(const std::string &user,const std::string &pass) {
+      _user = user;
+      _pass = pass;
+      _authed = true;
+    }
 
     std::string Server::getHost() {
       return _host;
@@ -75,24 +81,40 @@ namespace CForum {
         _curl = curl_easy_init();
         curl_easy_setopt(_curl,CURLOPT_NOPROGRESS,1);
         curl_easy_setopt(_curl,CURLOPT_FORBID_REUSE,0);
+        curl_easy_setopt(_curl,CURLOPT_PROTOCOLS,CURLPROTO_HTTP|CURLPROTO_HTTPS);
+        curl_easy_setopt(_curl,CURLOPT_REDIR_PROTOCOLS,CURLPROTO_HTTP|CURLPROTO_HTTPS);
+        curl_easy_setopt(_curl,CURLOPT_FOLLOWLOCATION,1);
+
+        curl_easy_setopt(_curl,CURLOPT_PORT,_port);
+        curl_easy_setopt(_curl,CURLOPT_USERAGENT,"CForum/" CF_VERSION);
+
+        if(_authed) {
+          curl_easy_setopt(_curl,CURLOPT_HTTPAUTH,CURLAUTH_BASIC);
+          curl_easy_setopt(_curl,CURLOPT_USERNAME,_user.c_str());
+          curl_easy_setopt(_curl,CURLOPT_PASSWORD,_pass.c_str());
+        }
+
       }
     }
 
-    void Server::putDocument(Document &doc) {
+    void Server::putDocument(const Document &doc) {
     }
 
-    std::string Server::getDocument(std::string &key) {
-      return std::string("");
+    Document Server::getDocument(const std::string &key) {
+      return Document();
     }
 
-    void Server::deleteDocument(Document &doc) {
+    Document Server::getDocument(const UnicodeString &key) {
+      std::string str;
+      key.toUTF8String(str);
+      return getDocument(str);
+    }
+
+    void Server::deleteDocument(const Document &doc) {
     }
 
   }
 }
 
-int main(void) {
-  CForum::CouchDB::Server srv("test");
-}
 
 /* eof */
