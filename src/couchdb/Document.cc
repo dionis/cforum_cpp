@@ -77,10 +77,6 @@ namespace CForum {
     }
 
     void Document::setValue(const UnicodeString &key,JSON::Element *doc) {
-      if(doc->getType() != JSON::JSONTypeObject) {
-        throw CouchErrorException(); // TODO: proper exception
-      }
-
       std::map<UnicodeString,JSON::Element *> mp = root->getValue();
       mp[key] = doc;
     }

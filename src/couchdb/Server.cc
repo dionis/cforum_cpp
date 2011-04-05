@@ -32,10 +32,12 @@
 
 namespace CForum {
   namespace CouchDB {
-    Server::Server() : _host(), _db(), _user(), _pass(), _authed(false), _port(0), _curl(NULL), _connect(1) {}
-    Server::Server(const std::string &db) : _host("localhost"), _db(db), _user(), _pass(), _authed(false), _port(5984), _curl(NULL), _connect(1) {}
-    Server::Server(const std::string &db,const std::string &host) : _host(host), _db(db), _user(), _pass(), _authed(false), _port(5984), _curl(NULL), _connect(1) {}
-    Server::Server(const std::string &db,const std::string &host,const int port) : _host(host), _db(db), _user(), _pass(), _authed(false), _port(port), _curl(NULL), _connect(1) {}
+    Server::Server() : _host(), _db(), _protocol("http"), _user(), _pass(), _authed(false), _port(5984), _curl(NULL), _connect(1) {}
+    Server::Server(const std::string &db) : _host("localhost"), _db(db), _protocol("http"), _user(), _pass(), _authed(false), _port(5984), _curl(NULL), _connect(1) {}
+    Server::Server(const std::string &db,const std::string &host) : _host(host), _db(db), _protocol("http"), _user(), _pass(), _authed(false), _port(5984), _curl(NULL), _connect(1) {}
+    Server::Server(const std::string &db,const std::string &host,const std::string &protocol) : _host(host), _db(db), _protocol(protocol), _user(), _pass(), _authed(false), _port(5984), _curl(NULL), _connect(1) {}
+    Server::Server(const std::string &db,const std::string &host,const std::string &protocol,int port) : _host(host), _db(db), _protocol(protocol), _user(), _pass(), _authed(false), _port(port), _curl(NULL), _connect(1) {}
+
 
     void Server::setAuth(const std::string &user,const std::string &pass) {
       _user = user;
@@ -97,10 +99,39 @@ namespace CForum {
       }
     }
 
+    std::string Server::genURI(const std::string &key) const {
+      std::string url = _protocol;
+
+      url += "://";
+      url += _host;
+      url += ":";
+      url += _port;
+
+      if(key[0] != '/') {
+        url += "/";
+      }
+
+      url += key;
+
+      return url;
+    }
+
     void Server::putDocument(const Document &doc) {
     }
 
     Document Server::getDocument(const std::string &key) {
+      std::string url = genURI(key);
+      CURLcode cd;
+
+      connect();
+
+      curl_easy_setopt(_curl,CURLOPT_HTTPGET,1);
+      curl_easy_setopt(_curl,CURLOPT_URL,url.c_str());
+
+      if((cd = curl_easy_perform(_curl)) != CURLE_OK) {
+        throw CouchErrorException(curl_easy_strerror(cd),cd); // TODO: proper exception
+      }
+
       return Document();
     }
 

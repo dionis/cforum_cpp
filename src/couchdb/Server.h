@@ -46,7 +46,8 @@ namespace CForum {
     public:
       Server(const std::string &);
       Server(const std::string &,const std::string &);
-      Server(const std::string &,const std::string &,int);
+      Server(const std::string &,const std::string &,const std::string &);
+      Server(const std::string &,const std::string &,const std::string &,int);
 
       std::string getHost();
       std::string setHost(const std::string &);
@@ -71,9 +72,10 @@ namespace CForum {
       Server();
 
       void connect();
+      std::string genURI(const std::string &) const;
 
     protected:
-      std::string _host,_db,_user,_pass;
+      std::string _host,_db,_protocol,_user,_pass;
       bool _authed;
       int _port;
       CURL *_curl;
