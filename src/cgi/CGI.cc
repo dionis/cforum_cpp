@@ -33,15 +33,15 @@
 namespace CForum {
   CGI::CGI() : _get_values(), _post_values(), _cookie_values() {}
 
-  void CGI::parseString(const UnicodeString &str, std::map<const UnicodeString, Parameter *> *container) {
+  void CGI::parseString(const UnicodeString &str, const char realm) {
     std::string ustr;
     str.toUTF8String(ustr);
 
-    parseString(ustr,container);
+    parseString(ustr,realm);
   }
 
-  void CGI::parseString(const std::string &str, std::map<const UnicodeString, Parameter *> *container) {
-    parseString(str.c_str(),container);
+  void CGI::parseString(const std::string &str, const char realm) {
+    parseString(str.c_str(),realm);
   }
 
   void CGI::saveParam(const UnicodeString &name, const UnicodeString &value, std::map<const UnicodeString, Parameter *> *container) {
@@ -55,13 +55,24 @@ namespace CForum {
     }
   }
 
-  void CGI::parseString(const char *data,std::map<const UnicodeString, Parameter *> *container) {
+  void CGI::parseString(const char *data, const char realm) {
     const char  *pos = data,*pos1 = data;
     UnicodeString name,value;
     int len = 0,namlen = 0,vallen = 0;
+    std::map<const UnicodeString, Parameter *> *container;
 
-    if(container == NULL) {
-      container = &_get_values;
+    switch(realm) {
+      case 'G':
+        container = &_get_values;
+        break;
+      case 'P':
+        container = &_post_values;
+        break;
+      case 'C':
+        container = &_cookie_values;
+        break;
+      default:
+        throw ParameterException(); // TODO: proper exception
     }
 
     while((pos = strstr(pos1,"=")) != NULL) {
@@ -70,7 +81,7 @@ namespace CForum {
 
       pos1 = strstr(pos,"&");
       if(!pos1) {
-        throw CGIParserException(); // TODO: proper exception
+        break;
       }
 
       vallen  = pos1 - pos;
@@ -99,7 +110,7 @@ namespace CForum {
     }
 
     if(data != NULL && *data) {
-      c.parseString(data);
+      c.parseString(data,'G');
     }
 
     if(clen && strcmp(rqmeth,"POST") == 0) {
@@ -109,12 +120,48 @@ namespace CForum {
       fread(data,1,len,stdin);
       data[len] = '\0';
 
-      c.parseString(data);
+      c.parseString(data,'P');
 
       free(data);
     }
 
+    if((data = getenv("HTTP_COOKIE")) != NULL) {
+      c.parseCookies(data);
+    }
+
     return c;
+  }
+
+  void CGI::parseCookies(const char *cookies) {
+    const char *pos = cookies,*pos1 = cookies;
+    UnicodeString name,value;
+    int len = 0,namlen = 0,vallen = 0;
+
+    if(cookies) {
+      while((pos = strstr(pos1,"=")) != NULL) {
+        for(;*pos && isspace(*pos);++pos);
+
+        namlen = pos - pos1;
+        name   = CGI::decode(pos1,namlen);
+
+        pos1 = strstr(pos,";");
+        if(!pos1) {
+          break;
+        }
+
+        vallen  = pos1 - pos;
+        value   = CGI::decode(pos+1,vallen);
+
+        saveParam(name,value,&_cookie_values);
+      }
+
+      if(pos && *pos) {
+        len   = strlen(pos+1);
+        value = CGI::decode(pos+1,len);
+
+        saveParam(name,value,&_cookie_values);
+      }
+    }
   }
 
   const CGI::Parameter *CGI::getValue(const UnicodeString &key, const char *realm) {
@@ -131,6 +178,8 @@ namespace CForum {
         case 'C':
           m = &_cookie_values;
           break;
+        default:
+          throw ParameterException(); // TODO: proper exception
       }
 
       return (*m)[key];

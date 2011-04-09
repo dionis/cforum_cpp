@@ -66,9 +66,11 @@ namespace CForum {
 
     CGI();
 
-    void parseString(const UnicodeString &,std::map<const UnicodeString, Parameter *> * = NULL);
-    void parseString(const std::string &,std::map<const UnicodeString, Parameter *> * = NULL);
-    void parseString(const char *,std::map<const UnicodeString, Parameter *> * = NULL);
+    void parseString(const UnicodeString &, const char = 'G');
+    void parseString(const std::string &, const char = 'G');
+    void parseString(const char *, const char = 'G');
+
+    void parseCookies(const char *);
 
     const Parameter *getValue(const UnicodeString &, const char * = "GPC");
     const Parameter *getValue(const std::string &, const char * = "GPC");
@@ -89,7 +91,7 @@ namespace CForum {
     static UnicodeString decode(const char *,size_t);
 
   protected:
-    void saveParam(const UnicodeString &,const UnicodeString &,std::map<const UnicodeString, Parameter *> *);
+    void saveParam(const UnicodeString &,const UnicodeString &, std::map<const UnicodeString, Parameter *> *);
 
     std::map <const UnicodeString,Parameter * > _get_values;
     std::map <const UnicodeString,Parameter * > _post_values;
