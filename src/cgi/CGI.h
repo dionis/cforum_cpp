@@ -66,17 +66,17 @@ namespace CForum {
 
     CGI();
 
-    void parseString(const UnicodeString &);
-    void parseString(const std::string &);
-    void parseString(const char *);
+    void parseString(const UnicodeString &,std::map<const UnicodeString, Parameter *> * = NULL);
+    void parseString(const std::string &,std::map<const UnicodeString, Parameter *> * = NULL);
+    void parseString(const char *,std::map<const UnicodeString, Parameter *> * = NULL);
 
-    const Parameter *getValue(const UnicodeString &);
-    const Parameter *getValue(const std::string &);
-    const Parameter *getValue(const char *);
+    const Parameter *getValue(const UnicodeString &, const char * = "GPC");
+    const Parameter *getValue(const std::string &, const char * = "GPC");
+    const Parameter *getValue(const char *, const char * = "GPC");
 
-    const UnicodeString &getFirstValue(const UnicodeString &);
-    const UnicodeString &getFirstValue(const std::string &);
-    const UnicodeString &getFirstValue(const char *);
+    const UnicodeString &getFirstValue(const UnicodeString &, const char * = "GPC");
+    const UnicodeString &getFirstValue(const std::string &, const char * = "GPC");
+    const UnicodeString &getFirstValue(const char *,const char * = "GPC");
 
 
     static CGI fromCGIEnvironment();
@@ -89,9 +89,11 @@ namespace CForum {
     static UnicodeString decode(const char *,size_t);
 
   protected:
-    void saveParam(const UnicodeString &,const UnicodeString &);
+    void saveParam(const UnicodeString &,const UnicodeString &,std::map<const UnicodeString, Parameter *> *);
 
-    std::map <const UnicodeString,Parameter * > _values;
+    std::map <const UnicodeString,Parameter * > _get_values;
+    std::map <const UnicodeString,Parameter * > _post_values;
+    std::map <const UnicodeString,Parameter * > _cookie_values;
 
   };
 }

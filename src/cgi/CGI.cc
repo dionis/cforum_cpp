@@ -31,34 +31,38 @@
 #include "CGI.h"
 
 namespace CForum {
-  CGI::CGI() : _values() {}
+  CGI::CGI() : _get_values(), _post_values(), _cookie_values() {}
 
-  void CGI::parseString(const UnicodeString &str) {
+  void CGI::parseString(const UnicodeString &str, std::map<const UnicodeString, Parameter *> *container) {
     std::string ustr;
     str.toUTF8String(ustr);
 
-    parseString(ustr);
+    parseString(ustr,container);
   }
 
-  void CGI::parseString(const std::string &str) {
-    parseString(str.c_str());
+  void CGI::parseString(const std::string &str, std::map<const UnicodeString, Parameter *> *container) {
+    parseString(str.c_str(),container);
   }
 
-  void CGI::saveParam(const UnicodeString &name,const UnicodeString &value) {
-    CGI::Parameter *val = _values[name];
+  void CGI::saveParam(const UnicodeString &name, const UnicodeString &value, std::map<const UnicodeString, Parameter *> *container) {
+    CGI::Parameter *val = (*container)[name];
     if(val) {
       val->addValue(value);
     }
     else {
       val = new CGI::Parameter(name,value);
-      _values[name] = val;
+      (*container)[name] = val;
     }
   }
 
-  void CGI::parseString(const char *data) {
+  void CGI::parseString(const char *data,std::map<const UnicodeString, Parameter *> *container) {
     const char  *pos = data,*pos1 = data;
     UnicodeString name,value;
     int len = 0,namlen = 0,vallen = 0;
+
+    if(container == NULL) {
+      container = &_get_values;
+    }
 
     while((pos = strstr(pos1,"=")) != NULL) {
       namlen = pos - pos1;
@@ -72,14 +76,14 @@ namespace CForum {
       vallen  = pos1 - pos;
       value   = CGI::decode(pos+1,vallen);
 
-      saveParam(name,value);
+      saveParam(name,value,container);
     }
 
     if(pos && *pos) {
       len   = strlen(pos+1);
       value = CGI::decode(pos+1,len);
 
-      saveParam(name,value);
+      saveParam(name,value,container);
     }
   }
 
@@ -112,6 +116,68 @@ namespace CForum {
 
     return c;
   }
+
+  const CGI::Parameter *CGI::getValue(const UnicodeString &key, const char *realm) {
+    std::map<const UnicodeString,CGI::Parameter *> *m;
+
+    for(const char *ptr = realm;*ptr;++ptr) {
+      switch(*ptr) {
+        case 'G':
+          m = &_get_values;
+          break;
+        case 'P':
+          m = &_post_values;
+          break;
+        case 'C':
+          m = &_cookie_values;
+          break;
+      }
+
+      return (*m)[key];
+    }
+
+    return NULL;
+  }
+
+  const CGI::Parameter *CGI::getValue(const std::string &key, const char *realm) {
+    UnicodeString str(key.c_str(),"UTF-8");
+    return getValue(str,realm);
+  }
+
+  const CGI::Parameter *CGI::getValue(const char *key, const char *realm) {
+    UnicodeString str(key,"UTF-8");
+    return getValue(str,realm);
+  }
+
+  const UnicodeString &CGI::getFirstValue(const UnicodeString &key, const char *realm) {
+    const CGI::Parameter *p = getValue(key,realm);
+    if(p) {
+      return p->getValue(0);
+    }
+
+    return UnicodeString();
+  }
+
+  const UnicodeString &CGI::getFirstValue(const std::string &key, const char *realm) {
+    const CGI::Parameter *p = getValue(key,realm);
+    if(p) {
+      return p->getValue(0);
+    }
+
+    return UnicodeString();
+  }
+
+  const UnicodeString &CGI::getFirstValue(const char *key, const char *realm) {
+    const CGI::Parameter *p = getValue(key,realm);
+    if(p) {
+      return p->getValue(0);
+    }
+
+    return UnicodeString();
+  }
+
+
+
 
   std::string CGI::encode(const UnicodeString &str) {
     std::string val;
@@ -191,46 +257,6 @@ namespace CForum {
     return UnicodeString(ustr.c_str(),"UTF-8");
   }
 
-  const CGI::Parameter *CGI::getValue(const UnicodeString &key) {
-    return _values[key];
-  }
-
-  const CGI::Parameter *CGI::getValue(const std::string &key) {
-    UnicodeString str(key.c_str(),"UTF-8");
-    return getValue(str);
-  }
-
-  const CGI::Parameter *CGI::getValue(const char *key) {
-    UnicodeString str(key,"UTF-8");
-    return getValue(str);
-  }
-
-  const UnicodeString &CGI::getFirstValue(const UnicodeString &key) {
-    const CGI::Parameter *p = getValue(key);
-    if(p) {
-      return p->getValue(0);
-    }
-
-    return UnicodeString();
-  }
-
-  const UnicodeString &CGI::getFirstValue(const std::string &key) {
-    const CGI::Parameter *p = getValue(key);
-    if(p) {
-      return p->getValue(0);
-    }
-
-    return UnicodeString();
-  }
-
-  const UnicodeString &CGI::getFirstValue(const char *key) {
-    const CGI::Parameter *p = getValue(key);
-    if(p) {
-      return p->getValue(0);
-    }
-
-    return UnicodeString();
-  }
 }
 
 /* eof */
