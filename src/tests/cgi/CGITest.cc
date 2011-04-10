@@ -38,6 +38,9 @@ void CGITest::testParser() {
   // äöü=äöü&a=b&a=b1&a=b2
   setenv("QUERY_STRING","%C3%A4%C3%B6%C3%BC=%C3%A4%C3%B6%C3%BC&a=b&a=b1&a=b2",1);
   setenv("HTTP_COOKIE","test-cookie=tc1; test-cookie2=tc2",1);
+  setenv("SERVER_NAME","CForum 1.0 UnitTest",1);
+
+  setenv("HTTP_USER_AGENT","CForum/" CF_VERSION,1);
 
   CForum::CGI c = CForum::CGI::fromCGIEnvironment();
 
@@ -87,6 +90,10 @@ void CGITest::testParser() {
   str = "";
   val.toUTF8String(str);
   CPPUNIT_ASSERT_EQUAL(std::string("tc2"),str);
+
+  CPPUNIT_ASSERT_EQUAL(std::string("CForum 1.0 UnitTest"),c.serverName());
+
+  CPPUNIT_ASSERT_EQUAL(std::string("CForum/" CF_VERSION), c.getHeader("User-Agent"));
 
 }
 
