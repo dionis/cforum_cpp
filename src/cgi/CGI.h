@@ -93,12 +93,14 @@ namespace CForum {
     static UnicodeString decode(const std::string &);
     static UnicodeString decode(const char *,size_t);
 
+    virtual ~CGI();
+
   protected:
     void saveParam(const UnicodeString &,const UnicodeString &, std::map<const UnicodeString, Parameter *> *);
 
-    std::map <const UnicodeString,Parameter * > _get_values;
-    std::map <const UnicodeString,Parameter * > _post_values;
-    std::map <const UnicodeString,Parameter * > _cookie_values;
+    std::map<const UnicodeString,Parameter * > _get_values;
+    std::map<const UnicodeString,Parameter * > _post_values;
+    std::map<const UnicodeString,Parameter * > _cookie_values;
 
   };
 }

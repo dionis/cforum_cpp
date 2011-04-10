@@ -126,7 +126,7 @@ namespace CForum {
 
       c.parseString(data,'P');
 
-      free(data);
+      delete data;
     }
 
     if((data = getenv("HTTP_COOKIE")) != NULL) {
@@ -310,6 +310,23 @@ namespace CForum {
 
 
     return UnicodeString(ustr.c_str(),"UTF-8");
+  }
+
+  CGI::~CGI() {
+    std::map<const UnicodeString,CGI::Parameter * >::iterator end = _get_values.end(), it;
+    for(it = _get_values.begin(); it != end; ++it) {
+      delete it->second;
+    }
+
+    end = _post_values.end();
+    for(it = _post_values.begin(); it != end; ++it) {
+      delete it->second;
+    }
+
+    end = _cookie_values.end();
+    for(it = _cookie_values.begin(); it != end; ++it) {
+      delete it->second;
+    }
   }
 
 }
