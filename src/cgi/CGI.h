@@ -33,6 +33,8 @@
 
 #include "config.h"
 
+#include <unistd.h>
+
 #include <unicode/unistr.h>
 #include <string>
 #include <vector>
@@ -75,6 +77,23 @@ namespace CForum {
 
     void parseCookies(const char *);
 
+    void parseHeaderFromCGI(const char *);
+
+    void setCGIVariable(const char *,const char *);
+    std::string &getCGIVariable(const char *);
+    std::string &getCGIVariable(const std::string &);
+
+    std::string &getHeader(const char *);
+    std::string &getHeader(const std::string &);
+
+    std::string &serverName();
+    std::string &serverProtocol();
+    int serverPort();
+    std::string &requestMethod();
+    std::string &pathInfo();
+    std::string &scriptName();
+    std::string &remoteAddress();
+
     const Parameter *getValue(const UnicodeString &, const char * = "GPC");
     const Parameter *getValue(const std::string &, const char * = "GPC");
     const Parameter *getValue(const char *, const char * = "GPC");
@@ -101,6 +120,10 @@ namespace CForum {
     std::map<const UnicodeString,Parameter * > _get_values;
     std::map<const UnicodeString,Parameter * > _post_values;
     std::map<const UnicodeString,Parameter * > _cookie_values;
+
+    std::map<const std::string,std::string> _cgi_values;
+
+    std::map<const std::string,std::string> _headers;
 
   };
 }

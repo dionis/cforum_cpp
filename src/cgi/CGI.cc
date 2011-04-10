@@ -30,8 +30,12 @@
 
 #include "CGI.h"
 
+#ifdef __APPLE__
+#include <crt_externs.h>
+#endif
+
 namespace CForum {
-  CGI::CGI() : _get_values(), _post_values(), _cookie_values() {}
+  CGI::CGI() : _get_values(), _post_values(), _cookie_values(), _cgi_values() {}
 
   void CGI::parseString(const UnicodeString &str, const char realm) {
     std::string ustr;
@@ -105,9 +109,24 @@ namespace CForum {
   CGI CGI::fromCGIEnvironment() {
     CGI c;
     char *data = getenv("QUERY_STRING");
-    const char *clen = getenv("CONTENT_LENGTH"),*rqmeth = getenv("REQUEST_METHOD");
+    const char *clen = getenv("CONTENT_LENGTH"),*rqmeth = getenv("REQUEST_METHOD"),**env;
+
+    #ifdef __APPLE__
+    const char **environ = (const char **)(*_NSGetEnviron());
+    #endif
 
     size_t len = 0;
+
+    const char *cgi_variables[] = {
+      "SERVER_SOFTWARE","SERVER_NAME","GATEWAY_INTERFACE",
+      "SERVER_PROTOCOL","SERVER_PORT","REQUEST_METHOD",
+      "PATH_INFO","PATH_TRANSLATED","SCRIPT_NAME",
+      "REMOTE_HOST","REMOTE_ADDR","AUTH_TYPE",
+      "REMOTE_USER","REMOTE_IDENT","CONTENT_TYPE",
+      "CONTENT_LENGTH", NULL
+    };
+
+    const char **var;
 
     if(!rqmeth) {
       throw ParameterException(); // TODO: proper exception
@@ -133,8 +152,99 @@ namespace CForum {
       c.parseCookies(data);
     }
 
+
+    for(var=cgi_variables;*var;++var) {
+      if((data = getenv(*var)) != NULL) {
+        c.setCGIVariable(*var,data);
+      }
+    }
+
+    for(env = environ; *env; ++env) {
+      if(strncmp(*env,"HTTP_",5) == 0 && strcmp(*env,"HTTP_COOKIE") != 0) {
+        c.parseHeaderFromCGI(*env);
+      }
+    }
+
     return c;
   }
+
+  std::string niceHeaderName(const std::string &str) {
+    std::string nname = str.substr(5);
+    size_t i;
+
+    for(i=1;i<nname.length();++i) {
+      if(nname[i] == '_') {
+        nname[i++] = '-';
+      }
+      else {
+        nname[i] = tolower(nname[i]);
+      }
+    }
+
+    return nname;
+  }
+
+  std::string &CGI::getHeader(const char *name) {
+    return getHeader(std::string(name));
+  }
+  std::string &CGI::getHeader(const std::string &name) {
+    return _headers[name];
+  }
+
+  void CGI::parseHeaderFromCGI(const char *header_val) {
+    const char *pos = strstr(header_val,"=");
+
+
+    std::string name(header_val,pos-header_val);
+    std::string value(pos+1);
+
+    name = niceHeaderName(name);
+
+    _headers[name] = value;
+  }
+
+  void CGI::setCGIVariable(const char *name,const char *value) {
+    std::string nam = name, val = value;
+    _cgi_values[name] = value;
+  }
+
+  std::string &CGI::getCGIVariable(const char *str) {
+    return getCGIVariable(std::string(str));
+  }
+
+  std::string &CGI::getCGIVariable(const std::string &name) {
+    return _cgi_values[name];
+  }
+
+  std::string &CGI::serverName() {
+    return getCGIVariable("SERVER_NAME");
+  }
+
+  std::string &CGI::serverProtocol() {
+    return getCGIVariable("SERVER_PROTOCOL");
+  }
+
+  int CGI::serverPort() {
+    std::string str = getCGIVariable("SERVER_PORT");
+    return atoi(str.c_str());
+  }
+
+  std::string &CGI::requestMethod() {
+    return getCGIVariable("REQUEST_METHOD");
+  }
+
+  std::string &CGI::pathInfo() {
+    return getCGIVariable("PATH_INFO");
+  }
+
+  std::string &CGI::scriptName() {
+    return getCGIVariable("SCRIPT_NAME");
+  }
+
+  std::string &CGI::remoteAddress() {
+    return getCGIVariable("REMOTE_ADDRESS");
+  }
+
 
   void CGI::parseCookies(const char *cookies) {
     const char *pos = cookies,*pos1 = cookies;
