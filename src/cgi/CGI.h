@@ -56,6 +56,9 @@ namespace CForum {
       const UnicodeString &getValue(size_t) const;
       const UnicodeString &operator[](size_t) const;
 
+      size_t length() const;
+      size_t size() const;
+
       void setValue(size_t,const UnicodeString &);
       void setValue(size_t,const std::string &);
 

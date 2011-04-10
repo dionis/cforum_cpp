@@ -59,6 +59,14 @@ namespace CForum {
     return getValue(pos);
   }
 
+  size_t CGI::Parameter::length() const {
+    return _value.size();
+  }
+
+  size_t CGI::Parameter::size() const {
+    return _value.size();
+  }
+
   void CGI::Parameter::setValue(size_t pos,const UnicodeString &str) {
     _value[pos] = str;
   }

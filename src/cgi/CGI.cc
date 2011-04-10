@@ -84,10 +84,14 @@ namespace CForum {
         break;
       }
 
+      ++pos;
+
       vallen  = pos1 - pos;
-      value   = CGI::decode(pos+1,vallen);
+      value   = CGI::decode(pos,vallen);
 
       saveParam(name,value,container);
+
+      ++pos1;
     }
 
     if(pos && *pos) {
@@ -137,30 +141,32 @@ namespace CForum {
     UnicodeString name,value;
     int len = 0,namlen = 0,vallen = 0;
 
-    if(cookies) {
-      while((pos = strstr(pos1,"=")) != NULL) {
-        for(;*pos && isspace(*pos);++pos);
+    if(!cookies) {
+      throw ParameterException(); // TODO: proper exception
+    }
 
-        namlen = pos - pos1;
-        name   = CGI::decode(pos1,namlen);
+    while((pos = strstr(pos1,"=")) != NULL) {
+      for(;*pos1 && (isspace(*pos1) || *pos1 == ';');++pos1);
 
-        pos1 = strstr(pos,";");
-        if(!pos1) {
-          break;
-        }
+      namlen = pos - pos1;
+      name   = CGI::decode(pos1,namlen);
 
-        vallen  = pos1 - pos;
-        value   = CGI::decode(pos+1,vallen);
-
-        saveParam(name,value,&_cookie_values);
+      pos1 = strstr(pos,";");
+      if(!pos1) {
+        break;
       }
 
-      if(pos && *pos) {
-        len   = strlen(pos+1);
-        value = CGI::decode(pos+1,len);
+      vallen  = pos1 - pos;
+      value   = CGI::decode(pos+1,vallen-1);
 
-        saveParam(name,value,&_cookie_values);
-      }
+      saveParam(name,value,&_cookie_values);
+    }
+
+    if(pos && *pos) {
+      len   = strlen(pos+1);
+      value = CGI::decode(pos+1,len);
+
+      saveParam(name,value,&_cookie_values);
     }
   }
 
