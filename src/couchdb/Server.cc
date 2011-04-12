@@ -32,6 +32,82 @@
 
 namespace CForum {
   namespace CouchDB {
+    size_t write_data(void *buffer, size_t size, size_t nmemb, void *userp) {
+      size_t bytes = nmemb * size;
+      Server::Chunk *chk = (Server::Chunk *)userp;
+      const std::string &buff = chk->getBuff();
+      size_t pos = chk->getPos();
+
+      if(buff.size() - pos <= 0) {
+        return 0;
+      }
+
+      if(buff.size() - pos <= bytes) {
+        bytes = buff.size() - pos;
+      }
+
+      memcpy(buffer,buff.c_str()+pos,bytes);
+      pos += bytes;
+
+      return bytes;
+    }
+
+    size_t read_data(char *bufptr, size_t size, size_t nmemb, void *userp) {
+      size_t bytes = nmemb * size;
+      std::string str(bufptr,bytes);
+      Server::Response *rsp = (Server::Response *)userp;
+
+      rsp->addContent(str);
+
+      return bytes;
+    }
+
+    size_t read_header(char *bufptr, size_t size, size_t nmemb, void *userp) {
+      size_t bytes = nmemb * size;
+      Server::Response *rsp = (Server::Response *)userp;
+      char *ptr,*pos = NULL;
+
+      if(strncmp(bufptr,"HTTP/",5) == 0) {
+        pos = bufptr + 5;
+        rsp->setVersion(strtod(pos,&pos));
+
+        for(++pos;pos < bufptr + bytes && isspace(*pos);++pos);
+        rsp->setStatus(strtol(pos,&pos,10));
+
+        for(++pos;pos < bufptr + bytes && isspace(*pos);++pos);
+        ptr = (char *)(pos + bytes - (char *)(pos - bufptr) - 1);
+        for(;ptr > pos && (*ptr == '\015' || *ptr == '\012');--ptr);
+
+        rsp->setMessage(std::string(pos,ptr-pos+1));
+        return bytes;
+      }
+
+      for(ptr=bufptr;ptr < bufptr+bytes;++ptr) {
+        if(*ptr == ':') {
+          pos = ptr;
+          for(++ptr;ptr < bufptr+bytes && isspace(*ptr);++ptr);
+          break;
+        }
+      }
+
+      if(pos) {
+        std::string name(bufptr,pos-bufptr);
+        std::string val(ptr,bytes-(size_t)(ptr-bufptr));
+
+        rsp->addHeader(name,val);
+      }
+      else {
+        for(ptr=bufptr;*ptr && ptr < bufptr+bytes;++ptr) {
+          if(*ptr != '\012' && *ptr != '\015') {
+            return 0;
+          }
+        }
+      }
+
+      return bytes;
+    }
+
+
     Server::Server() : _host(), _db(), _protocol("http"), _user(), _pass(), _authed(false), _port(5984), _curl(NULL), _connect(1) {}
     Server::Server(const std::string &db) : _host("localhost"), _db(db), _protocol("http"), _user(), _pass(), _authed(false), _port(5984), _curl(NULL), _connect(1) {}
     Server::Server(const std::string &db,const std::string &host) : _host(host), _db(db), _protocol("http"), _user(), _pass(), _authed(false), _port(5984), _curl(NULL), _connect(1) {}
@@ -58,9 +134,31 @@ namespace CForum {
     std::string Server::getDatabase() {
       return _db;
     }
-    std::string Server::setDatabase(const std::string &db) {
+    std::string Server::setDatabase(const std::string &db,bool create) {
       std::string retval = _db;
+      CURLcode cd;
       _db = db;
+
+      if(create) {
+        Server::Response rsp;
+        std::string uri = genURI(std::string());
+        connect();
+
+        curl_easy_setopt(_curl,CURLOPT_PUT,1);
+        curl_easy_setopt(_curl,CURLOPT_URL,uri.c_str());
+        curl_easy_setopt(_curl,CURLOPT_INFILESIZE,0);
+        curl_easy_setopt(_curl,CURLOPT_HEADERDATA,&rsp);
+        curl_easy_setopt(_curl,CURLOPT_WRITEDATA,&rsp);
+
+        if((cd = curl_easy_perform(_curl)) != CURLE_OK) {
+          throw CouchErrorException(curl_easy_strerror(cd),cd); // TODO: proper exception
+        }
+
+        if(rsp.getStatus() != 412 && rsp.getStatus() != 200) {
+          throw CouchErrorException(); // TODO: proper exception
+        }
+      }
+
       return retval;
     }
 
@@ -87,6 +185,10 @@ namespace CForum {
         curl_easy_setopt(_curl,CURLOPT_REDIR_PROTOCOLS,CURLPROTO_HTTP|CURLPROTO_HTTPS);
         curl_easy_setopt(_curl,CURLOPT_FOLLOWLOCATION,1);
 
+        curl_easy_setopt(_curl,CURLOPT_WRITEFUNCTION, CForum::CouchDB::read_data);
+        curl_easy_setopt(_curl,CURLOPT_READFUNCTION, CForum::CouchDB::write_data);
+        curl_easy_setopt(_curl,CURLOPT_HEADERFUNCTION, CForum::CouchDB::read_header);
+
         curl_easy_setopt(_curl,CURLOPT_PORT,_port);
         curl_easy_setopt(_curl,CURLOPT_USERAGENT,"CForum/" CF_VERSION);
 
@@ -101,17 +203,21 @@ namespace CForum {
 
     std::string Server::genURI(const std::string &key) const {
       std::string url = _protocol;
+      char buff[50];
+
+      snprintf(buff,50,"%d",_port);
 
       url += "://";
       url += _host;
       url += ":";
-      url += _port;
+      url += buff;
+      url += "/";
+      url += _db;
 
-      if(key[0] != '/') {
+      if(key.length() > 0) {
         url += "/";
+        url += CGI::encode(key.c_str());
       }
-
-      url += key;
 
       return url;
     }

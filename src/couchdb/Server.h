@@ -38,6 +38,7 @@
 
 #include <curl/curl.h>
 
+#include "cgi/CGI.h"
 #include "Document.h"
 
 namespace CForum {
@@ -53,7 +54,7 @@ namespace CForum {
       std::string setHost(const std::string &);
 
       std::string getDatabase();
-      std::string setDatabase(const std::string &);
+      std::string setDatabase(const std::string &,bool = false);
 
       int getPort();
       int setPort(int);
@@ -67,6 +68,57 @@ namespace CForum {
       void deleteDocument(const std::string &);
 
       void setAuth(const std::string &,const std::string &);
+
+      class Chunk {
+      public:
+        Chunk();
+        Chunk(const std::string &);
+        Chunk(const char *,size_t);
+
+        void setPos(size_t);
+        size_t getPos() const;
+        size_t getPos();
+
+        const std::string &getBuff() const;
+        std::string &getBuff();
+        void setBuff(const std::string &);
+
+      private:
+        size_t _pos;
+        std::string _buff;
+      };
+
+
+      class Response {
+      public:
+        Response();
+
+        void addContent(const std::string &);
+
+        std::string &getContent();
+        const std::string &getContent() const;
+
+        void addHeader(const std::string &,const std::string &);
+
+        std::string &getHeader(const std::string &);
+        const std::string &getHeader(const std::string &) const;
+
+        void setMessage(const std::string &);
+        const std::string &getMessage() const;
+        std::string &getMessage();
+
+        void setVersion(float);
+        float getVersion();
+
+        void setStatus(int);
+        int getStatus();
+
+      private:
+        std::map<std::string,std::string> _headers;
+        std::string _body,_message;
+        int _status;
+        float _version;
+      };
 
     private:
       Server();

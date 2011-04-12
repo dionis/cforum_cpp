@@ -1,13 +1,10 @@
 #############################################################################
-# CMakeLists.txt for the Classic Forum couchdb interface library
+# CMakeLists.txt for the Classic Forum unit tests
 #############################################################################
 
 include_directories (BEFORE "${CMAKE_CURRENT_SOURCE_DIR}/.." "${CMAKE_CURRENT_SOURCE_DIR}")
 
-
-# libcfcouchdb
-add_library(cfcouchdb SHARED Server.cc Document.cc Chunk.cc Response.cc)
-
-target_link_libraries(cfcouchdb cfexceptions cfjson cfcgi ${CURL_LIBRARY})
+add_library(cfcouchdb_test SHARED CouchDBTest.cc)
+target_link_libraries(cfcouchdb_test cfcouchdb cppunit)
 
 # eof
