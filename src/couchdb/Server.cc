@@ -131,32 +131,59 @@ namespace CForum {
       return retval;
     }
 
+    void Server::createDatabase() {
+      Server::Response rsp;
+      CURLcode cd;
+      std::string uri = genURI(std::string());
+
+      connect();
+
+      curl_easy_setopt(_curl,CURLOPT_PUT,1);
+      curl_easy_setopt(_curl,CURLOPT_URL,uri.c_str());
+      curl_easy_setopt(_curl,CURLOPT_INFILESIZE,0);
+      curl_easy_setopt(_curl,CURLOPT_HEADERDATA,&rsp);
+      curl_easy_setopt(_curl,CURLOPT_WRITEDATA,&rsp);
+
+      if((cd = curl_easy_perform(_curl)) != CURLE_OK) {
+        throw CouchErrorException(curl_easy_strerror(cd),cd); // TODO: proper exception
+      }
+
+      if(rsp.getStatus() != 201) {
+        throw CouchErrorException(); // TODO: proper exception
+      }
+    }
+
+    void Server::deleteDatabase() {
+      Server::Response rsp;
+      CURLcode cd;
+      std::string uri = genURI(std::string());
+
+      connect();
+
+      curl_easy_setopt(_curl,CURLOPT_CUSTOMREQUEST,"DELETE");
+      curl_easy_setopt(_curl,CURLOPT_URL,uri.c_str());
+      curl_easy_setopt(_curl,CURLOPT_INFILESIZE,0);
+      curl_easy_setopt(_curl,CURLOPT_HEADERDATA,&rsp);
+      curl_easy_setopt(_curl,CURLOPT_WRITEDATA,&rsp);
+
+      if((cd = curl_easy_perform(_curl)) != CURLE_OK) {
+        throw CouchErrorException(curl_easy_strerror(cd),cd); // TODO: proper exception
+      }
+
+      if(rsp.getStatus() != 200) {
+        throw CouchErrorException(); // TODO: proper exception
+      }
+    }
+
     std::string Server::getDatabase() {
       return _db;
     }
     std::string Server::setDatabase(const std::string &db,bool create) {
       std::string retval = _db;
-      CURLcode cd;
       _db = db;
 
       if(create) {
-        Server::Response rsp;
-        std::string uri = genURI(std::string());
-        connect();
-
-        curl_easy_setopt(_curl,CURLOPT_PUT,1);
-        curl_easy_setopt(_curl,CURLOPT_URL,uri.c_str());
-        curl_easy_setopt(_curl,CURLOPT_INFILESIZE,0);
-        curl_easy_setopt(_curl,CURLOPT_HEADERDATA,&rsp);
-        curl_easy_setopt(_curl,CURLOPT_WRITEDATA,&rsp);
-
-        if((cd = curl_easy_perform(_curl)) != CURLE_OK) {
-          throw CouchErrorException(curl_easy_strerror(cd),cd); // TODO: proper exception
-        }
-
-        if(rsp.getStatus() != 412 && rsp.getStatus() != 200) {
-          throw CouchErrorException(); // TODO: proper exception
-        }
+        createDatabase();
       }
 
       return retval;
@@ -223,22 +250,56 @@ namespace CForum {
     }
 
     void Server::putDocument(const Document &doc) {
-    }
-
-    Document Server::getDocument(const std::string &key) {
-      std::string url = genURI(key);
+      Server::Response rsp;
+      Server::Chunk chunk(doc.toJSON());
+      std::string &json_str = chunk.getBuff();
+      std::string str;
+      std::string url;
       CURLcode cd;
+
+      doc.getId().toUTF8String(str);
+      url = genURI(str);
 
       connect();
 
-      curl_easy_setopt(_curl,CURLOPT_HTTPGET,1);
+      curl_easy_setopt(_curl,CURLOPT_PUT,1);
       curl_easy_setopt(_curl,CURLOPT_URL,url.c_str());
+      curl_easy_setopt(_curl,CURLOPT_INFILESIZE,json_str.size());
+      curl_easy_setopt(_curl,CURLOPT_HEADERDATA,&rsp);
+      curl_easy_setopt(_curl,CURLOPT_WRITEDATA,&rsp);
+      curl_easy_setopt(_curl,CURLOPT_READDATA,&chunk);
 
       if((cd = curl_easy_perform(_curl)) != CURLE_OK) {
         throw CouchErrorException(curl_easy_strerror(cd),cd); // TODO: proper exception
       }
 
-      return Document();
+      if(rsp.getStatus() != 201) {
+        throw CouchErrorException(); // TODO: proper exception
+      }
+    }
+
+    Document Server::getDocument(const std::string &key) {
+      std::string url = genURI(key);
+      CURLcode cd;
+      Server::Response rsp;
+
+      connect();
+
+      curl_easy_setopt(_curl,CURLOPT_HTTPGET,1);
+      curl_easy_setopt(_curl,CURLOPT_URL,url.c_str());
+      curl_easy_setopt(_curl,CURLOPT_INFILESIZE,0);
+      curl_easy_setopt(_curl,CURLOPT_HEADERDATA,&rsp);
+      curl_easy_setopt(_curl,CURLOPT_WRITEDATA,&rsp);
+
+      if((cd = curl_easy_perform(_curl)) != CURLE_OK) {
+        throw CouchErrorException(curl_easy_strerror(cd),cd); // TODO: proper exception
+      }
+
+      if(rsp.getStatus() != 200) {
+        throw CouchErrorException(); // TODO: proper exception
+      }
+
+      return Document(rsp.getContent());
     }
 
     Document Server::getDocument(const UnicodeString &key) {
@@ -248,6 +309,30 @@ namespace CForum {
     }
 
     void Server::deleteDocument(const Document &doc) {
+      std::string str;
+      std::string url;
+      Server::Response rsp;
+      CURLcode cd;
+
+      doc.getId().toUTF8String(str);
+
+      url = genURI(str);
+
+      connect();
+
+      curl_easy_setopt(_curl,CURLOPT_CUSTOMREQUEST,"DELETE");
+      curl_easy_setopt(_curl,CURLOPT_URL,url.c_str());
+      curl_easy_setopt(_curl,CURLOPT_INFILESIZE,0);
+      curl_easy_setopt(_curl,CURLOPT_HEADERDATA,&rsp);
+      curl_easy_setopt(_curl,CURLOPT_WRITEDATA,&rsp);
+
+      if((cd = curl_easy_perform(_curl)) != CURLE_OK) {
+        throw CouchErrorException(curl_easy_strerror(cd),cd); // TODO: proper exception
+      }
+
+      if(rsp.getStatus() != 200) {
+        throw CouchErrorException(); // TODO: proper exception
+      }
     }
 
   }

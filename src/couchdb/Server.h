@@ -56,6 +56,9 @@ namespace CForum {
       std::string getDatabase();
       std::string setDatabase(const std::string &,bool = false);
 
+      void createDatabase();
+      void deleteDatabase();
+
       int getPort();
       int setPort(int);
 

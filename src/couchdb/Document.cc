@@ -53,8 +53,28 @@ namespace CForum {
       prsr->parse(json_str.c_str(),(JSON::Element **)&root);
     }
 
+    UnicodeString Document::getId() {
+      JSON::String *el = (JSON::String *)getValue("_id");
+      if(!el) {
+        throw std::exception(); // TODO: proper exception
+      }
+
+      UnicodeString ustr = el->getValue();
+      return ustr;
+    }
+
+    const UnicodeString Document::getId() const {
+      JSON::String *el = (JSON::String *)getValue("_id");
+      if(!el) {
+        throw std::exception(); // TODO: proper exception
+      }
+
+      UnicodeString ustr = el->getValue();
+      return ustr;
+    }
+
     JSON::Element *Document::getValue(const char *key) {
-      return getValue(UnicodeString(key));
+      return getValue(UnicodeString(key,"UTF-8"));
     }
 
     JSON::Element *Document::getValue(const std::string &key) {
@@ -63,6 +83,24 @@ namespace CForum {
     }
 
     JSON::Element *Document::getValue(const UnicodeString &key) {
+      if(root) {
+        std::map<UnicodeString,JSON::Element *> mp = root->getValue();
+        return mp[key];
+      }
+
+      return NULL;
+    }
+
+    const JSON::Element *Document::getValue(const char *key) const {
+      return getValue(UnicodeString(key,"UTF-8"));
+    }
+
+    const JSON::Element *Document::getValue(const std::string &key) const {
+      UnicodeString str(key.c_str());
+      return getValue(str);
+    }
+
+    const JSON::Element *Document::getValue(const UnicodeString &key) const {
       if(root) {
         std::map<UnicodeString,JSON::Element *> mp = root->getValue();
         return mp[key];
@@ -82,6 +120,14 @@ namespace CForum {
     }
 
     std::string Document::toJSON() {
+      if(root) {
+        return root->toJSON();
+      }
+
+      return std::string();
+    }
+
+    std::string Document::toJSON() const {
       if(root) {
         return root->toJSON();
       }

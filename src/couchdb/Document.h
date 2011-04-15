@@ -49,14 +49,22 @@ namespace CForum {
       Document(const UnicodeString &);
       Document(const std::string &);
 
+      UnicodeString getId();
+      const UnicodeString getId() const;
+
       virtual JSON::Element *getValue(const char *);
       virtual JSON::Element *getValue(const std::string &);
       virtual JSON::Element *getValue(const UnicodeString &);
+
+      virtual const JSON::Element *getValue(const char *) const;
+      virtual const JSON::Element *getValue(const std::string &) const;
+      virtual const JSON::Element *getValue(const UnicodeString &) const;
 
       virtual void setValue(const std::string &,JSON::Element *);
       virtual void setValue(const UnicodeString &,JSON::Element *);
 
       virtual std::string toJSON();
+      virtual std::string toJSON() const;
 
       virtual ~Document();
 
