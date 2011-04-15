@@ -36,6 +36,12 @@ CPPUNIT_TEST_SUITE_REGISTRATION(CouchDBTest);
 void CouchDBTest::testInterface() {
   CForum::CouchDB::Server srv("test","localhost");
   srv.setDatabase("test",true);
+
+  CForum::CouchDB::Document doc("{\"_id\": \"test\",\"lala\":\"lulu\"}");
+
+  srv.putDocument(doc);
+  CForum::CouchDB::Document doc1 = srv.getDocument("test");
+
   srv.deleteDatabase();
 }
 
