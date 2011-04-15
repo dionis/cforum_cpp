@@ -78,7 +78,7 @@ namespace CForum {
       const char *end = readValue(root,json_str,json_str + len-1);
 
       if(end != json_str + len) {
-        end = eatWhitespacesAndComments(end,json_str+len-1);
+        end = eatWhitespacesAndComments(end,json_str+len);
 
         if(end != json_str + len) {
           throw JSONSyntaxErrorException("Error in syntax: not at end of JSON code after parsing",ErrorCodeJSONNoParseEnd);
