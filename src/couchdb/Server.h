@@ -66,6 +66,7 @@ namespace CForum {
 
       Document getDocument(const std::string &);
       Document getDocument(const UnicodeString &);
+      Document getDocument(const char *);
 
       void deleteDocument(const Document &);
       void deleteDocument(const std::string &);

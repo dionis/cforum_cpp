@@ -48,6 +48,7 @@ namespace CForum {
       Document(const Document &);
       Document(const UnicodeString &);
       Document(const std::string &);
+      Document(const char *);
 
       UnicodeString getId();
       const UnicodeString getId() const;

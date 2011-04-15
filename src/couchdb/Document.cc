@@ -53,6 +53,11 @@ namespace CForum {
       prsr->parse(json_str.c_str(),(JSON::Element **)&root);
     }
 
+    Document::Document(const char *json_str) : root(NULL) {
+      JSON::Parser *prsr = new JSON::Parser();
+      prsr->parse(json_str,(JSON::Element **)&root);
+    }
+
     UnicodeString Document::getId() {
       JSON::String *el = (JSON::String *)getValue("_id");
       if(!el) {

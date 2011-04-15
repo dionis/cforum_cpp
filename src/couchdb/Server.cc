@@ -47,7 +47,9 @@ namespace CForum {
       }
 
       memcpy(buffer,buff.c_str()+pos,bytes);
+
       pos += bytes;
+      chk->setPos(pos);
 
       return bytes;
     }
@@ -276,6 +278,7 @@ namespace CForum {
       if(rsp.getStatus() != 201) {
         throw CouchErrorException(); // TODO: proper exception
       }
+
     }
 
     Document Server::getDocument(const std::string &key) {
@@ -306,6 +309,10 @@ namespace CForum {
       std::string str;
       key.toUTF8String(str);
       return getDocument(str);
+    }
+
+    Document Server::getDocument(const char *key) {
+      return getDocument(std::string(key));
     }
 
     void Server::deleteDocument(const Document &doc) {
