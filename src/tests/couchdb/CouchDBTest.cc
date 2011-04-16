@@ -42,6 +42,17 @@ void CouchDBTest::testInterface() {
   srv.putDocument(doc);
   CForum::CouchDB::Document doc1 = srv.getDocument("test");
 
+  CForum::JSON::String *id = (CForum::JSON::String *)doc1.getValue("_id");
+
+  std::string str;
+  id->getValue().toUTF8String(str);
+  CPPUNIT_ASSERT_EQUAL(std::string("test"),str);
+
+  str = "";
+  CForum::JSON::String *lala = (CForum::JSON::String *)doc1.getValue("lala");
+  lala->getValue().toUTF8String(str);
+  CPPUNIT_ASSERT_EQUAL(std::string("lulu"),str);
+
   srv.deleteDatabase();
 }
 
