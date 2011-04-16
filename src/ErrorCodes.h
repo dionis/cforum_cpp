@@ -50,7 +50,14 @@ namespace CForum {
     ErrorCodeJSONObjectCommaOrEOOMissing  = 0x4d8dfcd2,
     ErrorCodeJSONFloatNumberError         = 0x4d986b4c,
     ErrorCodeArraySyntaxError             = 0x4d986b70,
-    ErrorCodeJSONUnknownTokenType         = 0x4d8e06a1
+    ErrorCodeJSONUnknownTokenType         = 0x4d8e06a1,
+
+    /* CGI */
+    ErrorCodeCGIUnknownRealm              = 0x4da961f0,
+    ErrorCodeCGIInvalidCGIEnvironment     = 0x4da96289,
+    ErrorCodeCGINoCookiesGiven            = 0x4da962d0,
+    ErrorCodeCGINoDecodeValueGiven        = 0x4da96346
+
   };
 }
 
