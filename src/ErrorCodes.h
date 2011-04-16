@@ -56,7 +56,10 @@ namespace CForum {
     ErrorCodeCGIUnknownRealm              = 0x4da961f0,
     ErrorCodeCGIInvalidCGIEnvironment     = 0x4da96289,
     ErrorCodeCGINoCookiesGiven            = 0x4da962d0,
-    ErrorCodeCGINoDecodeValueGiven        = 0x4da96346
+    ErrorCodeCGINoDecodeValueGiven        = 0x4da96346,
+
+    /* CouchDB */
+    ErrorCodeCouchDBValueNotFound         = 0x4da963fb
 
   };
 }

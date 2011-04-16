@@ -61,7 +61,7 @@ namespace CForum {
     UnicodeString Document::getId() {
       JSON::String *el = (JSON::String *)getValue("_id");
       if(!el) {
-        throw std::exception(); // TODO: proper exception
+        throw CouchErrorException("_id value not found!",ErrorCodeCouchDBValueNotFound);
       }
 
       UnicodeString ustr = el->getValue();
@@ -71,7 +71,7 @@ namespace CForum {
     const UnicodeString Document::getId() const {
       JSON::String *el = (JSON::String *)getValue("_id");
       if(!el) {
-        throw std::exception(); // TODO: proper exception
+        throw CouchErrorException("_id value not found!",ErrorCodeCouchDBValueNotFound);
       }
 
       UnicodeString ustr = el->getValue();
@@ -90,8 +90,17 @@ namespace CForum {
     JSON::Element *Document::getValue(const UnicodeString &key) {
       if(root) {
         std::map<UnicodeString,JSON::Element *> mp = root->getValue();
-        return mp[key];
+        std::map<UnicodeString,JSON::Element *>::iterator it = mp.find(key);
+
+        if(it != mp.end()) {
+          return it->second;
+        }
       }
+
+      std::string str;
+      key.toUTF8String(str);
+      str += " value not found!";
+      throw CouchErrorException(str,ErrorCodeCouchDBValueNotFound);
 
       return NULL;
     }
@@ -108,8 +117,17 @@ namespace CForum {
     const JSON::Element *Document::getValue(const UnicodeString &key) const {
       if(root) {
         std::map<UnicodeString,JSON::Element *> mp = root->getValue();
-        return mp[key];
+        std::map<UnicodeString,JSON::Element *>::iterator it = mp.find(key);
+
+        if(it != mp.end()) {
+          return it->second;
+        }
       }
+
+      std::string str;
+      key.toUTF8String(str);
+      str += " value not found!";
+      throw CouchErrorException(str,ErrorCodeCouchDBValueNotFound);
 
       return NULL;
     }
