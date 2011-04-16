@@ -59,7 +59,9 @@ namespace CForum {
     ErrorCodeCGINoDecodeValueGiven        = 0x4da96346,
 
     /* CouchDB */
-    ErrorCodeCouchDBValueNotFound         = 0x4da963fb
+    ErrorCodeCouchDBValueNotFound         = 0x4da963fb,
+    ErrorCodeCouchDBHttpError             = 0x4da993c6,
+    ErrorCodeCouchDBHttpStatusError       = 0x4da99413
 
   };
 }

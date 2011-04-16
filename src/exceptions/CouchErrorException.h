@@ -42,10 +42,20 @@ namespace CForum {
     public:
       CouchErrorException();
       CouchErrorException(int);
-      CouchErrorException(const char *,int);
-      CouchErrorException(const std::string &,int);
-    };
+      CouchErrorException(const char *, int);
+      CouchErrorException(const std::string &, int);
 
+      CouchErrorException(const char *, int, const char *, int);
+
+      int getErrorCode();
+      const std::string &getErrorMessage();
+
+      virtual ~CouchErrorException() throw();
+
+    protected:
+      std::string _error_msg;
+      int _error_code;
+    };
   }
 }
 

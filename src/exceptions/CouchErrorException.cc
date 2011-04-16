@@ -33,10 +33,22 @@
 
 namespace CForum {
   namespace CouchDB {
-    CouchErrorException::CouchErrorException() : CForumException() {}
-    CouchErrorException::CouchErrorException(int code) : CForumException(code) {}
-    CouchErrorException::CouchErrorException(const char *msg,int code) : CForumException(msg,code) {}
-    CouchErrorException::CouchErrorException(const std::string &msg,int code) : CForumException(msg,code) {}
+    CouchErrorException::CouchErrorException() : CForumException(), _error_msg(), _error_code(0) {}
+    CouchErrorException::CouchErrorException(int code) : CForumException(code), _error_msg(), _error_code(0) {}
+    CouchErrorException::CouchErrorException(const char *msg,int code) : CForumException(msg,code), _error_msg(), _error_code(0) {}
+    CouchErrorException::CouchErrorException(const std::string &msg,int code) : CForumException(msg,code), _error_msg(), _error_code(0) {}
+
+    CouchErrorException::CouchErrorException(const char *msg, int code, const char *errmsg, int errcode) : CForumException(msg,code), _error_msg(errmsg), _error_code(errcode) {}
+
+    int CouchErrorException::getErrorCode() {
+      return _error_code;
+    }
+
+    const std::string &CouchErrorException::getErrorMessage() {
+      return _error_msg;
+    }
+
+    CouchErrorException::~CouchErrorException() throw() {}
   }
 }
 

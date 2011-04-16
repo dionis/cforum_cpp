@@ -147,11 +147,19 @@ namespace CForum {
       curl_easy_setopt(_curl,CURLOPT_WRITEDATA,&rsp);
 
       if((cd = curl_easy_perform(_curl)) != CURLE_OK) {
-        throw CouchErrorException(curl_easy_strerror(cd),cd); // TODO: proper exception
+        throw CouchErrorException("Error performing HTTP request to CouchDB server!",ErrorCodeCouchDBHttpStatusError,curl_easy_strerror(cd),cd);
       }
 
       if(rsp.getStatus() != 201) {
-        throw CouchErrorException(); // TODO: proper exception
+        char buff[50];
+        snprintf(buff,50,"%d",rsp.getStatus());
+
+        std::string str("Expected HTTP status 201, got ");
+        str += buff;
+        str += " ";
+        str += rsp.getMessage();
+
+        throw CouchErrorException(str,ErrorCodeCouchDBHttpError);
       }
     }
 
@@ -169,11 +177,19 @@ namespace CForum {
       curl_easy_setopt(_curl,CURLOPT_WRITEDATA,&rsp);
 
       if((cd = curl_easy_perform(_curl)) != CURLE_OK) {
-        throw CouchErrorException(curl_easy_strerror(cd),cd); // TODO: proper exception
+        throw CouchErrorException("Error performing HTTP request to CouchDB server!",ErrorCodeCouchDBHttpStatusError,curl_easy_strerror(cd),cd);
       }
 
       if(rsp.getStatus() != 200) {
-        throw CouchErrorException(); // TODO: proper exception
+        char buff[50];
+        snprintf(buff,50,"%d",rsp.getStatus());
+
+        std::string str("Expected HTTP status 201, got ");
+        str += buff;
+        str += " ";
+        str += rsp.getMessage();
+
+        throw CouchErrorException(str,ErrorCodeCouchDBHttpError);
       }
     }
 
@@ -272,11 +288,19 @@ namespace CForum {
       curl_easy_setopt(_curl,CURLOPT_READDATA,&chunk);
 
       if((cd = curl_easy_perform(_curl)) != CURLE_OK) {
-        throw CouchErrorException(curl_easy_strerror(cd),cd); // TODO: proper exception
+        throw CouchErrorException("Error performing HTTP request to CouchDB server!",ErrorCodeCouchDBHttpStatusError,curl_easy_strerror(cd),cd);
       }
 
       if(rsp.getStatus() != 201) {
-        throw CouchErrorException(); // TODO: proper exception
+        char buff[50];
+        snprintf(buff,50,"%d",rsp.getStatus());
+
+        std::string str("Expected HTTP status 201, got ");
+        str += buff;
+        str += " ";
+        str += rsp.getMessage();
+
+        throw CouchErrorException(str,ErrorCodeCouchDBHttpError);
       }
 
     }
@@ -295,11 +319,19 @@ namespace CForum {
       curl_easy_setopt(_curl,CURLOPT_WRITEDATA,&rsp);
 
       if((cd = curl_easy_perform(_curl)) != CURLE_OK) {
-        throw CouchErrorException(curl_easy_strerror(cd),cd); // TODO: proper exception
+        throw CouchErrorException("Error performing HTTP request to CouchDB server!",ErrorCodeCouchDBHttpStatusError,curl_easy_strerror(cd),cd);
       }
 
       if(rsp.getStatus() != 200) {
-        throw CouchErrorException(); // TODO: proper exception
+        char buff[50];
+        snprintf(buff,50,"%d",rsp.getStatus());
+
+        std::string str("Expected HTTP status 201, got ");
+        str += buff;
+        str += " ";
+        str += rsp.getMessage();
+
+        throw CouchErrorException(str,ErrorCodeCouchDBHttpError);
       }
 
       return Document(rsp.getContent());
@@ -334,11 +366,19 @@ namespace CForum {
       curl_easy_setopt(_curl,CURLOPT_WRITEDATA,&rsp);
 
       if((cd = curl_easy_perform(_curl)) != CURLE_OK) {
-        throw CouchErrorException(curl_easy_strerror(cd),cd); // TODO: proper exception
+        throw CouchErrorException("Error performing HTTP request to CouchDB server!",ErrorCodeCouchDBHttpStatusError,curl_easy_strerror(cd),cd);
       }
 
       if(rsp.getStatus() != 200) {
-        throw CouchErrorException(); // TODO: proper exception
+        char buff[50];
+        snprintf(buff,50,"%d",rsp.getStatus());
+
+        std::string str("Expected HTTP status 201, got ");
+        str += buff;
+        str += " ";
+        str += rsp.getMessage();
+
+        throw CouchErrorException(str,ErrorCodeCouchDBHttpError);
       }
     }
 
