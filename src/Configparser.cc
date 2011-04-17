@@ -30,6 +30,8 @@
 
 #include "Configparser.h"
 
+#include <stdlib.h>
+
 namespace CForum {
   Configparser::Configparser() : _evaluator(), _script(NULL), _result(NULL) {
   }

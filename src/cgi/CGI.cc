@@ -34,6 +34,10 @@
 #include <crt_externs.h>
 #endif
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 namespace CForum {
   CGI::CGI() : _get_values(), _post_values(), _cookie_values(), _cgi_values() {}
 

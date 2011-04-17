@@ -39,6 +39,8 @@
 
 #include "JSONElement.h"
 
+#include <stdint.h>
+
 namespace CForum {
   namespace JSON {
     enum JSONNumberType {

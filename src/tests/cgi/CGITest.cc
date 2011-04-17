@@ -31,6 +31,8 @@
 #include "CGITest.h"
 #include "cgi/CGI.h"
 
+#include <stdlib.h>
+
 CPPUNIT_TEST_SUITE_REGISTRATION(CGITest);
 
 void CGITest::testParser() {

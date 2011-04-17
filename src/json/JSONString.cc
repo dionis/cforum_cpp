@@ -30,6 +30,8 @@
 
 #include "JSONString.h"
 
+#include <stdio.h>
+
 namespace CForum {
   namespace JSON {
     String::String() : Element(JSONTypeString), _data() {
