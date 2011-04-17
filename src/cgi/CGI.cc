@@ -166,7 +166,7 @@ namespace CForum {
       }
     }
 
-    for(env = environ; *env; ++env) {
+    for(env = const_cast<const char **>(environ); *env; ++env) {
       if(strncmp(*env,"HTTP_",5) == 0 && strcmp(*env,"HTTP_COOKIE") != 0) {
         c.parseHeaderFromCGI(*env);
       }
