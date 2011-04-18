@@ -51,8 +51,8 @@ namespace CForum {
     public:
       Object();
 
-      virtual std::string toJSON();
-      virtual ~Object();
+      std::string toJSON();
+      ~Object();
 
       std::map<UnicodeString,Element *> &getValue();
 

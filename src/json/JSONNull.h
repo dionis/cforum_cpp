@@ -41,11 +41,11 @@ namespace CForum {
     public:
       Null();
 
-      virtual std::string toJSON();
+      std::string toJSON();
 
       void *getValue();
 
-      virtual ~Null();
+      ~Null();
     };
   }
 }

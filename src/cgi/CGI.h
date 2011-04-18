@@ -112,7 +112,7 @@ namespace CForum {
     static UnicodeString decode(const std::string &);
     static UnicodeString decode(const char *,size_t);
 
-    virtual ~CGI();
+    ~CGI();
 
   protected:
     void saveParam(const UnicodeString &,const UnicodeString &, std::map<const UnicodeString, Parameter *> *);

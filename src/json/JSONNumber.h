@@ -54,8 +54,8 @@ namespace CForum {
       Number(double);
       Number(int64_t);
 
-      virtual std::string toJSON();
-      virtual ~Number();
+      std::string toJSON();
+      ~Number();
 
       int64_t getIValue();
       double getDValue();
