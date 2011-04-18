@@ -42,6 +42,7 @@ namespace CForum {
       JSONException(int);
       JSONException(const char *,int);
       JSONException(const std::string &,int);
+
     };
 
   }

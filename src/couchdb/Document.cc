@@ -61,7 +61,7 @@ namespace CForum {
     UnicodeString Document::getId() {
       JSON::String *el = (JSON::String *)getValue("_id");
       if(!el) {
-        throw CouchErrorException("_id value not found!",ErrorCodeCouchDBValueNotFound);
+        throw CouchErrorException("_id value not found!",CouchErrorException::ValueNotFound);
       }
 
       UnicodeString ustr = el->getValue();
@@ -71,7 +71,7 @@ namespace CForum {
     const UnicodeString Document::getId() const {
       JSON::String *el = (JSON::String *)getValue("_id");
       if(!el) {
-        throw CouchErrorException("_id value not found!",ErrorCodeCouchDBValueNotFound);
+        throw CouchErrorException("_id value not found!",CouchErrorException::ValueNotFound);
       }
 
       UnicodeString ustr = el->getValue();
@@ -100,7 +100,7 @@ namespace CForum {
       std::string str;
       key.toUTF8String(str);
       str += " value not found!";
-      throw CouchErrorException(str,ErrorCodeCouchDBValueNotFound);
+      throw CouchErrorException(str,CouchErrorException::ValueNotFound);
 
       return NULL;
     }
@@ -127,7 +127,7 @@ namespace CForum {
       std::string str;
       key.toUTF8String(str);
       str += " value not found!";
-      throw CouchErrorException(str,ErrorCodeCouchDBValueNotFound);
+      throw CouchErrorException(str,CouchErrorException::ValueNotFound);
 
       return NULL;
     }

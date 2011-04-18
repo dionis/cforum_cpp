@@ -38,7 +38,6 @@
 #include <iterator>
 
 #include "exceptions/JSEvaluatorException.h"
-#include "ErrorCodes.h"
 
 namespace CForum {
   class JSEvaluator {

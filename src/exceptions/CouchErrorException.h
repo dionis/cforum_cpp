@@ -52,6 +52,10 @@ namespace CForum {
 
       virtual ~CouchErrorException() throw();
 
+      const static int ValueNotFound   = 0x4da963fb;
+      const static int HttpError       = 0x4da993c6;
+      const static int HttpStatusError = 0x4da99413;
+
     protected:
       std::string _error_msg;
       int _error_code;

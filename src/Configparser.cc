@@ -59,7 +59,7 @@ namespace CForum {
       }
     }
 
-    throw ConfigErrorException("No configuration file could be found!",ErrorCodeFileNotFound);
+    throw ConfigErrorException("No configuration file could be found!",CForumException::FileNotFound);
   }
 
   void Configparser::parse() {

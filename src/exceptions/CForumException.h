@@ -49,6 +49,8 @@ namespace CForum {
 
     virtual ~CForumException() throw();
 
+    static const int FileNotFound = 0x4d8dfca0;
+
   protected:
     std::string _msg;
     int _code;

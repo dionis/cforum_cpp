@@ -52,7 +52,7 @@ namespace CForum {
     std::string str;
 
     if(!fd) {
-      throw JSEvaluatorException("File not found!",ErrorCodeFileNotFound);
+      throw JSEvaluatorException("File not found!",CForumException::FileNotFound);
     }
 
     str.reserve(1024);
@@ -85,7 +85,7 @@ namespace CForum {
       v8::Handle<v8::Value> exception = trycatch.Exception();
       v8::String::AsciiValue exception_str(exception);
 
-      throw JSEvaluatorException(*exception_str,ErrorCodeJSException);
+      throw JSEvaluatorException(*exception_str,JSEvaluatorException::JSException);
     }
 
     return result;

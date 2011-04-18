@@ -83,7 +83,7 @@ namespace CForum {
         std::string str("Unknown parameter realm ");
         str += realm;
         str += ". Valid are G (GET), P (POST) and C (Cookie)";
-        throw ParameterException(str,ErrorCodeCGIUnknownRealm);
+        throw ParameterException(str,ParameterException::InvalidValue);
     }
 
     while((pos = strstr(pos1,"=")) != NULL) {
@@ -136,7 +136,7 @@ namespace CForum {
     const char **var;
 
     if(!rqmeth) {
-      throw ParameterException("Invalid CGI environment: REQUEST_METHOD missing",ErrorCodeCGIInvalidCGIEnvironment);
+      throw CGIParserException("Invalid CGI environment: REQUEST_METHOD missing",CGIParserException::InvalidCGIEnvironment);
     }
 
     if(data != NULL && *data) {
@@ -259,7 +259,7 @@ namespace CForum {
     int len = 0,namlen = 0,vallen = 0;
 
     if(!cookies) {
-      throw ParameterException("Invalid parameter: no cookie value given!",ErrorCodeCGINoCookiesGiven);
+      throw CGIParserException("Invalid parameter: no cookie value given!",CGIParserException::NoCookiesGiven);
     }
 
     while((pos = strstr(pos1,"=")) != NULL) {
@@ -305,7 +305,7 @@ namespace CForum {
           std::string str("Unknown parameter realm ");
           str += *ptr;
           str += ". Valid realms are G (GET), P (POST) and C (Cookies).";
-          throw ParameterException(str,ErrorCodeCGIUnknownRealm);
+          throw ParameterException(str,ParameterException::InvalidValue);
       }
 
       return (*m)[key];
@@ -398,7 +398,7 @@ namespace CForum {
     char ptr3[3] = { '\0','\0','\0' };
 
     if(!str) {
-      throw ParameterException("Invalid parameter: string to decode is NULL",ErrorCodeCGINoDecodeValueGiven);
+      throw CGIParserException("Invalid parameter: string to decode is NULL",CGIParserException::NoDecodeValueGiven);
     }
 
     for(ptr=str;(size_t)(ptr-str) < len;++ptr) {

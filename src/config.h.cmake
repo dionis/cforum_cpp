@@ -10,8 +10,6 @@
 #ifndef CF_CONFIG_H
 #define CF_CONFIG_H
 
-#include "ErrorCodes.h"
-
 /* C99 defines DBL_EPSILON & FLT_EPSILON in float.h */
 #include <float.h>
 

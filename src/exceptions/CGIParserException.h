@@ -40,6 +40,11 @@ namespace CForum {
     CGIParserException(int);
     CGIParserException(const char *,int);
     CGIParserException(const std::string &,int);
+
+    static const int InvalidCGIEnvironment = 0x4da96289;
+    static const int NoCookiesGiven        = 0x4da962d0;
+    const static int NoDecodeValueGiven    = 0x4da96346;
+
   };
 }
 

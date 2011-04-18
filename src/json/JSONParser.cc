@@ -41,7 +41,7 @@ namespace CForum {
       std::string str;
 
       if(!fd) {
-        throw JSONException("File not found!",ErrorCodeFileNotFound);
+        throw JSONException("File not found!",CForumException::FileNotFound);
       }
 
       str.reserve(1024);
@@ -81,7 +81,7 @@ namespace CForum {
         end = eatWhitespacesAndComments(end,json_str+len);
 
         if(end != json_str + len) {
-          throw JSONSyntaxErrorException("Error in syntax: not at end of JSON code after parsing",ErrorCodeJSONNoParseEnd);
+          throw JSONSyntaxErrorException("Error in syntax: not at end of JSON code after parsing",JSONSyntaxErrorException::NoParseEnd);
         }
       }
     }
@@ -120,7 +120,7 @@ namespace CForum {
           }
 
           if(!found) {
-            throw JSONSyntaxErrorException("End of comment could not be found!",ErrorCodeJSONCommentNotEnded);
+            throw JSONSyntaxErrorException("End of comment could not be found!",JSONSyntaxErrorException::CommentNotEnded);
           }
           break;
 
@@ -186,7 +186,7 @@ namespace CForum {
         }
       }
 
-      throw JSONSyntaxErrorException("String not terminated",ErrorCodeJSONStringNotTerminated);
+      throw JSONSyntaxErrorException("String not terminated",JSONSyntaxErrorException::StringNotTerminated);
       return NULL;
     }
 
@@ -239,7 +239,7 @@ namespace CForum {
 
         if(*ptr == '.') {
           if(!isdigit(*(ptr+1))) {
-            throw JSONSyntaxErrorException("Syntax error in float: a digit must follow the dot",ErrorCodeJSONFloatNumberError);
+            throw JSONSyntaxErrorException("Syntax error in float: a digit must follow the dot",JSONSyntaxErrorException::FloatNumberError);
           }
 
           tok.type = JSONTokenTypeNumberFloat;
@@ -285,7 +285,7 @@ namespace CForum {
           str = getNextToken(str,end,tok);
 
           if(tok.type != JSONTokenTypeComma && tok.type != JSONTokenTypeArrayEnd) {
-            throw JSONSyntaxErrorException("Syntax error in array",ErrorCodeArraySyntaxError);
+            throw JSONSyntaxErrorException("Syntax error in array",JSONSyntaxErrorException::ArraySyntaxError);
           }
         }
         else {
@@ -308,14 +308,14 @@ namespace CForum {
 
         if(tok.type != JSONTokenTypeObjectEnd) {
           if(tok.type != JSONTokenTypeString) {
-            throw JSONSyntaxErrorException("Object key has to be a string",ErrorCodeJSONObjectKeyMustBeString);
+            throw JSONSyntaxErrorException("Object key has to be a string",JSONSyntaxErrorException::ObjectKeyMustBeString);
           }
 
           key = tok.data;
           str = getNextToken(str,end,tok);
 
           if(tok.type != JSONTokenTypeColon) {
-            throw JSONSyntaxErrorException("A colon must follow a key",ErrorCodeJSONObjectColonMustFollowKey);
+            throw JSONSyntaxErrorException("A colon must follow a key",JSONSyntaxErrorException::ObjectColonMustFollowKey);
           }
 
           str = readValue(&data,str,end);
@@ -323,7 +323,7 @@ namespace CForum {
 
           str = getNextToken(str,end,tok);
           if(tok.type != JSONTokenTypeComma && tok.type != JSONTokenTypeObjectEnd) {
-            throw JSONSyntaxErrorException("Comma or object end must follow",ErrorCodeJSONObjectCommaOrEOOMissing);
+            throw JSONSyntaxErrorException("Comma or object end must follow",JSONSyntaxErrorException::ObjectCommaOrEOOMissing);
           }
         }
       } while(tok.type != JSONTokenTypeObjectEnd);
@@ -387,7 +387,7 @@ namespace CForum {
         return ptr;
 
       default:
-        throw JSONSyntaxErrorException("unknown token type",ErrorCodeJSONUnknownTokenType);
+        throw JSONSyntaxErrorException("unknown token type",JSONSyntaxErrorException::UnknownTokenType);
       }
 
     }

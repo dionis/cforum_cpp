@@ -40,6 +40,8 @@ namespace CForum {
     ParameterException(int);
     ParameterException(const char *,int);
     ParameterException(const std::string &,int);
+
+    const static int InvalidValue = 0x4da961f0;
   };
 }
 

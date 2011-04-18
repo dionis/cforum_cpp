@@ -42,6 +42,9 @@ namespace CForum {
     JSEvaluatorException(int);
     JSEvaluatorException(const char *,int);
     JSEvaluatorException(const std::string &,int);
+
+    static const int JSException = 0x4d8dfcae;
+
   };
 }
 
