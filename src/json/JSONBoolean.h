@@ -42,8 +42,8 @@ namespace CForum {
       Boolean();
       Boolean(bool);
 
-      std::string toJSON();
-      ~Boolean();
+      virtual std::string toJSON();
+      virtual ~Boolean();
 
       bool getValue();
 

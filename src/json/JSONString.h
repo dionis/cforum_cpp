@@ -52,8 +52,8 @@ namespace CForum {
 
       const UnicodeString &getValue();
 
-      std::string toJSON();
-      ~String();
+      virtual std::string toJSON();
+      virtual ~String();
 
       static std::string toJSONString(const UnicodeString &);
 

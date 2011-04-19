@@ -47,8 +47,8 @@ namespace CForum {
     public:
       Array();
 
-      std::string toJSON();
-      ~Array();
+      virtual std::string toJSON();
+      virtual ~Array();
 
       std::vector<Element *> &getValue();
 
