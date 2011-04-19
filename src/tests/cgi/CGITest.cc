@@ -46,30 +46,30 @@ void CGITest::testParser() {
 
   CForum::CGI c = CForum::CGI::fromCGIEnvironment();
 
-  const CForum::CGI::Parameter *p = c.getValue("äöü","G");
-  CPPUNIT_ASSERT(p != NULL);
-  CPPUNIT_ASSERT_EQUAL(1,(int)p->length());
+  CForum::CGI::ArgumentListType p = c.getValue("äöü","G");
+  CPPUNIT_ASSERT(p);
+  CPPUNIT_ASSERT_EQUAL(1,(int)p->size());
 
-  UnicodeString val = p->getValue(0);
+  UnicodeString val = p->at(0);
   std::string str;
   val.toUTF8String(str);
   CPPUNIT_ASSERT_EQUAL(std::string("äöü"),str);
 
   p = c.getValue("a","G");
-  CPPUNIT_ASSERT(p != NULL);
-  CPPUNIT_ASSERT_EQUAL(3,(int)p->length());
+  CPPUNIT_ASSERT(p);
+  CPPUNIT_ASSERT_EQUAL(3,(int)p->size());
 
-  val = p->getValue(0);
+  val = p->at(0);
   str = "";
   val.toUTF8String(str);
   CPPUNIT_ASSERT_EQUAL(std::string("b"),str);
 
-  val = p->getValue(1);
+  val = p->at(1);
   str = "";
   val.toUTF8String(str);
   CPPUNIT_ASSERT_EQUAL(std::string("b1"),str);
 
-  val = p->getValue(2);
+  val = p->at(2);
   str = "";
   val.toUTF8String(str);
   CPPUNIT_ASSERT_EQUAL(std::string("b2"),str);
@@ -77,18 +77,18 @@ void CGITest::testParser() {
 
   p = c.getValue("test-cookie","C");
   CPPUNIT_ASSERT(p != NULL);
-  CPPUNIT_ASSERT_EQUAL(1,(int)p->length());
+  CPPUNIT_ASSERT_EQUAL(1,(int)p->size());
 
-  val = p->getValue(0);
+  val = p->at(0);
   str = "";
   val.toUTF8String(str);
   CPPUNIT_ASSERT_EQUAL(std::string("tc1"),str);
 
   p = c.getValue("test-cookie2","C");
-  CPPUNIT_ASSERT(p != NULL);
-  CPPUNIT_ASSERT_EQUAL(1,(int)p->length());
+  CPPUNIT_ASSERT(p);
+  CPPUNIT_ASSERT_EQUAL(1,(int)p->size());
 
-  val = p->getValue(0);
+  val = p->at(0);
   str = "";
   val.toUTF8String(str);
   CPPUNIT_ASSERT_EQUAL(std::string("tc2"),str);

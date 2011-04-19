@@ -40,34 +40,16 @@
 #include <vector>
 #include <map>
 
+#include <boost/shared_ptr.hpp>
+
 #include "exceptions/ParameterException.h"
 #include "exceptions/CGIParserException.h"
 
 namespace CForum {
   class CGI {
   public:
-    class Parameter {
-    public:
-      Parameter();
-      Parameter(const std::string &,const std::string &);
-      Parameter(const UnicodeString &,const UnicodeString &);
+    typedef boost::shared_ptr<std::vector<UnicodeString> > ArgumentListType;
 
-      void addValue(const UnicodeString &);
-      void addValue(const std::string &);
-
-      const UnicodeString &getValue(size_t) const;
-      const UnicodeString &operator[](size_t) const;
-
-      size_t length() const;
-      size_t size() const;
-
-      void setValue(size_t,const UnicodeString &);
-      void setValue(size_t,const std::string &);
-
-    private:
-      UnicodeString _key;
-      std::vector<UnicodeString> _value;
-    };
 
     CGI();
 
@@ -94,13 +76,13 @@ namespace CForum {
     std::string &scriptName();
     std::string &remoteAddress();
 
-    const Parameter *getValue(const UnicodeString &, const char * = "GPC");
-    const Parameter *getValue(const std::string &, const char * = "GPC");
-    const Parameter *getValue(const char *, const char * = "GPC");
+    ArgumentListType getValue(const UnicodeString &, const char * = "GPC");
+    ArgumentListType getValue(const std::string &, const char * = "GPC");
+    ArgumentListType getValue(const char *, const char * = "GPC");
 
-    const UnicodeString &getFirstValue(const UnicodeString &, const char * = "GPC");
-    const UnicodeString &getFirstValue(const std::string &, const char * = "GPC");
-    const UnicodeString &getFirstValue(const char *,const char * = "GPC");
+    const UnicodeString getFirstValue(const UnicodeString &, const char * = "GPC");
+    const UnicodeString getFirstValue(const std::string &, const char * = "GPC");
+    const UnicodeString getFirstValue(const char *,const char * = "GPC");
 
 
     static CGI fromCGIEnvironment();
@@ -112,14 +94,12 @@ namespace CForum {
     static UnicodeString decode(const std::string &);
     static UnicodeString decode(const char *,size_t);
 
-    ~CGI();
-
   protected:
-    void saveParam(const UnicodeString &,const UnicodeString &, std::map<const UnicodeString, Parameter *> *);
+    void saveParam(const UnicodeString &,const UnicodeString &, std::map<const UnicodeString, ArgumentListType > *);
 
-    std::map<const UnicodeString,Parameter * > _get_values;
-    std::map<const UnicodeString,Parameter * > _post_values;
-    std::map<const UnicodeString,Parameter * > _cookie_values;
+    std::map<const UnicodeString,ArgumentListType > _get_values;
+    std::map<const UnicodeString,ArgumentListType > _post_values;
+    std::map<const UnicodeString,ArgumentListType > _cookie_values;
 
     std::map<const std::string,std::string> _cgi_values;
 

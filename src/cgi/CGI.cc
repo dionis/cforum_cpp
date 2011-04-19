@@ -52,14 +52,16 @@ namespace CForum {
     parseString(str.c_str(),realm);
   }
 
-  void CGI::saveParam(const UnicodeString &name, const UnicodeString &value, std::map<const UnicodeString, Parameter *> *container) {
-    CGI::Parameter *val = (*container)[name];
-    if(val) {
-      val->addValue(value);
+  void CGI::saveParam(const UnicodeString &name, const UnicodeString &value, std::map<const UnicodeString, ArgumentListType > *container) {
+    std::map<const UnicodeString, ArgumentListType >::iterator it = (*container).find(name);
+
+    if(it != container->end()) {
+      it->second->push_back(value);
     }
     else {
-      val = new CGI::Parameter(name,value);
-      (*container)[name] = val;
+      ArgumentListType vec(new std::vector<UnicodeString>());
+      vec->push_back(value);
+      (*container)[name] = vec;
     }
   }
 
@@ -67,18 +69,21 @@ namespace CForum {
     const char  *pos = data,*pos1 = data;
     UnicodeString name,value;
     int len = 0,namlen = 0,vallen = 0;
-    std::map<const UnicodeString, Parameter *> *container;
+    std::map<const UnicodeString, ArgumentListType > *container;
 
     switch(realm) {
       case 'G':
         container = &_get_values;
         break;
+
       case 'P':
         container = &_post_values;
         break;
+
       case 'C':
         container = &_cookie_values;
         break;
+
       default:
         std::string str("Unknown parameter realm ");
         str += realm;
@@ -287,65 +292,72 @@ namespace CForum {
     }
   }
 
-  const CGI::Parameter *CGI::getValue(const UnicodeString &key, const char *realm) {
-    std::map<const UnicodeString,CGI::Parameter *> *m;
+  CGI::ArgumentListType CGI::getValue(const UnicodeString &key, const char *realm) {
+    std::map<const UnicodeString,ArgumentListType > *m;
+    std::map<const UnicodeString,ArgumentListType >::iterator it;
 
     for(const char *ptr = realm;*ptr;++ptr) {
       switch(*ptr) {
         case 'G':
           m = &_get_values;
           break;
+
         case 'P':
           m = &_post_values;
           break;
+
         case 'C':
           m = &_cookie_values;
           break;
+
         default:
           std::string str("Unknown parameter realm ");
           str += *ptr;
           str += ". Valid realms are G (GET), P (POST) and C (Cookies).";
+
           throw ParameterException(str,ParameterException::InvalidValue);
       }
 
-      return (*m)[key];
+      if((it = m->find(key)) != m->end()) {
+        return it->second;
+      }
     }
 
-    return NULL;
+    return ArgumentListType();
   }
 
-  const CGI::Parameter *CGI::getValue(const std::string &key, const char *realm) {
+  CGI::ArgumentListType CGI::getValue(const std::string &key, const char *realm) {
     UnicodeString str(key.c_str(),"UTF-8");
     return getValue(str,realm);
   }
 
-  const CGI::Parameter *CGI::getValue(const char *key, const char *realm) {
+  CGI::ArgumentListType CGI::getValue(const char *key, const char *realm) {
     UnicodeString str(key,"UTF-8");
     return getValue(str,realm);
   }
 
-  const UnicodeString &CGI::getFirstValue(const UnicodeString &key, const char *realm) {
-    const CGI::Parameter *p = getValue(key,realm);
-    if(p) {
-      return p->getValue(0);
+  const UnicodeString CGI::getFirstValue(const UnicodeString &key, const char *realm) {
+    ArgumentListType u = getValue(key,realm);
+    if(u) {
+      return u->at(0);
     }
 
     return UnicodeString();
   }
 
-  const UnicodeString &CGI::getFirstValue(const std::string &key, const char *realm) {
-    const CGI::Parameter *p = getValue(key,realm);
-    if(p) {
-      return p->getValue(0);
+  const UnicodeString CGI::getFirstValue(const std::string &key, const char *realm) {
+    ArgumentListType u = getValue(key,realm);
+    if(u) {
+      return u->at(0);
     }
 
     return UnicodeString();
   }
 
-  const UnicodeString &CGI::getFirstValue(const char *key, const char *realm) {
-    const CGI::Parameter *p = getValue(key,realm);
-    if(p) {
-      return p->getValue(0);
+  const UnicodeString CGI::getFirstValue(const char *key, const char *realm) {
+    ArgumentListType u = getValue(key,realm);
+    if(u) {
+      return u->at(0);
     }
 
     return UnicodeString();
@@ -430,23 +442,6 @@ namespace CForum {
 
 
     return UnicodeString(ustr.c_str(),"UTF-8");
-  }
-
-  CGI::~CGI() {
-    std::map<const UnicodeString,CGI::Parameter * >::iterator end = _get_values.end(), it;
-    for(it = _get_values.begin(); it != end; ++it) {
-      delete it->second;
-    }
-
-    end = _post_values.end();
-    for(it = _post_values.begin(); it != end; ++it) {
-      delete it->second;
-    }
-
-    end = _cookie_values.end();
-    for(it = _cookie_values.begin(); it != end; ++it) {
-      delete it->second;
-    }
   }
 
 }
