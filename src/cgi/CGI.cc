@@ -41,17 +41,6 @@
 namespace CForum {
   CGI::CGI() : _get_values(), _post_values(), _cookie_values(), _cgi_values() {}
 
-  void CGI::parseString(const UnicodeString &str, const char realm) {
-    std::string ustr;
-    str.toUTF8String(ustr);
-
-    parseString(ustr,realm);
-  }
-
-  void CGI::parseString(const std::string &str, const char realm) {
-    parseString(str.c_str(),realm);
-  }
-
   void CGI::saveParam(const UnicodeString &name, const UnicodeString &value, std::map<const UnicodeString, ArgumentListType > *container) {
     std::map<const UnicodeString, ArgumentListType >::iterator it = (*container).find(name);
 
@@ -196,13 +185,6 @@ namespace CForum {
     return nname;
   }
 
-  std::string &CGI::getHeader(const char *name) {
-    return getHeader(std::string(name));
-  }
-  std::string &CGI::getHeader(const std::string &name) {
-    return _headers[name];
-  }
-
   void CGI::parseHeaderFromCGI(const char *header_val) {
     const char *pos = strstr(header_val,"=");
 
@@ -213,48 +195,6 @@ namespace CForum {
     name = niceHeaderName(name);
 
     _headers[name] = value;
-  }
-
-  void CGI::setCGIVariable(const char *name,const char *value) {
-    std::string nam = name, val = value;
-    _cgi_values[name] = value;
-  }
-
-  std::string &CGI::getCGIVariable(const char *str) {
-    return getCGIVariable(std::string(str));
-  }
-
-  std::string &CGI::getCGIVariable(const std::string &name) {
-    return _cgi_values[name];
-  }
-
-  std::string &CGI::serverName() {
-    return getCGIVariable("SERVER_NAME");
-  }
-
-  std::string &CGI::serverProtocol() {
-    return getCGIVariable("SERVER_PROTOCOL");
-  }
-
-  int CGI::serverPort() {
-    std::string str = getCGIVariable("SERVER_PORT");
-    return atoi(str.c_str());
-  }
-
-  std::string &CGI::requestMethod() {
-    return getCGIVariable("REQUEST_METHOD");
-  }
-
-  std::string &CGI::pathInfo() {
-    return getCGIVariable("PATH_INFO");
-  }
-
-  std::string &CGI::scriptName() {
-    return getCGIVariable("SCRIPT_NAME");
-  }
-
-  std::string &CGI::remoteAddress() {
-    return getCGIVariable("REMOTE_ADDRESS");
   }
 
 
@@ -326,55 +266,8 @@ namespace CForum {
     return ArgumentListType();
   }
 
-  CGI::ArgumentListType CGI::getValue(const std::string &key, const char *realm) {
-    UnicodeString str(key.c_str(),"UTF-8");
-    return getValue(str,realm);
-  }
-
-  CGI::ArgumentListType CGI::getValue(const char *key, const char *realm) {
-    UnicodeString str(key,"UTF-8");
-    return getValue(str,realm);
-  }
-
-  const UnicodeString CGI::getFirstValue(const UnicodeString &key, const char *realm) {
-    ArgumentListType u = getValue(key,realm);
-    if(u) {
-      return u->at(0);
-    }
-
-    return UnicodeString();
-  }
-
-  const UnicodeString CGI::getFirstValue(const std::string &key, const char *realm) {
-    ArgumentListType u = getValue(key,realm);
-    if(u) {
-      return u->at(0);
-    }
-
-    return UnicodeString();
-  }
-
-  const UnicodeString CGI::getFirstValue(const char *key, const char *realm) {
-    ArgumentListType u = getValue(key,realm);
-    if(u) {
-      return u->at(0);
-    }
-
-    return UnicodeString();
-  }
 
 
-
-
-  std::string CGI::encode(const UnicodeString &str) {
-    std::string val;
-    str.toUTF8String(val);
-    return encode(val.c_str());
-  }
-
-  std::string CGI::encode(const std::string &str) {
-    return encode(str.c_str());
-  }
 
   std::string CGI::encode(const char *str) {
     std::string ret;
@@ -397,10 +290,6 @@ namespace CForum {
     }
 
     return ret;
-  }
-
-  UnicodeString CGI::decode(const std::string &str) {
-    return decode(str.c_str(),str.length());
   }
 
   UnicodeString CGI::decode(const char *str,size_t len) {
