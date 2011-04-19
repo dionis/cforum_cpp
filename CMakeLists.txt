@@ -105,8 +105,9 @@ find_package(IDN REQUIRED)
 find_package(ICU REQUIRED)
 find_package(CPPUNIT REQUIRED)
 find_package(CURL REQUIRED)
+find_package(Boost REQUIRED)
 
-include_directories("${IDN_INCLUDE_DIR}" "${ICU_INCLUDE}")
+include_directories("${IDN_INCLUDE_DIR}" "${ICU_INCLUDE}" "${Boost_INCLUDE_DIRS}")
 
 add_subdirectory(src)
 
