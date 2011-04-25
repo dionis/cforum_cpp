@@ -140,6 +140,58 @@ namespace CForum {
       int _connect;
 
     };
+
+    inline void Server::setAuth(const std::string &user,const std::string &pass) {
+      _user = user;
+      _pass = pass;
+      _authed = true;
+    }
+
+    inline std::string Server::getHost() {
+      return _host;
+    }
+    inline std::string Server::setHost(const std::string &host) {
+      std::string retval = _host;
+      _host = host;
+      _connect = 1;
+      return retval;
+    }
+
+    inline std::string Server::getDatabase() {
+      return _db;
+    }
+
+    inline std::string Server::setDatabase(const std::string &db,bool create) {
+      std::string retval = _db;
+      _db = db;
+
+      if(create) {
+        createDatabase();
+      }
+
+      return retval;
+    }
+
+    inline int Server::getPort() {
+      return _port;
+    }
+    inline int Server::setPort(const int port) {
+      int retval = _port;
+      _port = port;
+      _connect = 1;
+      return retval;
+    }
+
+    inline Document Server::getDocument(const UnicodeString &key) {
+      std::string str;
+      key.toUTF8String(str);
+      return getDocument(str);
+    }
+
+    inline Document Server::getDocument(const char *key) {
+      return getDocument(std::string(key));
+    }
+
   }
 }
 
