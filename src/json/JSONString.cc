@@ -34,11 +34,9 @@
 
 namespace CForum {
   namespace JSON {
-    String::String() : Element(JSONTypeString), _data() {
-    }
-
-    String::String(UnicodeString &str) : Element(JSONTypeString), _data(str) {
-    }
+    String::String() : Element(JSONTypeString), _data() {}
+    String::String(UnicodeString &str) : Element(JSONTypeString), _data(str) {}
+    String::String(const String &str) : Element(JSONTypeString), _data(str._data) {}
 
     const UnicodeString &String::getValue() {
       return _data;

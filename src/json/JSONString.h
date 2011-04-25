@@ -49,6 +49,7 @@ namespace CForum {
     public:
       String();
       String(UnicodeString &);
+      String(const String &);
 
       const UnicodeString &getValue();
 
