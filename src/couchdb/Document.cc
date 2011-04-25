@@ -36,7 +36,7 @@ namespace CForum {
     }
 
     Document::Document(const Document &doc) : _root() {
-      (void)doc; /* TODO: write copy constructor */
+      _root = boost::shared_ptr<JSON::Object>(new JSON::Object(*(doc._root)));
     }
 
     Document::Document(const UnicodeString &json_str) : _root() {
