@@ -40,8 +40,8 @@ namespace CForum {
 
       bool isfirst = true;
 
-      std::map<UnicodeString,Element *>::iterator end = _data.end();
-      std::map<UnicodeString,Element *>::iterator it;
+      ObjectType_t::iterator end = _data.end();
+      ObjectType_t::iterator it;
 
       ostr << "{";
 
@@ -62,16 +62,11 @@ namespace CForum {
       return ostr.str();
     }
 
-    std::map<UnicodeString,Element *> &Object::getValue() {
+    Object::ObjectType_t &Object::getValue() {
       return _data;
     }
 
-    Object::~Object() {
-      std::map<UnicodeString,Element *>::iterator end = _data.end();
-      for(std::map<UnicodeString,Element *>::iterator it = _data.begin(); it != end; ++it) {
-        delete it->second;
-      }
-    }
+    Object::~Object() {}
 
   }
 }

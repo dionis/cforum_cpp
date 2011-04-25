@@ -38,6 +38,7 @@
 #include <string>
 
 #include <map>
+#include <boost/shared_ptr.hpp>
 
 #include <unicode/unistr.h>
 #include <unicode/bytestream.h>
@@ -49,15 +50,17 @@ namespace CForum {
   namespace JSON {
     class Object : public Element {
     public:
+      typedef std::map<UnicodeString,boost::shared_ptr<Element> > ObjectType_t;
+
       Object();
 
       virtual std::string toJSON();
       virtual ~Object();
 
-      std::map<UnicodeString,Element *> &getValue();
+      ObjectType_t &getValue();
 
     private:
-      std::map<UnicodeString,Element *> _data;
+      ObjectType_t _data;
 
     };
   }

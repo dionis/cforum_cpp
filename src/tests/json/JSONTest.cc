@@ -35,74 +35,79 @@ CPPUNIT_TEST_SUITE_REGISTRATION(JSONTest);
 
 void JSONTest::testParser() {
   CForum::JSON::Parser *pr = new CForum::JSON::Parser();
-  CForum::JSON::Object *root;
+  boost::shared_ptr<CForum::JSON::Element> e_root;
   const char *str = "{\"test-array\":[\"test-value\",3],\"test-bool-false\":false,\"test-bool-true\":true,\"test-null\":null,\"test-num-float\":23.23,\"test-num-int\":23,\"test-string\":\"test-value\"}";
 
-  pr->parse(str,(CForum::JSON::Element **)&root);
+  pr->parse(str,e_root);
+  boost::shared_ptr<CForum::JSON::Object> root = boost::dynamic_pointer_cast<CForum::JSON::Object>(e_root);
 
-  std::map<UnicodeString,CForum::JSON::Element *> &mp = root->getValue();
+  if(!root) {
+    CPPUNIT_FAIL("root is NULL");
+  }
 
-  CForum::JSON::Array *ary = (CForum::JSON::Array *)mp[UnicodeString("test-array")];
-  std::vector <CForum::JSON::Element *> &vc = ary->getValue();
+  CForum::JSON::Object::ObjectType_t &mp = root->getValue();
+
+  boost::shared_ptr<CForum::JSON::Array> ary = boost::dynamic_pointer_cast<CForum::JSON::Array>(mp[UnicodeString("test-array")]);
+  CForum::JSON::Array::ArrayType_t &vc = ary->getValue();
 
   CPPUNIT_ASSERT_EQUAL((int)vc.size(),2);
   CPPUNIT_ASSERT_EQUAL(vc[0]->getType(),CForum::JSON::JSONTypeString);
 
   std::string str_val,str_val1("test-value");
-  ((CForum::JSON::String *)vc[0])->getValue().toUTF8String(str_val);
+  boost::dynamic_pointer_cast<CForum::JSON::String>(vc[0])->getValue().toUTF8String(str_val);
 
   CPPUNIT_ASSERT_EQUAL(str_val,str_val1);
 
   CPPUNIT_ASSERT_EQUAL(vc[1]->getType(),CForum::JSON::JSONTypeNumber);
-  CPPUNIT_ASSERT_EQUAL((int)((CForum::JSON::Number *)vc[1])->getNumberType(),(int)CForum::JSON::JSONNumberTypeInt);
-  CPPUNIT_ASSERT_EQUAL((int)((CForum::JSON::Number *)vc[1])->getIValue(),3);
+  CPPUNIT_ASSERT_EQUAL(
+    (int)boost::dynamic_pointer_cast<CForum::JSON::Number>(vc[1])->getNumberType(),
+    (int)CForum::JSON::JSONNumberTypeInt
+  );
 
-  CForum::JSON::Boolean *b = (CForum::JSON::Boolean *)mp[UnicodeString("test-bool-false")];
+  CPPUNIT_ASSERT_EQUAL(3,(int)boost::dynamic_pointer_cast<CForum::JSON::Number>(vc[1])->getIValue());
+
+  boost::shared_ptr<CForum::JSON::Boolean> b = boost::dynamic_pointer_cast<CForum::JSON::Boolean>(mp[UnicodeString("test-bool-false")]);
   CPPUNIT_ASSERT(!b->getValue());
 
-  b = (CForum::JSON::Boolean *)mp[UnicodeString("test-bool-true")];
+  b = boost::dynamic_pointer_cast<CForum::JSON::Boolean>(mp[UnicodeString("test-bool-true")]);
   CPPUNIT_ASSERT(b->getValue());
 
-  CForum::JSON::Number *n = (CForum::JSON::Number *)mp[UnicodeString("test-num-float")];
-  CPPUNIT_ASSERT_EQUAL(n->getDValue(),23.23);
+  boost::shared_ptr<CForum::JSON::Number> n = boost::dynamic_pointer_cast<CForum::JSON::Number>(mp[UnicodeString("test-num-float")]);
+  CPPUNIT_ASSERT_EQUAL(23.23,n->getDValue());
 
-  n = (CForum::JSON::Number *)mp[UnicodeString("test-num-int")];
-  CPPUNIT_ASSERT_EQUAL((int)n->getIValue(),23);
+  n = boost::dynamic_pointer_cast<CForum::JSON::Number>(mp[UnicodeString("test-num-int")]);
+  CPPUNIT_ASSERT_EQUAL(23,(int)n->getIValue());
 
-  CForum::JSON::String *xstr = (CForum::JSON::String *)mp[UnicodeString("test-string")];
+  boost::shared_ptr<CForum::JSON::String> xstr = boost::dynamic_pointer_cast<CForum::JSON::String>(mp[UnicodeString("test-string")]);
   str_val = "";
   xstr->getValue().toUTF8String(str_val);
   str_val1 = "test-value";
 
   CPPUNIT_ASSERT_EQUAL(str_val1,str_val);
-
-  delete root;
 }
 
 void JSONTest::testGenerator() {
-  CForum::JSON::Object *root = new CForum::JSON::Object();
-  std::map<UnicodeString,CForum::JSON::Element *> &dt = root->getValue();
+  boost::shared_ptr<CForum::JSON::Object> root(new CForum::JSON::Object());
+  CForum::JSON::Object::ObjectType_t &dt = root->getValue();
   UnicodeString str("test-value");
   std::string test;
 
-  CForum::JSON::Array *ary = new CForum::JSON::Array();
-  std::vector<CForum::JSON::Element *> &ary_val = ary->getValue();
+  boost::shared_ptr<CForum::JSON::Array> ary(new CForum::JSON::Array());
+  CForum::JSON::Array::ArrayType_t &ary_val = ary->getValue();
 
-  ary_val.push_back((CForum::JSON::Element *)new CForum::JSON::String(str));
-  ary_val.push_back((CForum::JSON::Element *)new CForum::JSON::Number((int64_t)3));
+  ary_val.push_back(boost::shared_ptr<CForum::JSON::Element>(new CForum::JSON::String(str)));
+  ary_val.push_back(boost::shared_ptr<CForum::JSON::Element>(new CForum::JSON::Number((int64_t)3)));
 
 
-  dt[UnicodeString("test-string")] = new CForum::JSON::String(str);
-  dt[UnicodeString("test-num-int")] = new CForum::JSON::Number((int64_t)23);
-  dt[UnicodeString("test-num-float")] = new CForum::JSON::Number((double)23.23);
-  dt[UnicodeString("test-bool-true")] = new CForum::JSON::Boolean(true);
-  dt[UnicodeString("test-bool-false")] = new CForum::JSON::Boolean(false);
-  dt[UnicodeString("test-null")] = new CForum::JSON::Null();
-  dt[UnicodeString("test-array")] = ary;
+  dt[UnicodeString("test-string")] = boost::shared_ptr<CForum::JSON::Element>(new CForum::JSON::String(str));
+  dt[UnicodeString("test-num-int")] = boost::shared_ptr<CForum::JSON::Element>(new CForum::JSON::Number((int64_t)23));
+  dt[UnicodeString("test-num-float")] = boost::shared_ptr<CForum::JSON::Element>(new CForum::JSON::Number((double)23.23));
+  dt[UnicodeString("test-bool-true")] = boost::shared_ptr<CForum::JSON::Element>(new CForum::JSON::Boolean(true));
+  dt[UnicodeString("test-bool-false")] = boost::shared_ptr<CForum::JSON::Element>(new CForum::JSON::Boolean(false));
+  dt[UnicodeString("test-null")] = boost::shared_ptr<CForum::JSON::Element>(new CForum::JSON::Null());
+  dt[UnicodeString("test-array")] = boost::dynamic_pointer_cast<CForum::JSON::Element>(ary);
 
   test = root->toJSON();
-
-  delete root;
 
   CPPUNIT_ASSERT_EQUAL(test,std::string("{\"test-array\":[\"test-value\",3],\"test-bool-false\":false,\"test-bool-true\":true,\"test-null\":null,\"test-num-float\":23.23,\"test-num-int\":23,\"test-string\":\"test-value\"}"));
 }

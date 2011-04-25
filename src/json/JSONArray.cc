@@ -54,14 +54,11 @@ namespace CForum {
       return ostr.str();
     }
 
-    std::vector<Element *> &Array::getValue() {
+    Array::ArrayType_t &Array::getValue() {
       return _data;
     }
 
     Array::~Array() {
-      for(size_t i=0;i<_data.size();++i) {
-        delete _data[i];
-      }
     }
 
   }

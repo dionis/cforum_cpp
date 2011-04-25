@@ -38,6 +38,7 @@
 #include <string>
 
 #include <vector>
+#include <boost/shared_ptr.hpp>
 
 #include "JSONElement.h"
 
@@ -45,15 +46,17 @@ namespace CForum {
   namespace JSON {
     class Array : public Element {
     public:
+      typedef std::vector<boost::shared_ptr<Element> > ArrayType_t;
+
       Array();
 
       virtual std::string toJSON();
       virtual ~Array();
 
-      std::vector<Element *> &getValue();
+      ArrayType_t &getValue();
 
     protected:
-      std::vector<Element *> _data;
+      ArrayType_t _data;
     };
   }
 }

@@ -36,7 +36,7 @@ namespace CForum {
     Parser::Parser() {
     }
 
-    void Parser::parseFile(const std::string &filename, Element **root) {
+    void Parser::parseFile(const std::string &filename, boost::shared_ptr<Element> &root) {
       std::ifstream fd(filename.c_str(), std::ifstream::in);
       std::string str;
 
@@ -59,23 +59,23 @@ namespace CForum {
       parse(str,root);
     }
 
-    void Parser::parse(const UnicodeString &json_str, Element **root) {
+    void Parser::parse(const UnicodeString &json_str, boost::shared_ptr<Element> &root) {
       std::string tmp;
 
       json_str.toUTF8String(tmp);
       parse(tmp,root);
     }
 
-    void Parser::parse(const std::string &json_str, Element **root) {
+    void Parser::parse(const std::string &json_str, boost::shared_ptr<Element> &root) {
       parse(json_str.c_str(),json_str.length(),root);
     }
 
-    void Parser::parse(const char *json_str, Element **root) {
+    void Parser::parse(const char *json_str, boost::shared_ptr<Element> &root) {
       parse(json_str,strlen(json_str),root);
     }
 
-    void Parser::parse(const char *json_str, size_t len,Element **root) {
-      const char *end = readValue(root,json_str,json_str + len-1);
+    void Parser::parse(const char *json_str, size_t len, boost::shared_ptr<Element> &root) {
+      const char *end = readValue(&root,json_str,json_str + len-1);
 
       if(end != json_str + len) {
         end = eatWhitespacesAndComments(end,json_str+len);
@@ -270,11 +270,11 @@ namespace CForum {
       return str;
     }
 
-    const char *Parser::readArray(Array *elem,const char *str,const char *end) {
+    const char *Parser::readArray(boost::shared_ptr<Array> elem,const char *str,const char *end) {
       Token tok;
-      Element *data;
+      boost::shared_ptr<Element> data;
 
-      std::vector<Element *> &vec = elem->getValue();
+      Array::ArrayType_t &vec = elem->getValue();
 
       do {
         getNextToken(str,end,tok);
@@ -296,12 +296,12 @@ namespace CForum {
       return str;
     }
 
-    const char *Parser::readObject(Object *elem,const char *str,const char *end) {
+    const char *Parser::readObject(boost::shared_ptr<Object> elem,const char *str,const char *end) {
       Token tok;
       UnicodeString key;
-      Element *data;
+      boost::shared_ptr<Element> data;
 
-      std::map<UnicodeString,Element *> &mp = elem->getValue();
+      Object::ObjectType_t &mp = elem->getValue();
 
       do {
         str = getNextToken(str,end,tok);
@@ -331,11 +331,8 @@ namespace CForum {
       return str;
     }
 
-    const char *Parser::readValue(Element **root, const char *ptr, const char *end) {
+    const char *Parser::readValue(boost::shared_ptr<Element> *root, const char *ptr, const char *end) {
       Parser::Token tok;
-
-      Object *obj;
-      Array *ary;
 
       tok.type = JSONTokenTypeUnknown;
       tok.dval = 0.0;
@@ -346,15 +343,13 @@ namespace CForum {
 
       switch(tok.type) {
       case JSONTokenTypeObjectBegin:
-        obj = new Object();
-        *root = obj;
-        ptr = readObject(obj,ptr,end);
+        *root = boost::shared_ptr<Element>(dynamic_cast<Element *>(new Object()));
+        ptr = readObject(boost::dynamic_pointer_cast<Object>(*root),ptr,end);
         return ptr;
 
       case JSONTokenTypeArrayBegin:
-        ary = new Array();
-        *root = ary;
-        ptr = readArray(ary,ptr,end);
+        *root = boost::shared_ptr<Element>(new Array());
+        ptr = readArray(boost::dynamic_pointer_cast<Array>(*root),ptr,end);
         return ptr;
 
         /* we should have a better handling of array and object */
@@ -363,27 +358,27 @@ namespace CForum {
         return ptr;
 
       case JSONTokenTypeString:
-        *root = new String(tok.data);
+        *root = boost::shared_ptr<Element>(new String(tok.data));
         return ptr;
 
       case JSONTokenTypeNumberInt:
-        *root = new Number(tok.ival);
+        *root = boost::shared_ptr<Element>(new Number(tok.ival));
         return ptr;
 
       case JSONTokenTypeNumberFloat:
-        *root = new Number(tok.dval);
+        *root = boost::shared_ptr<Element>(new Number(tok.dval));
         return ptr;
 
       case JSONTokenTypeFalse:
-        *root = new Boolean(false);
+        *root = boost::shared_ptr<Element>(new Boolean(false));
         return ptr;
 
       case JSONTokenTypeTrue:
-        *root = new Boolean(true);
+        *root = boost::shared_ptr<Element>(new Boolean(true));
         return ptr;
 
       case JSONTokenTypeNull:
-        *root = new Null();
+        *root = boost::shared_ptr<Element>(new Null());
         return ptr;
 
       default:

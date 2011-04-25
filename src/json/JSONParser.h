@@ -43,6 +43,8 @@
 #include <cstdlib>
 #include <cstring>
 
+#include <boost/shared_ptr.hpp>
+
 #include "JSONElement.h"
 #include "JSONObject.h"
 #include "JSONArray.h"
@@ -82,17 +84,17 @@ namespace CForum {
     public:
       Parser();
 
-      void parseFile(const std::string &, Element **);
+      void parseFile(const std::string &, boost::shared_ptr<Element> &);
 
-      void parse(const UnicodeString &, Element **);
-      void parse(const std::string &, Element **);
-      void parse(const char *, Element **);
-      void parse(const char *, size_t,Element **);
+      void parse(const UnicodeString &, boost::shared_ptr<Element> &);
+      void parse(const std::string &, boost::shared_ptr<Element> &);
+      void parse(const char *, boost::shared_ptr<Element> &);
+      void parse(const char *, size_t,boost::shared_ptr<Element> &);
 
     private:
       class Token;
 
-      const char *readValue(Element **, const char *, const char *);
+      const char *readValue(boost::shared_ptr<Element> *, const char *, const char *);
 
       const char *eatWhitespacesAndComments(const char *,const char *);
       const char *getNextToken(const char *,const char *,Token &);
@@ -100,8 +102,8 @@ namespace CForum {
       const char *readSingleQuoteString(const char *,const char *,Token &);
       const char *readDoubleQuoteString(const char *,const char *,Token &);
 
-      const char *readObject(Object *,const char *,const char *);
-      const char *readArray(Array *,const char *,const char *);
+      const char *readObject(boost::shared_ptr<Object>,const char *,const char *);
+      const char *readArray(boost::shared_ptr<Array>,const char *,const char *);
 
       class Token {
       public:
