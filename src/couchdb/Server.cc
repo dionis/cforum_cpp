@@ -116,6 +116,9 @@ namespace CForum {
     Server::Server(const std::string &db,const std::string &host,const std::string &protocol) : _host(host), _db(db), _protocol(protocol), _user(), _pass(), _authed(false), _port(5984), _curl(NULL), _connect(1) {}
     Server::Server(const std::string &db,const std::string &host,const std::string &protocol,int port) : _host(host), _db(db), _protocol(protocol), _user(), _pass(), _authed(false), _port(port), _curl(NULL), _connect(1) {}
 
+    Server::~Server() {
+      curl_easy_cleanup(_curl);
+    }
 
     void Server::setAuth(const std::string &user,const std::string &pass) {
       _user = user;

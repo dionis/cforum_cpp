@@ -50,6 +50,8 @@ namespace CForum {
       Server(const std::string &,const std::string &,const std::string &);
       Server(const std::string &,const std::string &,const std::string &,int);
 
+      ~Server();
+
       std::string getHost();
       std::string setHost(const std::string &);
 
