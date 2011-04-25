@@ -74,36 +74,6 @@ namespace CForum {
       delete prsr;
     }
 
-    UnicodeString Document::getId() {
-      boost::shared_ptr<JSON::String> el = boost::dynamic_pointer_cast<JSON::String>(getValue("_id"));
-
-      if(!el) {
-        throw CouchErrorException("_id value not found!",CouchErrorException::ValueNotFound);
-      }
-
-      UnicodeString ustr = el->getValue();
-      return ustr;
-    }
-
-    const UnicodeString Document::getId() const {
-      boost::shared_ptr<JSON::String> el = boost::dynamic_pointer_cast<JSON::String>(getValue("_id"));
-      if(!el) {
-        throw CouchErrorException("_id value not found!",CouchErrorException::ValueNotFound);
-      }
-
-      UnicodeString ustr = el->getValue();
-      return ustr;
-    }
-
-    boost::shared_ptr<JSON::Element> Document::getValue(const char *key) {
-      return getValue(UnicodeString(key,"UTF-8"));
-    }
-
-    boost::shared_ptr<JSON::Element> Document::getValue(const std::string &key) {
-      UnicodeString str(key.c_str());
-      return getValue(str);
-    }
-
     boost::shared_ptr<JSON::Element> Document::getValue(const UnicodeString &key) {
       if(_root) {
         JSON::Object::ObjectType_t &mp = _root->getValue();
@@ -122,15 +92,6 @@ namespace CForum {
       return boost::shared_ptr<JSON::Element>();
     }
 
-    const boost::shared_ptr<JSON::Element> Document::getValue(const char *key) const {
-      return getValue(UnicodeString(key,"UTF-8"));
-    }
-
-    const boost::shared_ptr<JSON::Element> Document::getValue(const std::string &key) const {
-      UnicodeString str(key.c_str());
-      return getValue(str);
-    }
-
     const boost::shared_ptr<JSON::Element> Document::getValue(const UnicodeString &key) const {
       if(_root) {
         JSON::Object::ObjectType_t &mp = _root->getValue();
@@ -147,32 +108,6 @@ namespace CForum {
       throw CouchErrorException(str,CouchErrorException::ValueNotFound);
 
       return boost::shared_ptr<JSON::Element>();
-    }
-
-    void Document::setValue(const std::string &key,boost::shared_ptr<JSON::Element> doc) {
-      UnicodeString str(key.c_str());
-      setValue(str,doc);
-    }
-
-    void Document::setValue(const UnicodeString &key,boost::shared_ptr<JSON::Element> doc) {
-      JSON::Object::ObjectType_t &mp = _root->getValue();
-      mp[key] = doc;
-    }
-
-    std::string Document::toJSON() {
-      if(_root) {
-        return _root->toJSON();
-      }
-
-      return std::string();
-    }
-
-    std::string Document::toJSON() const {
-      if(_root) {
-        return _root->toJSON();
-      }
-
-      return std::string();
     }
 
     Document::~Document() {}

@@ -73,6 +73,71 @@ namespace CForum {
       boost::shared_ptr<JSON::Object> _root;
     };
 
+    inline UnicodeString Document::getId() {
+      boost::shared_ptr<JSON::String> el = boost::dynamic_pointer_cast<JSON::String>(getValue("_id"));
+
+      if(!el) {
+        throw CouchErrorException("_id value not found!",CouchErrorException::ValueNotFound);
+      }
+
+      UnicodeString ustr = el->getValue();
+      return ustr;
+    }
+
+    inline const UnicodeString Document::getId() const {
+      boost::shared_ptr<JSON::String> el = boost::dynamic_pointer_cast<JSON::String>(getValue("_id"));
+      if(!el) {
+        throw CouchErrorException("_id value not found!",CouchErrorException::ValueNotFound);
+      }
+
+      UnicodeString ustr = el->getValue();
+      return ustr;
+    }
+
+    inline boost::shared_ptr<JSON::Element> Document::getValue(const char *key) {
+      return getValue(UnicodeString(key,"UTF-8"));
+    }
+
+    inline boost::shared_ptr<JSON::Element> Document::getValue(const std::string &key) {
+      UnicodeString str(key.c_str());
+      return getValue(str);
+    }
+
+    inline const boost::shared_ptr<JSON::Element> Document::getValue(const char *key) const {
+      return getValue(UnicodeString(key,"UTF-8"));
+    }
+
+    inline const boost::shared_ptr<JSON::Element> Document::getValue(const std::string &key) const {
+      UnicodeString str(key.c_str());
+      return getValue(str);
+    }
+
+    inline void Document::setValue(const std::string &key,boost::shared_ptr<JSON::Element> doc) {
+      UnicodeString str(key.c_str());
+      setValue(str,doc);
+    }
+
+    inline void Document::setValue(const UnicodeString &key,boost::shared_ptr<JSON::Element> doc) {
+      JSON::Object::ObjectType_t &mp = _root->getValue();
+      mp[key] = doc;
+    }
+
+    inline std::string Document::toJSON() {
+      if(_root) {
+        return _root->toJSON();
+      }
+
+      return std::string();
+    }
+
+    inline std::string Document::toJSON() const {
+      if(_root) {
+        return _root->toJSON();
+      }
+
+      return std::string();
+    }
+
   }
 }
 
