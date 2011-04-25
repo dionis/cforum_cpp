@@ -41,6 +41,7 @@ namespace CForum {
     public:
       Boolean();
       Boolean(bool);
+      Boolean(const Boolean &);
 
       virtual std::string toJSON();
       virtual ~Boolean();
