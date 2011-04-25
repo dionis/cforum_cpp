@@ -113,7 +113,7 @@ namespace CForum {
     const char *clen = getenv("CONTENT_LENGTH"),*rqmeth = getenv("REQUEST_METHOD"),**env;
 
     #ifdef __APPLE__
-    const char **environ = (const char **)(*_NSGetEnviron());
+    const char **environ = const_cast<const char **>(*_NSGetEnviron());
     #endif
 
     size_t len = 0;
