@@ -53,6 +53,7 @@ namespace CForum {
       Number();
       Number(double);
       Number(int64_t);
+      Number(const Number &);
 
       virtual std::string toJSON();
       virtual ~Number();
