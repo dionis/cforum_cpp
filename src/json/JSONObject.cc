@@ -30,9 +30,13 @@
 
 #include "JSONObject.h"
 
+#include "JSONParser.h"
+
 namespace CForum {
   namespace JSON {
-    Object::Object() : Element(JSONTypeObject), _data() {
+    Object::Object() : Element(JSONTypeObject), _data() {}
+    Object::Object(const Object &obj) : Element(obj.getType()), _data() {
+      Parser::copyObject(obj,*this);
     }
 
     std::string Object::toJSON() {
@@ -60,10 +64,6 @@ namespace CForum {
       ostr << "}";
 
       return ostr.str();
-    }
-
-    Object::ObjectType_t &Object::getValue() {
-      return _data;
     }
 
     Object::~Object() {}

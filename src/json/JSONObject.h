@@ -53,16 +53,27 @@ namespace CForum {
       typedef std::map<UnicodeString,boost::shared_ptr<Element> > ObjectType_t;
 
       Object();
+      Object(const Object &);
 
       virtual std::string toJSON();
       virtual ~Object();
 
       ObjectType_t &getValue();
+      const ObjectType_t &getValue() const;
 
     private:
       ObjectType_t _data;
 
     };
+
+    inline Object::ObjectType_t &Object::getValue() {
+      return _data;
+    }
+
+    inline const Object::ObjectType_t &Object::getValue() const {
+      return _data;
+    }
+
   }
 }
 
