@@ -91,6 +91,9 @@ namespace CForum {
       void parse(const char *, boost::shared_ptr<Element> &);
       void parse(const char *, size_t,boost::shared_ptr<Element> &);
 
+      static void copyObject(const Object &,Object &);
+      static void copyArray(const Array &, Array &);
+
     private:
       class Token;
 

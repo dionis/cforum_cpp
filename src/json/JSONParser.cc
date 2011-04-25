@@ -36,6 +36,81 @@ namespace CForum {
     Parser::Parser() {
     }
 
+    void Parser::copyObject(const Object &src,Object &dst) {
+      const Object::ObjectType_t &from = src.getValue();
+      Object::ObjectType_t &to = dst.getValue();
+
+      Object::ObjectType_t::const_iterator end = from.end();
+      for(Object::ObjectType_t::const_iterator it = from.begin(); it != end; ++it) {
+        switch(it->second->getType()) {
+        case JSONTypeNull:
+          to[it->first] = boost::shared_ptr<Element>(new Null());
+          break;
+
+        case JSONTypeObject:
+          to[it->first] = boost::dynamic_pointer_cast<Element>(boost::shared_ptr<Object>(new Object(*(boost::dynamic_pointer_cast<Object>(it->second)))));
+          break;
+
+        case JSONTypeArray:
+          to[it->first] = boost::dynamic_pointer_cast<Element>(boost::shared_ptr<Array>(new Array(*(boost::dynamic_pointer_cast<Array>(it->second)))));
+          break;
+
+        case JSONTypeBoolean:
+          to[it->first] = boost::shared_ptr<Element>(new Boolean(*(boost::dynamic_pointer_cast<Boolean>(it->second))));
+          break;
+
+        case JSONTypeString:
+          to[it->first] = boost::shared_ptr<Element>(new String(*(boost::dynamic_pointer_cast<String>(it->second))));
+          break;
+
+        case JSONTypeNumber:
+          to[it->first] = boost::shared_ptr<Element>(new Number(*(boost::dynamic_pointer_cast<Number>(it->second))));
+          break;
+        }
+      }
+    }
+
+    void Parser::copyArray(const Array &src, Array &dst) {
+      const Array::ArrayType_t &from = src.getValue();
+      Array::ArrayType_t &to = dst.getValue();
+      boost::shared_ptr<Element> el;
+
+      Array::ArrayType_t::const_iterator end = from.end();
+      for(Array::ArrayType_t::const_iterator it = from.begin(); it != end; ++it) {
+        switch((*it)->getType()) {
+        case JSONTypeNull:
+          el = boost::shared_ptr<Element>(new Null());
+          to.push_back(el);
+          break;
+
+        case JSONTypeObject:
+          el = boost::dynamic_pointer_cast<Element>(boost::shared_ptr<Object>(new Object(*(boost::dynamic_pointer_cast<Object>(*it)))));
+          to.push_back(el);
+          break;
+
+        case JSONTypeArray:
+          el = boost::dynamic_pointer_cast<Element>(boost::shared_ptr<Array>(new Array(*(boost::dynamic_pointer_cast<Array>(*it)))));
+          to.push_back(el);
+          break;
+
+        case JSONTypeBoolean:
+          el = boost::shared_ptr<Element>(new Boolean(*(boost::dynamic_pointer_cast<Boolean>(*it))));
+          to.push_back(el);
+          break;
+
+        case JSONTypeString:
+          el = boost::shared_ptr<Element>(new String(*(boost::dynamic_pointer_cast<String>(*it))));
+          to.push_back(el);
+          break;
+
+        case JSONTypeNumber:
+          el = boost::shared_ptr<Element>(new Number(*(boost::dynamic_pointer_cast<Number>(*it))));
+          to.push_back(el);
+          break;
+        }
+      }
+    }
+
     void Parser::parseFile(const std::string &filename, boost::shared_ptr<Element> &root) {
       std::ifstream fd(filename.c_str(), std::ifstream::in);
       std::string str;
