@@ -8,4 +8,5 @@ Makefile
 /docs/
 build
 *.swp
+.dir-locals.el
 
