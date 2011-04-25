@@ -70,7 +70,7 @@ namespace CForum {
       ~Document();
 
     private:
-      boost::shared_ptr<JSON::Object> root;
+      boost::shared_ptr<JSON::Object> _root;
     };
 
   }

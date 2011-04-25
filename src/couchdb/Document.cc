@@ -32,14 +32,14 @@
 
 namespace CForum {
   namespace CouchDB {
-    Document::Document() : root(new JSON::Object()) {
+    Document::Document() : _root(new JSON::Object()) {
     }
 
-    Document::Document(const Document &doc) : root() {
+    Document::Document(const Document &doc) : _root() {
       (void)doc; /* TODO: write copy constructor */
     }
 
-    Document::Document(const UnicodeString &json_str) : root() {
+    Document::Document(const UnicodeString &json_str) : _root() {
       std::string str;
       JSON::Parser *prsr = new JSON::Parser();
       boost::shared_ptr<JSON::Element> el;
@@ -47,29 +47,29 @@ namespace CForum {
       json_str.toUTF8String(str);
       prsr->parse(str.c_str(),el);
 
-      root = boost::dynamic_pointer_cast<JSON::Object>(el);
+      _root = boost::dynamic_pointer_cast<JSON::Object>(el);
 
       delete prsr;
     }
 
-    Document::Document(const std::string &json_str) : root() {
+    Document::Document(const std::string &json_str) : _root() {
       JSON::Parser *prsr = new JSON::Parser();
       boost::shared_ptr<JSON::Element> el;
 
       prsr->parse(json_str.c_str(),el);
 
-      root = boost::dynamic_pointer_cast<JSON::Object>(el);
+      _root = boost::dynamic_pointer_cast<JSON::Object>(el);
 
       delete prsr;
     }
 
-    Document::Document(const char *json_str) : root() {
+    Document::Document(const char *json_str) : _root() {
       JSON::Parser *prsr = new JSON::Parser();
       boost::shared_ptr<JSON::Element> el;
 
       prsr->parse(json_str,el);
 
-      root = boost::dynamic_pointer_cast<JSON::Object>(el);
+      _root = boost::dynamic_pointer_cast<JSON::Object>(el);
 
       delete prsr;
     }
@@ -105,8 +105,8 @@ namespace CForum {
     }
 
     boost::shared_ptr<JSON::Element> Document::getValue(const UnicodeString &key) {
-      if(root) {
-        JSON::Object::ObjectType_t &mp = root->getValue();
+      if(_root) {
+        JSON::Object::ObjectType_t &mp = _root->getValue();
         JSON::Object::ObjectType_t::iterator it = mp.find(key);
 
         if(it != mp.end()) {
@@ -132,8 +132,8 @@ namespace CForum {
     }
 
     const boost::shared_ptr<JSON::Element> Document::getValue(const UnicodeString &key) const {
-      if(root) {
-        JSON::Object::ObjectType_t &mp = root->getValue();
+      if(_root) {
+        JSON::Object::ObjectType_t &mp = _root->getValue();
         JSON::Object::ObjectType_t::iterator it = mp.find(key);
 
         if(it != mp.end()) {
@@ -155,21 +155,21 @@ namespace CForum {
     }
 
     void Document::setValue(const UnicodeString &key,boost::shared_ptr<JSON::Element> doc) {
-      JSON::Object::ObjectType_t &mp = root->getValue();
+      JSON::Object::ObjectType_t &mp = _root->getValue();
       mp[key] = doc;
     }
 
     std::string Document::toJSON() {
-      if(root) {
-        return root->toJSON();
+      if(_root) {
+        return _root->toJSON();
       }
 
       return std::string();
     }
 
     std::string Document::toJSON() const {
-      if(root) {
-        return root->toJSON();
+      if(_root) {
+        return _root->toJSON();
       }
 
       return std::string();
