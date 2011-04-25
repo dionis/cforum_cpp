@@ -49,15 +49,26 @@ namespace CForum {
       typedef std::vector<boost::shared_ptr<Element> > ArrayType_t;
 
       Array();
+      Array(const Array &);
 
       virtual std::string toJSON();
       virtual ~Array();
 
       ArrayType_t &getValue();
+      const ArrayType_t &getValue() const;
 
     protected:
       ArrayType_t _data;
     };
+
+    inline Array::ArrayType_t &Array::getValue() {
+      return _data;
+    }
+
+    inline const Array::ArrayType_t &Array::getValue() const {
+      return _data;
+    }
+
   }
 }
 

@@ -29,10 +29,13 @@
  */
 
 #include "JSONArray.h"
+#include "JSONParser.h"
 
 namespace CForum {
   namespace JSON {
-    Array::Array() : Element(JSONTypeArray), _data() {
+    Array::Array() : Element(JSONTypeArray), _data() {}
+    Array::Array(const Array &ary) {
+      Parser::copyArray(ary,*this);
     }
 
     std::string Array::toJSON() {
@@ -54,12 +57,7 @@ namespace CForum {
       return ostr.str();
     }
 
-    Array::ArrayType_t &Array::getValue() {
-      return _data;
-    }
-
-    Array::~Array() {
-    }
+    Array::~Array() {}
 
   }
 }
