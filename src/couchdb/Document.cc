@@ -35,31 +35,48 @@ namespace CForum {
     Document::Document() : root(new JSON::Object()) {
     }
 
-    Document::Document(const Document &doc) : root(NULL) {
+    Document::Document(const Document &doc) : root() {
+      (void)doc; /* TODO: write copy constructor */
     }
 
-    Document::Document(const UnicodeString &json_str) : root(NULL) {
+    Document::Document(const UnicodeString &json_str) : root() {
       std::string str;
       JSON::Parser *prsr = new JSON::Parser();
+      boost::shared_ptr<JSON::Element> el;
 
       json_str.toUTF8String(str);
-      prsr->parse(str.c_str(),(JSON::Element **)&root);
+      prsr->parse(str.c_str(),el);
+
+      root = boost::dynamic_pointer_cast<JSON::Object>(el);
 
       delete prsr;
     }
 
-    Document::Document(const std::string &json_str) : root(NULL) {
+    Document::Document(const std::string &json_str) : root() {
       JSON::Parser *prsr = new JSON::Parser();
-      prsr->parse(json_str.c_str(),(JSON::Element **)&root);
+      boost::shared_ptr<JSON::Element> el;
+
+      prsr->parse(json_str.c_str(),el);
+
+      root = boost::dynamic_pointer_cast<JSON::Object>(el);
+
+      delete prsr;
     }
 
-    Document::Document(const char *json_str) : root(NULL) {
+    Document::Document(const char *json_str) : root() {
       JSON::Parser *prsr = new JSON::Parser();
-      prsr->parse(json_str,(JSON::Element **)&root);
+      boost::shared_ptr<JSON::Element> el;
+
+      prsr->parse(json_str,el);
+
+      root = boost::dynamic_pointer_cast<JSON::Object>(el);
+
+      delete prsr;
     }
 
     UnicodeString Document::getId() {
-      JSON::String *el = (JSON::String *)getValue("_id");
+      boost::shared_ptr<JSON::String> el = boost::dynamic_pointer_cast<JSON::String>(getValue("_id"));
+
       if(!el) {
         throw CouchErrorException("_id value not found!",CouchErrorException::ValueNotFound);
       }
@@ -69,7 +86,7 @@ namespace CForum {
     }
 
     const UnicodeString Document::getId() const {
-      JSON::String *el = (JSON::String *)getValue("_id");
+      boost::shared_ptr<JSON::String> el = boost::dynamic_pointer_cast<JSON::String>(getValue("_id"));
       if(!el) {
         throw CouchErrorException("_id value not found!",CouchErrorException::ValueNotFound);
       }
@@ -78,19 +95,19 @@ namespace CForum {
       return ustr;
     }
 
-    JSON::Element *Document::getValue(const char *key) {
+    boost::shared_ptr<JSON::Element> Document::getValue(const char *key) {
       return getValue(UnicodeString(key,"UTF-8"));
     }
 
-    JSON::Element *Document::getValue(const std::string &key) {
+    boost::shared_ptr<JSON::Element> Document::getValue(const std::string &key) {
       UnicodeString str(key.c_str());
       return getValue(str);
     }
 
-    JSON::Element *Document::getValue(const UnicodeString &key) {
+    boost::shared_ptr<JSON::Element> Document::getValue(const UnicodeString &key) {
       if(root) {
-        std::map<UnicodeString,JSON::Element *> mp = root->getValue();
-        std::map<UnicodeString,JSON::Element *>::iterator it = mp.find(key);
+        JSON::Object::ObjectType_t &mp = root->getValue();
+        JSON::Object::ObjectType_t::iterator it = mp.find(key);
 
         if(it != mp.end()) {
           return it->second;
@@ -102,22 +119,22 @@ namespace CForum {
       str += " value not found!";
       throw CouchErrorException(str,CouchErrorException::ValueNotFound);
 
-      return NULL;
+      return boost::shared_ptr<JSON::Element>();
     }
 
-    const JSON::Element *Document::getValue(const char *key) const {
+    const boost::shared_ptr<JSON::Element> Document::getValue(const char *key) const {
       return getValue(UnicodeString(key,"UTF-8"));
     }
 
-    const JSON::Element *Document::getValue(const std::string &key) const {
+    const boost::shared_ptr<JSON::Element> Document::getValue(const std::string &key) const {
       UnicodeString str(key.c_str());
       return getValue(str);
     }
 
-    const JSON::Element *Document::getValue(const UnicodeString &key) const {
+    const boost::shared_ptr<JSON::Element> Document::getValue(const UnicodeString &key) const {
       if(root) {
-        std::map<UnicodeString,JSON::Element *> mp = root->getValue();
-        std::map<UnicodeString,JSON::Element *>::iterator it = mp.find(key);
+        JSON::Object::ObjectType_t &mp = root->getValue();
+        JSON::Object::ObjectType_t::iterator it = mp.find(key);
 
         if(it != mp.end()) {
           return it->second;
@@ -129,16 +146,16 @@ namespace CForum {
       str += " value not found!";
       throw CouchErrorException(str,CouchErrorException::ValueNotFound);
 
-      return NULL;
+      return boost::shared_ptr<JSON::Element>();
     }
 
-    void Document::setValue(const std::string &key,JSON::Element *doc) {
+    void Document::setValue(const std::string &key,boost::shared_ptr<JSON::Element> doc) {
       UnicodeString str(key.c_str());
       setValue(str,doc);
     }
 
-    void Document::setValue(const UnicodeString &key,JSON::Element *doc) {
-      std::map<UnicodeString,JSON::Element *> mp = root->getValue();
+    void Document::setValue(const UnicodeString &key,boost::shared_ptr<JSON::Element> doc) {
+      JSON::Object::ObjectType_t &mp = root->getValue();
       mp[key] = doc;
     }
 
@@ -158,11 +175,7 @@ namespace CForum {
       return std::string();
     }
 
-    Document::~Document() {
-      if(root != NULL) {
-        delete root;
-      }
-    }
+    Document::~Document() {}
   }
 }
 

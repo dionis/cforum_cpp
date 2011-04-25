@@ -53,16 +53,16 @@ namespace CForum {
       UnicodeString getId();
       const UnicodeString getId() const;
 
-      JSON::Element *getValue(const char *);
-      JSON::Element *getValue(const std::string &);
-      JSON::Element *getValue(const UnicodeString &);
+      boost::shared_ptr<JSON::Element> getValue(const char *);
+      boost::shared_ptr<JSON::Element> getValue(const std::string &);
+      boost::shared_ptr<JSON::Element> getValue(const UnicodeString &);
 
-      const JSON::Element *getValue(const char *) const;
-      const JSON::Element *getValue(const std::string &) const;
-      const JSON::Element *getValue(const UnicodeString &) const;
+      const boost::shared_ptr<JSON::Element> getValue(const char *) const;
+      const boost::shared_ptr<JSON::Element> getValue(const std::string &) const;
+      const boost::shared_ptr<JSON::Element> getValue(const UnicodeString &) const;
 
-      void setValue(const std::string &,JSON::Element *);
-      void setValue(const UnicodeString &,JSON::Element *);
+      void setValue(const std::string &,boost::shared_ptr<JSON::Element>);
+      void setValue(const UnicodeString &,boost::shared_ptr<JSON::Element>);
 
       std::string toJSON();
       std::string toJSON() const;
@@ -70,7 +70,7 @@ namespace CForum {
       ~Document();
 
     private:
-      JSON::Object *root;
+      boost::shared_ptr<JSON::Object> root;
     };
 
   }

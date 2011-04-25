@@ -39,17 +39,23 @@ void CouchDBTest::testInterface() {
 
   CForum::CouchDB::Document doc("{\"_id\": \"test\",\"lala\":\"lulu\"}");
 
+  try {
   srv.putDocument(doc);
-  CForum::CouchDB::Document doc1 = srv.getDocument("test");
+  }
+  catch(CForum::CouchDB::CouchErrorException &e) {
+    printf("error: %s\n",e.getMessage().c_str());
+    return;
+  }
 
-  CForum::JSON::String *id = (CForum::JSON::String *)doc1.getValue("_id");
+  CForum::CouchDB::Document doc1 = srv.getDocument("test");
+  boost::shared_ptr<CForum::JSON::String> id = boost::dynamic_pointer_cast<CForum::JSON::String>(doc1.getValue("_id"));
 
   std::string str;
   id->getValue().toUTF8String(str);
   CPPUNIT_ASSERT_EQUAL(std::string("test"),str);
 
   str = "";
-  CForum::JSON::String *lala = (CForum::JSON::String *)doc1.getValue("lala");
+  boost::shared_ptr<CForum::JSON::String> lala = boost::dynamic_pointer_cast<CForum::JSON::String>(doc1.getValue("lala"));
   lala->getValue().toUTF8String(str);
   CPPUNIT_ASSERT_EQUAL(std::string("lulu"),str);
 
