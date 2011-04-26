@@ -43,6 +43,8 @@
 #include <unicode/unistr.h>
 #include <unicode/bytestream.h>
 
+#include "hash_map.h"
+
 #include "JSONElement.h"
 #include "JSONString.h"
 
@@ -50,7 +52,7 @@ namespace CForum {
   namespace JSON {
     class Object : public Element {
     public:
-      typedef std::map<UnicodeString,boost::shared_ptr<Element> > ObjectType_t;
+      typedef std::hash_map<UnicodeString,boost::shared_ptr<Element>, hash_unicodestring > ObjectType_t;
 
       Object();
       Object(const Object &);
