@@ -208,7 +208,7 @@ namespace CForum {
     }
 
     while((pos = strstr(pos1,"=")) != NULL) {
-      for(;*pos1 && (isspace(*pos1) || *pos1 == ';');++pos1);
+      for(;*pos1 && (isspace(*pos1) || *pos1 == ';');++pos1) {}
 
       namlen = pos - pos1;
       name   = CGI::decode(pos1,namlen);

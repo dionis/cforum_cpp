@@ -310,7 +310,7 @@ namespace CForum {
       case '7':
       case '8':
       case '9':
-        for(ptr=str;ptr<end && isdigit(*ptr);++ptr);
+        for(ptr=str;ptr<end && isdigit(*ptr);++ptr) {}
 
         if(*ptr == '.') {
           if(!isdigit(*(ptr+1))) {

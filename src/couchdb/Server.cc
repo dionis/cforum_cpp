@@ -73,12 +73,12 @@ namespace CForum {
         pos = bufptr + 5;
         rsp->setVersion(strtod(pos,&pos));
 
-        for(++pos;pos < bufptr + bytes && isspace(*pos);++pos);
+        for(++pos;pos < bufptr + bytes && isspace(*pos);++pos) {}
         rsp->setStatus(strtol(pos,&pos,10));
 
-        for(++pos;pos < bufptr + bytes && isspace(*pos);++pos);
+        for(++pos;pos < bufptr + bytes && isspace(*pos);++pos) {}
         ptr = (char *)(pos + bytes - (char *)(pos - bufptr) - 1);
-        for(;ptr > pos && (*ptr == '\015' || *ptr == '\012');--ptr);
+        for(;ptr > pos && (*ptr == '\015' || *ptr == '\012');--ptr) {}
 
         rsp->setMessage(std::string(pos,ptr-pos+1));
         return bytes;
@@ -87,7 +87,7 @@ namespace CForum {
       for(ptr=bufptr;ptr < bufptr+bytes;++ptr) {
         if(*ptr == ':') {
           pos = ptr;
-          for(++ptr;ptr < bufptr+bytes && isspace(*ptr);++ptr);
+          for(++ptr;ptr < bufptr+bytes && isspace(*ptr);++ptr) {}
           break;
         }
       }
