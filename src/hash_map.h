@@ -47,6 +47,13 @@ namespace CForum {
       return static_cast<std::size_t>(ustr.hashCode());
     }
   };
+
+  struct hash_str {
+    size_t operator()(const std::string &str) const {
+      return std::hash<const char *>()(str.c_str());
+    }
+  };
+
 }
 
 # endif
