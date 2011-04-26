@@ -34,7 +34,7 @@
 namespace CForum {
   namespace JSON {
     Array::Array() : Element(JSONTypeArray), _data() {}
-    Array::Array(const Array &ary) {
+    Array::Array(const Array &ary) : Element(JSONTypeArray), _data() {
       Parser::copyArray(ary,*this);
     }
 
