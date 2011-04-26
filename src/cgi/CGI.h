@@ -42,6 +42,8 @@
 
 #include <boost/shared_ptr.hpp>
 
+#include "hash_map.h"
+
 #include "exceptions/ParameterException.h"
 #include "exceptions/CGIParserException.h"
 
@@ -95,16 +97,16 @@ namespace CForum {
     static UnicodeString decode(const char *,size_t);
 
   protected:
-    void saveParam(const UnicodeString &,const UnicodeString &, std::map<const UnicodeString, ArgumentListType > *);
+    typedef std::hash_map<UnicodeString,ArgumentListType,hash_unicodestring > CGIValueContainer_t;
 
-    std::map<const UnicodeString,ArgumentListType > _get_values;
-    std::map<const UnicodeString,ArgumentListType > _post_values;
-    std::map<const UnicodeString,ArgumentListType > _cookie_values;
+    void saveParam(const UnicodeString &,const UnicodeString &, CGIValueContainer_t *);
 
-    std::map<const std::string,std::string> _cgi_values;
+    CGIValueContainer_t _get_values;
+    CGIValueContainer_t _post_values;
+    CGIValueContainer_t _cookie_values;
 
-    std::map<const std::string,std::string> _headers;
-
+    std::hash_map<std::string,std::string, hash_str> _cgi_values;
+    std::hash_map<std::string,std::string, hash_str> _headers;
   };
 
   inline const UnicodeString CGI::getFirstValue(const UnicodeString &key, const char *realm) {

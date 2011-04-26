@@ -41,8 +41,8 @@
 namespace CForum {
   CGI::CGI() : _get_values(), _post_values(), _cookie_values(), _cgi_values() {}
 
-  void CGI::saveParam(const UnicodeString &name, const UnicodeString &value, std::map<const UnicodeString, ArgumentListType > *container) {
-    std::map<const UnicodeString, ArgumentListType >::iterator it = (*container).find(name);
+  void CGI::saveParam(const UnicodeString &name, const UnicodeString &value, CGIValueContainer_t *container) {
+    CGIValueContainer_t::iterator it = (*container).find(name);
 
     if(it != container->end()) {
       it->second->push_back(value);
@@ -58,7 +58,7 @@ namespace CForum {
     const char  *pos = data,*pos1 = data;
     UnicodeString name,value;
     int len = 0,namlen = 0,vallen = 0;
-    std::map<const UnicodeString, ArgumentListType > *container;
+    CGIValueContainer_t *container;
 
     switch(realm) {
       case 'G':
@@ -233,8 +233,8 @@ namespace CForum {
   }
 
   CGI::ArgumentListType CGI::getValue(const UnicodeString &key, const char *realm) {
-    std::map<const UnicodeString,ArgumentListType > *m;
-    std::map<const UnicodeString,ArgumentListType >::iterator it;
+    CGIValueContainer_t *m;
+    CGIValueContainer_t::iterator it;
 
     for(const char *ptr = realm;*ptr;++ptr) {
       switch(*ptr) {
