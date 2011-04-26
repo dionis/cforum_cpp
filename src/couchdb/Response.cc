@@ -54,9 +54,11 @@ namespace CForum {
       return _headers[name];
     }
     const std::string &Server::Response::getHeader(const std::string &name) const {
+      static std::string emptyString;
       std::map<std::string,std::string>::const_iterator it = _headers.find(name);
+
       if(it == _headers.end()) {
-        return std::string();
+        return emptyString;
       }
 
       return it->second;
