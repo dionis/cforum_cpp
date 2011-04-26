@@ -180,7 +180,7 @@ namespace CForum {
       }
     }
 
-    void Server::connect() {
+    inline void Server::connect() {
       if(_connect) {
         if(_curl) {
           curl_easy_cleanup(_curl);
