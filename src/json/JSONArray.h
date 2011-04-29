@@ -51,6 +51,8 @@ namespace CForum {
       Array();
       Array(const Array &);
 
+      const Array &operator=(const Array &);
+
       virtual std::string toJSON();
       virtual ~Array();
 

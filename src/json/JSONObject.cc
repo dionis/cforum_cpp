@@ -35,8 +35,14 @@
 namespace CForum {
   namespace JSON {
     Object::Object() : Element(JSONTypeObject), _data() {}
-    Object::Object(const Object &obj) : Element(obj.getType()), _data() {
-      Parser::copyObject(obj,*this);
+    Object::Object(const Object &obj) : Element(obj.getType()), _data(obj._data) {}
+
+    const Object &Object::operator=(const Object &obj) {
+      if(this != &obj) {
+        _data = obj._data;
+      }
+
+      return *this;
     }
 
     std::string Object::toJSON() {

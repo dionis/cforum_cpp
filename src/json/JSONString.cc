@@ -38,12 +38,12 @@ namespace CForum {
     String::String(UnicodeString &str) : Element(JSONTypeString), _data(str) {}
     String::String(const String &str) : Element(JSONTypeString), _data(str._data) {}
 
-    const UnicodeString &String::getValue() {
-      return _data;
-    }
+    const String &String::operator=(const String &str) {
+      if(this != &str) {
+        _data = str._data;
+      }
 
-    std::string String::toJSON() {
-      return String::toJSONString(_data);
+      return *this;
     }
 
     std::string String::toJSONString(const UnicodeString &str) {

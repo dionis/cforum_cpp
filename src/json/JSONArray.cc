@@ -34,8 +34,14 @@
 namespace CForum {
   namespace JSON {
     Array::Array() : Element(JSONTypeArray), _data() {}
-    Array::Array(const Array &ary) : Element(JSONTypeArray), _data() {
-      Parser::copyArray(ary,*this);
+    Array::Array(const Array &ary) : Element(JSONTypeArray), _data(ary._data) {}
+
+    const Array &Array::operator=(const Array &ary) {
+      if(this != &ary) {
+        _data = ary._data;
+      }
+
+      return *this;
     }
 
     std::string Array::toJSON() {

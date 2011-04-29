@@ -51,6 +51,8 @@ namespace CForum {
       String(UnicodeString &);
       String(const String &);
 
+      const String &operator=(const String &);
+
       const UnicodeString &getValue();
 
       virtual std::string toJSON();
@@ -61,6 +63,15 @@ namespace CForum {
     protected:
       UnicodeString _data;
     };
+
+    inline const UnicodeString &String::getValue() {
+      return _data;
+    }
+
+    inline std::string String::toJSON() {
+      return String::toJSONString(_data);
+    }
+
   }
 }
 
