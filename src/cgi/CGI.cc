@@ -45,10 +45,12 @@ namespace CForum {
   }
 
   const CGI &CGI::operator=(const CGI &to_copy) {
-    _get_values    = to_copy._get_values;
-    _post_values   = to_copy._post_values;
-    _cookie_values = to_copy._cookie_values;
-    _cgi_values    = to_copy._cgi_values;
+    if(this != &to_copy) {
+      _get_values    = to_copy._get_values;
+      _post_values   = to_copy._post_values;
+      _cookie_values = to_copy._cookie_values;
+      _cgi_values    = to_copy._cgi_values;
+    }
 
     return *this;
   }
