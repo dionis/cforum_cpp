@@ -52,8 +52,10 @@ namespace CForum {
   public:
     typedef boost::shared_ptr<std::vector<UnicodeString> > ArgumentListType;
 
-
     CGI();
+    CGI(const CGI &);
+
+    const CGI &operator=(const CGI &);
 
     void parseString(const UnicodeString &, const char = 'G');
     void parseString(const std::string &, const char = 'G');

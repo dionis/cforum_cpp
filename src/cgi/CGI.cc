@@ -41,6 +41,18 @@
 namespace CForum {
   CGI::CGI() : _get_values(), _post_values(), _cookie_values(), _cgi_values() {}
 
+  CGI::CGI(const CGI &c) : _get_values(c._get_values), _post_values(c._post_values), _cookie_values(c._cookie_values), _cgi_values(c._cgi_values) {
+  }
+
+  const CGI &CGI::operator=(const CGI &to_copy) {
+    _get_values    = to_copy._get_values;
+    _post_values   = to_copy._post_values;
+    _cookie_values = to_copy._cookie_values;
+    _cgi_values    = to_copy._cgi_values;
+
+    return *this;
+  }
+
   void CGI::saveParam(const UnicodeString &name, const UnicodeString &value, CGIValueContainer_t *container) {
     CGIValueContainer_t::iterator it = (*container).find(name);
 
