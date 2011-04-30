@@ -34,8 +34,8 @@
 
 namespace CForum {
   namespace JSON {
-    Object::Object() : Element(JSONTypeObject), _data() {}
-    Object::Object(const Object &obj) : Element(obj.getType()), _data(obj._data) {}
+    Object::Object() : Element(), _data() {}
+    Object::Object(const Object &obj) : Element(), _data(obj._data) {}
 
     const Object &Object::operator=(const Object &obj) {
       if(this != &obj) {

@@ -32,14 +32,7 @@
 
 namespace CForum {
   namespace JSON {
-    Element::Element() : _type(JSONTypeNull) {
-    }
-
-    Element::Element(enum JSONType type) : _type(type) {
-    }
-
-    enum JSONType Element::getType() const {
-      return _type;
+    Element::Element() {
     }
 
     std::string Element::toJSON() {

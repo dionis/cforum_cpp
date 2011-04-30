@@ -33,8 +33,8 @@
 
 namespace CForum {
   namespace JSON {
-    Array::Array() : Element(JSONTypeArray), _data() {}
-    Array::Array(const Array &ary) : Element(JSONTypeArray), _data(ary._data) {}
+    Array::Array() : Element(), _data() {}
+    Array::Array(const Array &ary) : Element(), _data(ary._data) {}
 
     const Array &Array::operator=(const Array &ary) {
       if(this != &ary) {

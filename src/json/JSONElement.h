@@ -37,28 +37,12 @@
 
 namespace CForum {
   namespace JSON {
-    enum JSONType {
-      JSONTypeNull,
-      JSONTypeObject,
-      JSONTypeArray,
-      JSONTypeBoolean,
-      JSONTypeString,
-      JSONTypeNumber
-    };
-
     class Element {
     public:
       Element();
-      Element(enum JSONType type);
 
       virtual std::string toJSON();
       virtual ~Element();
-
-      enum JSONType getType() const;
-
-    protected:
-      enum JSONType _type;
-
     };
   }
 }

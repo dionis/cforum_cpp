@@ -34,9 +34,9 @@
 
 namespace CForum {
   namespace JSON {
-    String::String() : Element(JSONTypeString), _data() {}
-    String::String(UnicodeString &str) : Element(JSONTypeString), _data(str) {}
-    String::String(const String &str) : Element(JSONTypeString), _data(str._data) {}
+    String::String() : Element(), _data() {}
+    String::String(UnicodeString &str) : Element(), _data(str) {}
+    String::String(const String &str) : Element(), _data(str._data) {}
 
     const String &String::operator=(const String &str) {
       if(this != &str) {

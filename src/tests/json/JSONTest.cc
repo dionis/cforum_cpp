@@ -51,14 +51,14 @@ void JSONTest::testParser() {
   CForum::JSON::Array::ArrayType_t &vc = ary->getValue();
 
   CPPUNIT_ASSERT_EQUAL((int)vc.size(),2);
-  CPPUNIT_ASSERT_EQUAL(vc[0]->getType(),CForum::JSON::JSONTypeString);
+  CPPUNIT_ASSERT(boost::dynamic_pointer_cast<CForum::JSON::String>(vc[0]));
 
   std::string str_val,str_val1("test-value");
   boost::dynamic_pointer_cast<CForum::JSON::String>(vc[0])->getValue().toUTF8String(str_val);
 
   CPPUNIT_ASSERT_EQUAL(str_val,str_val1);
 
-  CPPUNIT_ASSERT_EQUAL(vc[1]->getType(),CForum::JSON::JSONTypeNumber);
+  CPPUNIT_ASSERT(boost::dynamic_pointer_cast<CForum::JSON::Number>(vc[1]));
   CPPUNIT_ASSERT_EQUAL(
     (int)boost::dynamic_pointer_cast<CForum::JSON::Number>(vc[1])->getNumberType(),
     (int)CForum::JSON::JSONNumberTypeInt

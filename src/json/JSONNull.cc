@@ -32,7 +32,7 @@
 
 namespace CForum {
   namespace JSON {
-    Null::Null() : Element(JSONTypeNull) {
+    Null::Null() : Element() {
     }
 
     std::string Null::toJSON() {
