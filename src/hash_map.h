@@ -1,7 +1,7 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
  * \brief abstracts the hash map debacle
- * \package JSON
+ * \package hash_map
  *
  * This simply abstracts the hash_map debacle of std::hash_map
  */
