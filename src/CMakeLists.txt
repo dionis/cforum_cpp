@@ -12,6 +12,7 @@ add_subdirectory(exceptions)
 add_subdirectory(jsevaluator)
 add_subdirectory(couchdb)
 add_subdirectory(cgi)
+add_subdirectory(template)
 
 add_subdirectory(tests)
 
