@@ -61,6 +61,7 @@ namespace CForum {
     int mode = TemplateParseModeString;
     const char *ptr;
     std::string tmp,rslt;
+    int i;
 
     for(ptr=str; static_cast<size_t>(ptr-str)<len; ++ptr) {
       printf("%x | %c\n",*ptr,*ptr);
@@ -80,9 +81,11 @@ namespace CForum {
             if(strncmp(ptr,"<?js",4) == 0) {
               mode = TemplateParseModeInJS;
 
-              rslt += "_e('";
-              rslt += tmp;
-              rslt += "');";
+              if(tmp.length() > 0) {
+                rslt += "_e('";
+                rslt += tmp;
+                rslt += "');";
+              }
 
               tmp = "";
               ptr += 3;
@@ -99,8 +102,17 @@ namespace CForum {
       }
       else {
         if(*ptr == '?' && strncmp(ptr,"?>",2) == 0) {
-          rslt += " ";
-          rslt += tmp;
+          if(tmp.length() > 0) {
+            rslt += " ";
+            rslt += tmp;
+
+            for(i=tmp.length();i>0;--i) {
+              if(!isspace(tmp[i]) && tmp[i] != ';') {
+                rslt += ';';
+                break;
+              }
+            }
+          }
 
           tmp = "";
           ptr += 1;
@@ -115,12 +127,23 @@ namespace CForum {
     rslt += " ";
 
     if(mode == TemplateParseModeString) {
-      rslt += "_e('";
-      rslt += tmp;
-      rslt += "');";
+      if(tmp.length() > 0) {
+        rslt += "_e('";
+        rslt += tmp;
+        rslt += "');";
+      }
     }
     else {
-      rslt += tmp;
+      if(tmp.length() > 0) {
+        rslt += tmp;
+
+        for(i=tmp.length();i>0;--i) {
+          if(!isspace(tmp[i]) && tmp[i] != ';') {
+            rslt += ';';
+            break;
+          }
+        }
+      }
     }
 
     printf("rslt: %s\n",rslt.c_str());
