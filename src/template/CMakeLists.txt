@@ -9,6 +9,6 @@ add_library(cftemplate SHARED
   Template.cc
 )
 
-target_link_libraries(cftemplate cfexceptions ${ICU_LIBRARY})
+target_link_libraries(cftemplate cfexceptions v8 ${ICU_LIBRARY})
 
 # eof

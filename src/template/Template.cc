@@ -31,7 +31,35 @@
 #include "Template.h"
 
 namespace CForum {
-  Template::Template() : _sender(NULL) {
+  static void standard_sender(const std::string &str) {
+    std::cout << str;
+  }
+
+  static v8::Handle<v8::Value> _eCallback(const v8::Arguments &args) {
+    if(args.Length() >= 1) {
+      v8::HandleScope scope;
+
+      for(int i=0;i<args.Length();++i) {
+        v8::String::Utf8Value value(args[i]);
+
+        standard_sender(std::string(*value));
+      }
+    }
+
+    return v8::Undefined();
+  }
+
+  Template::Global::Global() : _global(v8::ObjectTemplate::New()) {
+    _global->SetInternalFieldCount(1);
+    _global->Set(v8::String::New("echo"), v8::FunctionTemplate::New(_eCallback));
+  }
+
+  Template::Template() : _sender(standard_sender), _handle_scope(), _global(), _context(v8::Context::New(NULL, _global.getGlobal())), _scope(_context) {
+    //v8::Handle<v8::Object> obj = _global->NewInstance();
+    //obj->SetInternalField(0, v8::External::New(this));
+    //_context->Global()->Set(v8::String::New("tpl"), obj);
+    //_context->Global()->Set(v8::String::New("firstname"), v8::String::New("Christian"));
+    //_context->Global()->Set(v8::String::New("mood"), v8::String::New("sad"));
   }
 
   std::string Template::parseFile(const std::string &filename) {
@@ -64,8 +92,6 @@ namespace CForum {
     int i;
 
     for(ptr=str; static_cast<size_t>(ptr-str)<len; ++ptr) {
-      printf("%x | %c\n",*ptr,*ptr);
-
       if(mode == TemplateParseModeString) {
         switch(*ptr) {
           case '\'':
@@ -82,7 +108,7 @@ namespace CForum {
               mode = TemplateParseModeInJS;
 
               if(tmp.length() > 0) {
-                rslt += "_e('";
+                rslt += "echo('";
                 rslt += tmp;
                 rslt += "');";
               }
@@ -128,7 +154,7 @@ namespace CForum {
 
     if(mode == TemplateParseModeString) {
       if(tmp.length() > 0) {
-        rslt += "_e('";
+        rslt += "echo('";
         rslt += tmp;
         rslt += "');";
       }
@@ -146,9 +172,16 @@ namespace CForum {
       }
     }
 
-    printf("rslt: %s\n",rslt.c_str());
+    return rslt;
+  }
 
+  std::string Template::evaluate(const v8::Handle<v8::Script> &script) {
+    v8::Handle<v8::Value> result = script->Run();
     return std::string();
+  }
+
+  v8::Handle<v8::Script> Template::compile(const std::string &src) {
+    return v8::Script::Compile(v8::String::New(src.c_str()));
   }
 
 }

@@ -58,6 +58,15 @@ namespace CForum {
     std::string parseString(const UnicodeString &);
     std::string parseString(const char *,size_t);
 
+    std::string evaluateFile(const std::string &);
+    std::string evaluateString(const std::string &);
+
+    std::string evaluate(const std::string &);
+
+    std::string evaluate(const v8::Handle<v8::Script> &);
+
+    v8::Handle<v8::Script> compile(const std::string &);
+
     void setSender(sender_t);
     sender_t getSender();
 
@@ -68,7 +77,25 @@ namespace CForum {
     } TemplateParseMode;
 
     sender_t _sender;
+
+    class Global {
+    public:
+      v8::Handle<v8::ObjectTemplate> _global;
+
+      Global();
+      v8::Handle<v8::ObjectTemplate> &getGlobal();
+    };
+
+    v8::HandleScope _handle_scope;
+    Template::Global _global;
+    v8::Persistent<v8::Context> _context;
+    v8::Context::Scope _scope;
+
   };
+
+  inline v8::Handle<v8::ObjectTemplate> &Template::Global::getGlobal() {
+    return _global;
+  }
 
   inline void Template::setSender(Template::sender_t sender) {
     _sender = sender;
@@ -87,6 +114,18 @@ namespace CForum {
     str.toUTF8String(utf8str);
 
     return parseString(utf8str);
+  }
+
+  inline std::string Template::evaluateFile(const std::string &fname) {
+    return evaluate(parseFile(fname));
+  }
+
+  inline std::string Template::evaluateString(const std::string &str) {
+    return evaluate(parseString(str));
+  }
+
+  inline std::string Template::evaluate(const std::string &str) {
+    return evaluate(compile(str));
   }
 
 }
