@@ -66,6 +66,9 @@ namespace CForum {
 
     v8::Handle<v8::Script> compile(const std::string &);
 
+    void setVariable(const UnicodeString &,v8::Handle<v8::Value>);
+    void setVariable(const char *nam,v8::Handle<v8::Value>);
+
     void setSender(sender_t);
     sender_t getSender();
 
@@ -132,6 +135,12 @@ namespace CForum {
 
   inline std::string Template::evaluate(const std::string &str) {
     return evaluate(compile(str));
+  }
+
+  inline void setVariable(const UnicodeString &nam,v8::Handle<v8::Value> val) {
+    std::string name;
+    nam.toUTF8String(name);
+    setVariable(name.c_str(),val);
   }
 
 }

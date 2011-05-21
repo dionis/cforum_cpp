@@ -50,6 +50,19 @@ namespace CForum {
       return v8::ThrowException(v8::String::New("Oops! Global object is NULL."));
     }
 
+    if(args.Length() < 1 || args[0].IsEmpty() || !args[0]->IsString()) {
+      return v8::ThrowException(v8::String::New("A variable name is needed as first argument!"));
+    }
+
+    v8::Handle<v8::Value> val = tpl->_vars->Get(args[0]);
+    if(val->IsUndefined()) {
+      if(args.Length() > 1) {
+        val = args[1];
+      }
+    }
+
+    v8::String::Utf8Value value(val->ToString());
+    tpl->_sender(std::string(*value));
 
     return v8::Undefined();
   }
@@ -128,6 +141,12 @@ namespace CForum {
     //_context->Global()->Set(v8::String::New("tpl"), obj);
     //_context->Global()->Set(v8::String::New("firstname"), v8::String::New("Christian"));
     //_context->Global()->Set(v8::String::New("mood"), v8::String::New("sad"));
+  }
+
+  void Template::setVariable(const char *nam,v8::Handle<v8::Value> val) {
+    v8::Handle<v8::String> name = v8::String::New(nam);
+
+    _vars->Set(name,val);
   }
 
   std::string Template::parseFile(const std::string &filename) {

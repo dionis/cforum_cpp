@@ -36,6 +36,9 @@ CPPUNIT_TEST_SUITE_REGISTRATION(TemplateTest);
 void TemplateTest::testParser() {
   CForum::Template tpl;
 
+  tpl.setVariable("firstname",v8::String::New("CK"));
+  tpl.setVariable("mood",v8::String::New("froh"));
+
   tpl.evaluateString(std::string("<?js /*extend('lala.html')*/ ?>\n<h1>'la\nla'</h1>\n<p>Ich, <?js _e(_v('firstname','Christian Kruse')) ?>, im vollbesitz meiner geistigen kräfte, bin <?js _p('mood') ?>. Deshalb..."));
 
 }
