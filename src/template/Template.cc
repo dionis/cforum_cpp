@@ -62,7 +62,7 @@ namespace CForum {
     }
 
     v8::String::Utf8Value value(val->ToString());
-    tpl->_sender(std::string(*value));
+    tpl->getSender()(std::string(*value));
 
     return v8::Undefined();
   }
@@ -118,7 +118,7 @@ namespace CForum {
       for(int i=0;i<args.Length();++i) {
         v8::String::Utf8Value value(args[i]);
 
-        tpl->_sender(std::string(*value));
+        tpl->getSender()(std::string(*value));
       }
     }
 

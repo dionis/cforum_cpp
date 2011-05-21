@@ -100,11 +100,6 @@ namespace CForum {
     v8::Persistent<v8::Context> _context;
     v8::Context::Scope _scope;
     v8::Handle<v8::Object> _vars;
-
-    friend v8::Handle<v8::Value> _pCallback(const v8::Arguments &);
-    friend v8::Handle<v8::Value> _eCallback(const v8::Arguments &);
-    friend v8::Handle<v8::Value> _vCallback(const v8::Arguments &);
-
   };
 
   inline v8::Handle<v8::ObjectTemplate> &Template::Global::getGlobal() {
