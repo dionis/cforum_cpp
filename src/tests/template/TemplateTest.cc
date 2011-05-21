@@ -39,7 +39,7 @@ void TemplateTest::testParser() {
   tpl.setVariable("firstname",v8::String::New("CK"));
   tpl.setVariable("mood",v8::String::New("froh"));
 
-  tpl.evaluateString(std::string("<% /*extend('lala.html')*/ %>\n<h1>'la\nla'</h1>\n<p>Ich, <% _e(_v('firstname','Christian Kruse')) %>, im vollbesitz meiner geistigen kräfte, bin ${mood}. Deshalb..."));
+  tpl.displayString(std::string("<% /*extend('lala.html')*/ %>\n<h1>'la\nla'</h1>\n<p>Ich, <% _e(_v('firstname','Christian Kruse')) %>, im vollbesitz meiner geistigen kräfte, bin ${mood}. Deshalb..."));
 
 }
 

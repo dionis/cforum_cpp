@@ -162,6 +162,20 @@ namespace CForum {
 
     return ret_str;
   }
+
+  void Template::display(const v8::Handle<v8::Script> &script) {
+    bool set = false;
+
+    if(getSender() == standard_string_sender) {
+      set = true;
+      setSender(standard_sender);
+    }
+
+    script->Run();
+
+    if(set) {
+      setSender(standard_string_sender);
+    }
   }
 
   v8::Handle<v8::Script> Template::compile(const std::string &src) {

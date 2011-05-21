@@ -60,9 +60,14 @@ namespace CForum {
     std::string evaluateFile(const std::string &);
     std::string evaluateString(const std::string &);
 
-    std::string evaluate(const std::string &);
+    void displayFile(const std::string &);
+    void displayString(const std::string &);
 
+    std::string evaluate(const std::string &);
     std::string evaluate(const v8::Handle<v8::Script> &);
+
+    void display(const std::string &);
+    void display(const v8::Handle<v8::Script> &);
 
     v8::Handle<v8::Script> compile(const std::string &);
 
@@ -142,12 +147,24 @@ namespace CForum {
     return evaluate(parseFile(fname));
   }
 
+  inline void Template::displayFile(const std::string &fname) {
+    return display(parseFile(fname));
+  }
+
   inline std::string Template::evaluateString(const std::string &str) {
     return evaluate(parseString(str));
   }
 
+  inline void Template::displayString(const std::string &str) {
+    return display(parseString(str));
+  }
+
   inline std::string Template::evaluate(const std::string &str) {
     return evaluate(compile(str));
+  }
+
+  inline void Template::display(const std::string &str) {
+    return display(compile(str));
   }
 
   inline void setVariable(const UnicodeString &nam,v8::Handle<v8::Value> val) {
