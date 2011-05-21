@@ -47,7 +47,7 @@
 namespace CForum {
   class Template {
   public:
-    typedef void (*sender_t)(const std::string &);
+    typedef void (*sender_t)(const std::string &,void *userdata);
 
     Template();
 
@@ -77,6 +77,9 @@ namespace CForum {
     void setSender(sender_t);
     sender_t getSender();
 
+    void setUserdata(void *);
+    void *getUserdata();
+
     ~Template();
 
   private:
@@ -100,6 +103,8 @@ namespace CForum {
     v8::Persistent<v8::Context> _context;
     v8::Context::Scope _scope;
     v8::Handle<v8::Object> _vars;
+
+    void *_userdata;
   };
 
   inline v8::Handle<v8::ObjectTemplate> &Template::Global::getGlobal() {
@@ -112,6 +117,14 @@ namespace CForum {
 
   inline Template::sender_t Template::getSender() {
     return _sender;
+  }
+
+  inline void Template::setUserdata(void *udata) {
+    _userdata = udata;
+  }
+
+  inline void *Template::getUserdata() {
+    return _userdata;
   }
 
   inline std::string Template::parseString(const std::string &str) {

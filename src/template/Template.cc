@@ -31,8 +31,14 @@
 #include "Template.h"
 
 namespace CForum {
-  static void standard_sender(const std::string &str) {
+  static void standard_sender(const std::string &str,void *udata) {
+    (void)udata;
     std::cout << str;
+  }
+
+  static void standard_string_sender(const std::string &str,void *udata) {
+    std::string *app = reinterpret_cast<std::string *>(udata);
+    app->append(str);
   }
 
   v8::Handle<v8::Value> _pCallback(const v8::Arguments &args) {
@@ -62,7 +68,7 @@ namespace CForum {
     }
 
     v8::String::Utf8Value value(val->ToString());
-    tpl->getSender()(std::string(*value));
+    tpl->getSender()(std::string(*value),tpl->getUserdata());
 
     return v8::Undefined();
   }
@@ -118,7 +124,7 @@ namespace CForum {
       for(int i=0;i<args.Length();++i) {
         v8::String::Utf8Value value(args[i]);
 
-        tpl->getSender()(std::string(*value));
+        tpl->getSender()(std::string(*value),tpl->getUserdata());
       }
     }
 
@@ -138,8 +144,24 @@ namespace CForum {
   }
 
   std::string Template::evaluate(const v8::Handle<v8::Script> &script) {
-    v8::Handle<v8::Value> result = script->Run();
-    return std::string();
+    bool set = false;
+    std::string ret_str;
+
+    if(getSender() == standard_sender) {
+      set = true;
+      setSender(standard_string_sender);
+      setUserdata(&ret_str);
+    }
+
+    script->Run();
+
+    if(set) {
+      setSender(standard_sender);
+      setUserdata(NULL);
+    }
+
+    return ret_str;
+  }
   }
 
   v8::Handle<v8::Script> Template::compile(const std::string &src) {
