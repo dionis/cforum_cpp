@@ -35,14 +35,77 @@ namespace CForum {
     std::cout << str;
   }
 
-  static v8::Handle<v8::Value> _eCallback(const v8::Arguments &args) {
+  v8::Handle<v8::Value> _pCallback(const v8::Arguments &args) {
+    v8::Local<v8::Object> self = args.Holder();
+    v8::Handle<v8::Object> proto = v8::Handle<v8::Object>::Cast(self->GetPrototype());
+
+    if(proto->InternalFieldCount() < 1) {
+      return v8::ThrowException(v8::String::New("Oops! Global object not found."));
+    }
+
+    v8::Local<v8::External> wrap = v8::Local<v8::External>::Cast(proto->GetInternalField(0));
+    Template *tpl = reinterpret_cast<Template *>(wrap->Value());
+
+    if(tpl == NULL) {
+      return v8::ThrowException(v8::String::New("Oops! Global object is NULL."));
+    }
+
+
+    return v8::Undefined();
+  }
+
+  v8::Handle<v8::Value> _vCallback(const v8::Arguments &args) {
+    v8::Local<v8::Object> self = args.Holder();
+    v8::Handle<v8::Object> proto = v8::Handle<v8::Object>::Cast(self->GetPrototype());
+
+    if(proto->InternalFieldCount() < 1) {
+      return v8::ThrowException(v8::String::New("Oops! Global object not found."));
+    }
+
+    v8::Local<v8::External> wrap = v8::Local<v8::External>::Cast(proto->GetInternalField(0));
+    Template *tpl = reinterpret_cast<Template *>(wrap->Value());
+
+    if(tpl == NULL) {
+      return v8::ThrowException(v8::String::New("Oops! Global object is NULL."));
+    }
+
+    if(args.Length() < 1 || args[0].IsEmpty() || !args[0]->IsString()) {
+      return v8::ThrowException(v8::String::New("A variable name is needed as first argument!"));
+    }
+
+    v8::Handle<v8::Value> val = tpl->_vars->Get(args[0]);
+    if(val->IsUndefined()) {
+      if(args.Length() > 1) {
+        v8::Handle<v8::String> str = args[1]->ToString();
+        return str;
+      }
+    }
+
+    return val;
+  }
+
+  v8::Handle<v8::Value> _eCallback(const v8::Arguments &args) {
+    v8::Local<v8::Object> self = args.Holder();
+    v8::Handle<v8::Object> proto = v8::Handle<v8::Object>::Cast(self->GetPrototype());
+
+    if(proto->InternalFieldCount() < 1) {
+      return v8::ThrowException(v8::String::New("Oops! Global object not found."));
+    }
+
+    v8::Local<v8::External> wrap = v8::Local<v8::External>::Cast(proto->GetInternalField(0));
+    Template *tpl = reinterpret_cast<Template *>(wrap->Value());
+
+    if(tpl == NULL) {
+      return v8::ThrowException(v8::String::New("Oops! Global object is NULL."));
+    }
+
     if(args.Length() >= 1) {
       v8::HandleScope scope;
 
       for(int i=0;i<args.Length();++i) {
         v8::String::Utf8Value value(args[i]);
 
-        standard_sender(std::string(*value));
+        tpl->_sender(std::string(*value));
       }
     }
 
@@ -51,10 +114,15 @@ namespace CForum {
 
   Template::Global::Global() : _global(v8::ObjectTemplate::New()) {
     _global->SetInternalFieldCount(1);
-    _global->Set(v8::String::New("echo"), v8::FunctionTemplate::New(_eCallback));
+
+    _global->Set(v8::String::New("_e"), v8::FunctionTemplate::New(_eCallback));
+    _global->Set(v8::String::New("_v"), v8::FunctionTemplate::New(_vCallback));
+    _global->Set(v8::String::New("_p"), v8::FunctionTemplate::New(_pCallback));
   }
 
-  Template::Template() : _sender(standard_sender), _handle_scope(), _global(), _context(v8::Context::New(NULL, _global.getGlobal())), _scope(_context) {
+  Template::Template() : _sender(standard_sender), _handle_scope(), _global(), _context(v8::Context::New(NULL, _global.getGlobal())), _scope(_context), _vars(v8::Object::New()) {
+    v8::Handle<v8::Object>::Cast(_context->Global()->GetPrototype())->SetInternalField(0, v8::External::New(this));
+
     //v8::Handle<v8::Object> obj = _global->NewInstance();
     //obj->SetInternalField(0, v8::External::New(this));
     //_context->Global()->Set(v8::String::New("tpl"), obj);
@@ -108,7 +176,7 @@ namespace CForum {
               mode = TemplateParseModeInJS;
 
               if(tmp.length() > 0) {
-                rslt += "echo('";
+                rslt += "_e('";
                 rslt += tmp;
                 rslt += "');";
               }
@@ -154,7 +222,7 @@ namespace CForum {
 
     if(mode == TemplateParseModeString) {
       if(tmp.length() > 0) {
-        rslt += "echo('";
+        rslt += "_e('";
         rslt += tmp;
         rslt += "');";
       }
@@ -182,6 +250,10 @@ namespace CForum {
 
   v8::Handle<v8::Script> Template::compile(const std::string &src) {
     return v8::Script::Compile(v8::String::New(src.c_str()));
+  }
+
+  Template::~Template() {
+    _context.Dispose();
   }
 
 }

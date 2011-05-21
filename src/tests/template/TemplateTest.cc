@@ -36,7 +36,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(TemplateTest);
 void TemplateTest::testParser() {
   CForum::Template tpl;
 
-  tpl.evaluateString(std::string("<?js /*extend('lala.html')*/ ?>\n<h1>'la\nla'</h1>\n<p>Ich <?js echo(firstname) ?>, im vollbesitz meiner geistigen kräfte, bin <?js echo(mood) ?>. Deshalb..."));
+  tpl.evaluateString(std::string("<?js /*extend('lala.html')*/ ?>\n<h1>'la\nla'</h1>\n<p>Ich, <?js _e(_v('firstname','Christian Kruse')) ?>, im vollbesitz meiner geistigen kräfte, bin <?js _p('mood') ?>. Deshalb..."));
 
 }
 

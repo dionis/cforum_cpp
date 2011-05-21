@@ -40,10 +40,9 @@
 
 #include <string>
 
+#include <v8.h>
+
 #include "exceptions/CForumException.h"
-
-#include "jsevaluator/JSEvaluator.h"
-
 
 namespace CForum {
   class Template {
@@ -70,13 +69,13 @@ namespace CForum {
     void setSender(sender_t);
     sender_t getSender();
 
+    ~Template();
+
   private:
     enum {
       TemplateParseModeString,
       TemplateParseModeInJS
     } TemplateParseMode;
-
-    sender_t _sender;
 
     class Global {
     public:
@@ -86,10 +85,17 @@ namespace CForum {
       v8::Handle<v8::ObjectTemplate> &getGlobal();
     };
 
+    sender_t _sender;
+
     v8::HandleScope _handle_scope;
     Template::Global _global;
     v8::Persistent<v8::Context> _context;
     v8::Context::Scope _scope;
+    v8::Handle<v8::Object> _vars;
+
+    friend v8::Handle<v8::Value> _pCallback(const v8::Arguments &);
+    friend v8::Handle<v8::Value> _eCallback(const v8::Arguments &);
+    friend v8::Handle<v8::Value> _vCallback(const v8::Arguments &);
 
   };
 
