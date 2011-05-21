@@ -28,8 +28,8 @@
  * THE SOFTWARE.
  */
 
-#ifndef REQUEST_H
-#define REQUEST_H
+#ifndef TEMPLATE_H
+#define TEMPLATE_H
 
 #include <iostream>
 #include <fstream>
