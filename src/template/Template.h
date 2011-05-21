@@ -69,6 +69,11 @@ namespace CForum {
     void setVariable(const UnicodeString &,v8::Handle<v8::Value>);
     void setVariable(const char *nam,v8::Handle<v8::Value>);
 
+    v8::Handle<v8::Value> getVariable(const UnicodeString &);
+    v8::Handle<v8::Value> getVariable(const char *);
+
+    v8::Handle<v8::Value> getVariable(const v8::Handle<v8::Value>);
+
     void setSender(sender_t);
     sender_t getSender();
 
@@ -141,6 +146,27 @@ namespace CForum {
     std::string name;
     nam.toUTF8String(name);
     setVariable(name.c_str(),val);
+  }
+
+  inline v8::Handle<v8::Value> Template::getVariable(const UnicodeString &nam) {
+    std::string name;
+    nam.toUTF8String(name);
+    return getVariable(name.c_str());
+  }
+
+  inline v8::Handle<v8::Value> Template::getVariable(const char *nam) {
+    v8::Handle<v8::String> str = v8::String::New(nam);
+    return getVariable(str);
+  }
+
+  inline v8::Handle<v8::Value> Template::getVariable(const v8::Handle<v8::Value> nam) {
+    return _vars->Get(nam);
+  }
+
+  inline void Template::setVariable(const char *nam,v8::Handle<v8::Value> val) {
+    v8::Handle<v8::String> name = v8::String::New(nam);
+
+    _vars->Set(name,val);
   }
 
 }

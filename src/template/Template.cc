@@ -54,7 +54,7 @@ namespace CForum {
       return v8::ThrowException(v8::String::New("A variable name is needed as first argument!"));
     }
 
-    v8::Handle<v8::Value> val = tpl->_vars->Get(args[0]);
+    v8::Handle<v8::Value> val = tpl->getVariable(args[0]);
     if(val->IsUndefined()) {
       if(args.Length() > 1) {
         val = args[1];
@@ -86,7 +86,7 @@ namespace CForum {
       return v8::ThrowException(v8::String::New("A variable name is needed as first argument!"));
     }
 
-    v8::Handle<v8::Value> val = tpl->_vars->Get(args[0]);
+    v8::Handle<v8::Value> val = tpl->getVariable(args[0]);
     if(val->IsUndefined()) {
       if(args.Length() > 1) {
         v8::Handle<v8::String> str = args[1]->ToString();
@@ -135,18 +135,6 @@ namespace CForum {
 
   Template::Template() : _sender(standard_sender), _handle_scope(), _global(), _context(v8::Context::New(NULL, _global.getGlobal())), _scope(_context), _vars(v8::Object::New()) {
     v8::Handle<v8::Object>::Cast(_context->Global()->GetPrototype())->SetInternalField(0, v8::External::New(this));
-
-    //v8::Handle<v8::Object> obj = _global->NewInstance();
-    //obj->SetInternalField(0, v8::External::New(this));
-    //_context->Global()->Set(v8::String::New("tpl"), obj);
-    //_context->Global()->Set(v8::String::New("firstname"), v8::String::New("Christian"));
-    //_context->Global()->Set(v8::String::New("mood"), v8::String::New("sad"));
-  }
-
-  void Template::setVariable(const char *nam,v8::Handle<v8::Value> val) {
-    v8::Handle<v8::String> name = v8::String::New(nam);
-
-    _vars->Set(name,val);
   }
 
   std::string Template::evaluate(const v8::Handle<v8::Script> &script) {
