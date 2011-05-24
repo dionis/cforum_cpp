@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief JSON parser interface testing
- * \package unittests
+ * \brief The template class
+ * \package templates
  *
- * Testing the JSON parser interface
+ * Contains the basic template class
  */
 
 /*
@@ -28,22 +28,27 @@
  * THE SOFTWARE.
  */
 
-#include "TemplateTest.h"
-#include "template/Template.h"
+#include "Template.h"
 
-CPPUNIT_TEST_SUITE_REGISTRATION(TemplateTest);
+namespace CForum {
+  Template::Extender::Extender() : _filename(), _vars(), _empty(true) {
+  }
 
-void TemplateTest::testParser() {
-  CForum::Template tpl;
+  Template::Extender::Extender(const std::string &fname,v8::Handle<v8::Object> vars) : _filename(fname), _vars(vars), _empty(false) {
+  }
 
-  tpl.setVariable("firstname",v8::String::New("CK"));
-  tpl.setVariable("mood",v8::String::New("froh"));
+  bool Template::Extender::isEmpty() {
+    return _empty;
+  }
 
-  std::string str = tpl.evaluateString(std::string("<% extend('../../../src/tests/template/lala.html') %>\n<h1>'la\nla'</h1>\n<p>Ich, <% _e(_v('firstname','Christian Kruse')) %>, im vollbesitz meiner geistigen kräfte, bin ${mood}. Deshalb..."));
+  std::string &Template::Extender::getFilename() {
+    return _filename;
+  }
 
-  CPPUNIT_ASSERT_EQUAL(std::string("<head><title>Test</title></head><body>--\n<h1>'la\nla'</h1>\n<p>Ich, CK, im vollbesitz meiner geistigen kräfte, bin froh. Deshalb...--</body>"),str);
+  v8::Handle<v8::Object> Template::Extender::getVars() {
+    return _vars;
+  }
+
 }
-
-
 
 /* eof */

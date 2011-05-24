@@ -31,17 +31,7 @@
 #include "Template.h"
 
 namespace CForum {
-  static void standard_sender(const std::string &str,void *udata) {
-    (void)udata;
-    std::cout << str;
-  }
-
-  static void standard_string_sender(const std::string &str,void *udata) {
-    std::string *app = reinterpret_cast<std::string *>(udata);
-    app->append(str);
-  }
-
-  v8::Handle<v8::Value> _pCallback(const v8::Arguments &args) {
+  static v8::Handle<v8::Value> _pCallback(const v8::Arguments &args) {
     v8::Local<v8::Object> self = args.Holder();
     v8::Handle<v8::Object> proto = v8::Handle<v8::Object>::Cast(self->GetPrototype());
 
@@ -68,12 +58,12 @@ namespace CForum {
     }
 
     v8::String::Utf8Value value(val->ToString());
-    tpl->getSender()(std::string(*value),tpl->getUserdata());
+    *tpl->getStream() << *value;
 
     return v8::Undefined();
   }
 
-  v8::Handle<v8::Value> _vCallback(const v8::Arguments &args) {
+  static v8::Handle<v8::Value> _vCallback(const v8::Arguments &args) {
     v8::Local<v8::Object> self = args.Holder();
     v8::Handle<v8::Object> proto = v8::Handle<v8::Object>::Cast(self->GetPrototype());
 
@@ -103,7 +93,7 @@ namespace CForum {
     return val;
   }
 
-  v8::Handle<v8::Value> _eCallback(const v8::Arguments &args) {
+  static v8::Handle<v8::Value> _eCallback(const v8::Arguments &args) {
     v8::Local<v8::Object> self = args.Holder();
     v8::Handle<v8::Object> proto = v8::Handle<v8::Object>::Cast(self->GetPrototype());
 
@@ -124,9 +114,73 @@ namespace CForum {
       for(int i=0;i<args.Length();++i) {
         v8::String::Utf8Value value(args[i]);
 
-        tpl->getSender()(std::string(*value),tpl->getUserdata());
+        *tpl->getStream() << *value;
       }
     }
+
+    return v8::Undefined();
+  }
+
+  static v8::Handle<v8::Value> extendCallback(const v8::Arguments &args) {
+    v8::Local<v8::Object> self = args.Holder();
+    v8::Handle<v8::Object> proto = v8::Handle<v8::Object>::Cast(self->GetPrototype());
+
+    if(proto->InternalFieldCount() < 1) {
+      return v8::ThrowException(v8::String::New("Oops! Global object not found."));
+    }
+
+    v8::Local<v8::External> wrap = v8::Local<v8::External>::Cast(proto->GetInternalField(0));
+    Template *tpl = reinterpret_cast<Template *>(wrap->Value());
+
+    if(tpl == NULL) {
+      return v8::ThrowException(v8::String::New("Oops! Global object is NULL."));
+    }
+
+    if(args.Length() < 1 || args[0].IsEmpty() || !args[0]->IsString()) {
+      return v8::ThrowException(v8::String::New("A variable name is needed as first argument!"));
+    }
+
+    v8::String::Utf8Value part_name(args[0]);
+    std::string fname = tpl->generateFileName(part_name);
+
+    v8::Handle<v8::Object> vars;
+    if(args.Length() == 2 && !args[0].IsEmpty() && args[0]->IsObject()) {
+      vars = args[1]->ToObject();
+    }
+
+    tpl->setExtend(fname,vars);
+
+    return v8::Undefined();
+  }
+
+  static v8::Handle<v8::Value> partialCallback(const v8::Arguments &args) {
+    v8::Local<v8::Object> self = args.Holder();
+    v8::Handle<v8::Object> proto = v8::Handle<v8::Object>::Cast(self->GetPrototype());
+
+    if(proto->InternalFieldCount() < 1) {
+      return v8::ThrowException(v8::String::New("Oops! Global object not found."));
+    }
+
+    v8::Local<v8::External> wrap = v8::Local<v8::External>::Cast(proto->GetInternalField(0));
+    Template *tpl = reinterpret_cast<Template *>(wrap->Value());
+
+    if(tpl == NULL) {
+      return v8::ThrowException(v8::String::New("Oops! Global object is NULL."));
+    }
+
+    if(args.Length() < 1 || args[0].IsEmpty() || !args[0]->IsString()) {
+      return v8::ThrowException(v8::String::New("A variable name is needed as first argument!"));
+    }
+
+    v8::String::Utf8Value part_name(args[0]);
+    std::string fname = tpl->generateFileName(part_name);
+
+    v8::Handle<v8::Object> vars;
+    if(args.Length() == 2 && !args[0].IsEmpty() && args[0]->IsObject()) {
+      vars = args[1]->ToObject();
+    }
+
+    *tpl->getStream() << tpl->evaluateFile(fname,vars);
 
     return v8::Undefined();
   }
@@ -137,49 +191,88 @@ namespace CForum {
     _global->Set(v8::String::New("_e"), v8::FunctionTemplate::New(_eCallback));
     _global->Set(v8::String::New("_v"), v8::FunctionTemplate::New(_vCallback));
     _global->Set(v8::String::New("_p"), v8::FunctionTemplate::New(_pCallback));
+
+    _global->Set(v8::String::New("partial"), v8::FunctionTemplate::New(partialCallback));
+    _global->Set(v8::String::New("extend"), v8::FunctionTemplate::New(extendCallback));
   }
 
-  Template::Template() : _sender(standard_sender), _handle_scope(), _global(), _context(v8::Context::New(NULL, _global.getGlobal())), _scope(_context), _vars(v8::Object::New()) {
+  Template::Template() : _stream(NULL), _extends(), _handle_scope(), _global(), _context(v8::Context::New(NULL, _global.getGlobal())), _scope(_context), _vars(v8::Object::New()), _base_dir() {
     v8::Handle<v8::Object>::Cast(_context->Global()->GetPrototype())->SetInternalField(0, v8::External::New(this));
   }
 
-  std::string Template::evaluate(const v8::Handle<v8::Script> &script) {
-    bool set = false;
-    std::string ret_str;
-
-    if(getSender() == standard_sender) {
-      set = true;
-      setSender(standard_string_sender);
-      setUserdata(&ret_str);
-    }
-
-    script->Run();
-
-    if(set) {
-      setSender(standard_sender);
-      setUserdata(NULL);
-    }
-
-    return ret_str;
+  void Template::setExtend(const std::string &fname,v8::Handle<v8::Object> vars) {
+    _extends = Extender(fname,vars);
   }
 
-  void Template::display(const v8::Handle<v8::Script> &script) {
-    bool set = false;
+  std::string Template::generateFileName(const v8::String::Utf8Value &fn) { /* TODO: make a better algorithm to find the template file */
+    std::string ret = _base_dir;
 
-    if(getSender() == standard_string_sender) {
-      set = true;
-      setSender(standard_sender);
+    if(ret.empty()) {
+      ret = "./";
     }
 
-    script->Run();
+    ret += *fn;
 
-    if(set) {
-      setSender(standard_string_sender);
-    }
+    return ret;
   }
 
-  v8::Handle<v8::Script> Template::compile(const std::string &src) {
-    return v8::Script::Compile(v8::String::New(src.c_str()));
+  std::string Template::evaluate(const v8::Handle<v8::Script> &script,v8::Handle<v8::Object> vars) {
+    std::ostringstream ostr;
+    std::ostream *tmp;
+    std::string str;
+    v8::Local<v8::Value> key;
+    v8::Local<v8::Array> keys;
+    v8::Handle<v8::Object> tmp_vars,e_vars;
+    std::string fname;
+
+    if(vars.IsEmpty()) {
+      vars = _vars->Clone();
+    }
+    else {
+      vars = v8::Object::New();
+      keys = _vars->GetPropertyNames();
+
+      for(uint32_t i=0;i<keys->Length();++i) {
+        key = keys->Get(i);
+        vars->Set(key,_vars->Get(key));
+      }
+    }
+
+    tmp_vars = _vars;
+
+    tmp = _stream;
+    _stream = &ostr;
+    script->Run();
+    _stream = tmp;
+
+    str = ostr.str();
+
+    if(!_extends.isEmpty()) {
+      e_vars = _extends.getVars();
+      if(!e_vars.IsEmpty()) {
+        keys = e_vars->GetPropertyNames();
+
+        for(uint32_t i=0;i<keys->Length();++i) {
+          key = keys->Get(i);
+          vars->Set(key,e_vars->Get(key));
+        }
+      }
+
+      vars->Set(v8::String::New("_content"),v8::String::New(str.c_str()));
+      _vars = vars;
+
+      fname = _extends.getFilename();
+      _extends = Extender();
+
+      tmp = _stream;
+      _stream = &ostr;
+      str = evaluateFile(fname);
+      _stream = tmp;
+    }
+
+    _vars = tmp_vars;
+
+    return str;
   }
 
   Template::~Template() {

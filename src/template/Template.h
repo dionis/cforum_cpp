@@ -34,11 +34,13 @@
 #include <iostream>
 #include <fstream>
 #include <iterator>
+#include <sstream>
 
 #include <unicode/unistr.h>
 #include <unicode/uchriter.h>
 
 #include <string>
+#include <vector>
 
 #include <v8.h>
 
@@ -47,8 +49,6 @@
 namespace CForum {
   class Template {
   public:
-    typedef void (*sender_t)(const std::string &,void *userdata);
-
     Template();
 
     std::string parseFile(const std::string &);
@@ -57,17 +57,11 @@ namespace CForum {
     std::string parseString(const UnicodeString &);
     std::string parseString(const char *,size_t);
 
-    std::string evaluateFile(const std::string &);
-    std::string evaluateString(const std::string &);
+    std::string evaluateFile(const std::string &,v8::Handle<v8::Object> = v8::Handle<v8::Object>());
+    std::string evaluateString(const std::string &,v8::Handle<v8::Object> = v8::Handle<v8::Object>());
 
-    void displayFile(const std::string &);
-    void displayString(const std::string &);
-
-    std::string evaluate(const std::string &);
-    std::string evaluate(const v8::Handle<v8::Script> &);
-
-    void display(const std::string &);
-    void display(const v8::Handle<v8::Script> &);
+    std::string evaluate(const std::string &,v8::Handle<v8::Object> = v8::Handle<v8::Object>());
+    std::string evaluate(const v8::Handle<v8::Script> &,v8::Handle<v8::Object> = v8::Handle<v8::Object>());
 
     v8::Handle<v8::Script> compile(const std::string &);
 
@@ -79,11 +73,15 @@ namespace CForum {
 
     v8::Handle<v8::Value> getVariable(const v8::Handle<v8::Value>);
 
-    void setSender(sender_t);
-    sender_t getSender();
+    std::ostream *getStream();
 
-    void setUserdata(void *);
-    void *getUserdata();
+    void setBaseDir(const std::string &dir);
+    const std::string &getBaseDir() const;
+    const std::string &getBaseDir();
+
+    void setExtend(const std::string &,v8::Handle<v8::Object>);
+
+    std::string generateFileName(const v8::String::Utf8Value &);
 
     ~Template();
 
@@ -101,35 +99,36 @@ namespace CForum {
       v8::Handle<v8::ObjectTemplate> &getGlobal();
     };
 
-    sender_t _sender;
+    class Extender {
+    public:
+      Extender();
+      Extender(const std::string &,v8::Handle<v8::Object>);
+
+      std::string &getFilename();
+      v8::Handle<v8::Object> getVars();
+
+      bool isEmpty();
+
+    private:
+      std::string _filename;
+      v8::Handle<v8::Object> _vars;
+      bool _empty;
+    };
+
+    std::ostream *_stream;
+
+    Extender _extends;
 
     v8::HandleScope _handle_scope;
     Template::Global _global;
     v8::Persistent<v8::Context> _context;
     v8::Context::Scope _scope;
     v8::Handle<v8::Object> _vars;
-
-    void *_userdata;
+    std::string _base_dir;
   };
 
   inline v8::Handle<v8::ObjectTemplate> &Template::Global::getGlobal() {
     return _global;
-  }
-
-  inline void Template::setSender(Template::sender_t sender) {
-    _sender = sender;
-  }
-
-  inline Template::sender_t Template::getSender() {
-    return _sender;
-  }
-
-  inline void Template::setUserdata(void *udata) {
-    _userdata = udata;
-  }
-
-  inline void *Template::getUserdata() {
-    return _userdata;
   }
 
   inline std::string Template::parseString(const std::string &str) {
@@ -143,28 +142,16 @@ namespace CForum {
     return parseString(utf8str);
   }
 
-  inline std::string Template::evaluateFile(const std::string &fname) {
-    return evaluate(parseFile(fname));
+  inline std::string Template::evaluateFile(const std::string &fname,v8::Handle<v8::Object> vars) {
+    return evaluate(parseFile(fname),vars);
   }
 
-  inline void Template::displayFile(const std::string &fname) {
-    return display(parseFile(fname));
+  inline std::string Template::evaluateString(const std::string &str,v8::Handle<v8::Object> vars) {
+    return evaluate(parseString(str),vars);
   }
 
-  inline std::string Template::evaluateString(const std::string &str) {
-    return evaluate(parseString(str));
-  }
-
-  inline void Template::displayString(const std::string &str) {
-    return display(parseString(str));
-  }
-
-  inline std::string Template::evaluate(const std::string &str) {
-    return evaluate(compile(str));
-  }
-
-  inline void Template::display(const std::string &str) {
-    return display(compile(str));
+  inline std::string Template::evaluate(const std::string &str,v8::Handle<v8::Object> vars) {
+    return evaluate(compile(str),vars);
   }
 
   inline void setVariable(const UnicodeString &nam,v8::Handle<v8::Value> val) {
@@ -192,6 +179,26 @@ namespace CForum {
     v8::Handle<v8::String> name = v8::String::New(nam);
 
     _vars->Set(name,val);
+  }
+
+  inline v8::Handle<v8::Script> Template::compile(const std::string &src) {
+    return v8::Script::Compile(v8::String::New(src.c_str()));
+  }
+
+  inline std::ostream *Template::getStream() {
+    return _stream;
+  }
+
+  inline void Template::setBaseDir(const std::string &dir) {
+    _base_dir = dir;
+  }
+
+  inline const std::string &Template::getBaseDir() const {
+    return _base_dir;
+  }
+
+  inline const std::string &Template::getBaseDir() {
+    return _base_dir;
   }
 
 }

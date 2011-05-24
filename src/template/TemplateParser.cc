@@ -82,7 +82,7 @@ namespace CForum {
                 rslt += *ptr;
               }
 
-              rslt += "'));";
+              rslt += "',''));";
               tmp = "";
             }
             else {
@@ -101,7 +101,7 @@ namespace CForum {
               }
 
               tmp = "";
-              ptr += 2;
+              ptr += 1;
             }
             else {
               tmp += "<";
