@@ -22,4 +22,8 @@ target_link_libraries(cfconfigparser cfjsevaluator ${ICU_LIBRARY})
 add_library(cfuri SHARED URI.cc)
 target_link_libraries(cfuri cfexceptions)
 
+#add_library(cfrouter SHARED Router.cc)
+#target_link_libraries(cfrouter ${ICU_LIBRARY})
+
+
 # eof
