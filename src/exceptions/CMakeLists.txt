@@ -14,6 +14,7 @@ add_library(cfexceptions SHARED
   CouchErrorException.cc
   ParameterException.cc
   CGIParserException.cc
+  URIException.cc
 )
 
 # eof

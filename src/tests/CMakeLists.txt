@@ -8,6 +8,7 @@ add_subdirectory(cgi)
 add_subdirectory(json)
 add_subdirectory(couchdb)
 add_subdirectory(template)
+add_subdirectory(framework)
 
 add_executable(run_tests run_tests.cc)
 target_link_libraries(run_tests
@@ -15,6 +16,7 @@ target_link_libraries(run_tests
   cfcgi_test
   cfcouchdb_test
   cftemplate_test
+  cfframework_test
 )
 
 add_custom_target(tests "run_tests" DEPENDS run_tests COMMENT "Running CPPUNIT tests...")

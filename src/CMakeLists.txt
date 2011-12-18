@@ -19,5 +19,7 @@ add_subdirectory(tests)
 add_library(cfconfigparser SHARED Configparser.cc)
 target_link_libraries(cfconfigparser cfjsevaluator ${ICU_LIBRARY})
 
+add_library(cfuri SHARED URI.cc)
+target_link_libraries(cfuri cfexceptions)
 
 # eof
