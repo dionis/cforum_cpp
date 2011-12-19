@@ -152,6 +152,35 @@ namespace CForum {
       media        = std::string(last + 1);
       pathWoSuffix = std::string(first, last - first);
     }
+    else {
+      pathWoSuffix = first;
+    }
+  }
+
+  std::string URI::toString() {
+    return ((const URI *)this)->toString();
+  }
+
+  std::string URI::toString() const {
+    std::ostringstream ostr;
+
+    ostr << scheme << "://" << host;
+
+    if((scheme == "http" && port != 80) || (scheme == "https" && port != 443)) {
+      ostr << ":" << port;
+    }
+
+    ostr << path;
+
+    if(queryString.length()) {
+      ostr << "?" << queryString;
+    }
+
+    if(fragment.length()) {
+      ostr << fragment;
+    }
+
+    return ostr.str();
   }
 
 }

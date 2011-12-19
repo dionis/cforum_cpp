@@ -33,6 +33,8 @@
 
 #include <cstring>
 #include <string>
+#include <sstream>
+#include <iostream>
 
 #include "exceptions/URIException.h"
 
@@ -65,6 +67,9 @@ namespace CForum {
     const std::string &getMedia() const;
 
     URI &operator=(const URI &);
+
+    std::string toString();
+    std::string toString() const;
 
   protected:
     std::string scheme, host, path, pathWoSuffix, method, media, queryString, fragment;
