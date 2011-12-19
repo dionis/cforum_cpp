@@ -42,6 +42,7 @@ void URITest::testParser() {
   CPPUNIT_ASSERT_EQUAL(std::string(""), uri.getFragment());
   CPPUNIT_ASSERT_EQUAL(std::string(""), uri.getQueryString());
   CPPUNIT_ASSERT_EQUAL(std::string("html"), uri.getMedia());
+  CPPUNIT_ASSERT_EQUAL(std::string("http://wwwtech.de/"), uri.toString());
 
   CForum::URI uri1("https://wwwtech.de:8080#lala");
   CPPUNIT_ASSERT_EQUAL(std::string("https"), uri1.getScheme());
@@ -51,6 +52,7 @@ void URITest::testParser() {
   CPPUNIT_ASSERT_EQUAL(std::string("#lala"), uri1.getFragment());
   CPPUNIT_ASSERT_EQUAL(std::string(""), uri1.getQueryString());
   CPPUNIT_ASSERT_EQUAL(std::string("html"), uri1.getMedia());
+  CPPUNIT_ASSERT_EQUAL(std::string("https://wwwtech.de:8080/#lala"), uri1.toString());
 
   CForum::URI uri2("https://wwwtech.de:8080/lala/lulu#lala");
   CPPUNIT_ASSERT_EQUAL(std::string("https"), uri2.getScheme());
@@ -60,15 +62,18 @@ void URITest::testParser() {
   CPPUNIT_ASSERT_EQUAL(std::string("#lala"), uri2.getFragment());
   CPPUNIT_ASSERT_EQUAL(std::string(""), uri2.getQueryString());
   CPPUNIT_ASSERT_EQUAL(std::string("html"), uri2.getMedia());
+  CPPUNIT_ASSERT_EQUAL(std::string("https://wwwtech.de:8080/lala/lulu#lala"), uri2.toString());
 
   CForum::URI uri3("https://wwwtech.de:8080/lala/lulu.php?abc=def#lala");
   CPPUNIT_ASSERT_EQUAL(std::string("https"), uri3.getScheme());
   CPPUNIT_ASSERT_EQUAL(8080, uri3.getPort());
   CPPUNIT_ASSERT_EQUAL(std::string("/lala/lulu.php"), uri3.getPath());
+  CPPUNIT_ASSERT_EQUAL(std::string("/lala/lulu"), uri3.getPathWoSuffix());
   CPPUNIT_ASSERT_EQUAL(std::string("wwwtech.de"), uri3.getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("#lala"), uri3.getFragment());
   CPPUNIT_ASSERT_EQUAL(std::string("abc=def"), uri3.getQueryString());
   CPPUNIT_ASSERT_EQUAL(std::string("php"), uri3.getMedia());
+  CPPUNIT_ASSERT_EQUAL(std::string("https://wwwtech.de:8080/lala/lulu.php?abc=def#lala"), uri3.toString());
 
 }
 
