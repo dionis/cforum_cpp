@@ -71,6 +71,8 @@ namespace CForum {
     std::string toString();
     std::string toString() const;
 
+    ~URI();
+
   protected:
     std::string scheme, host, path, pathWoSuffix, method, media, queryString, fragment;
     int port;

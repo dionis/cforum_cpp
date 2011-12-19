@@ -183,6 +183,8 @@ namespace CForum {
     return ostr.str();
   }
 
+  URI::~URI() { }
+
 }
 
 /* eof */
