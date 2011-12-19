@@ -64,7 +64,7 @@ void URITest::testParser() {
   CForum::URI uri3("https://wwwtech.de:8080/lala/lulu.php?abc=def#lala");
   CPPUNIT_ASSERT_EQUAL(std::string("https"), uri3.getScheme());
   CPPUNIT_ASSERT_EQUAL(8080, uri3.getPort());
-  CPPUNIT_ASSERT_EQUAL(std::string("/lala/lulu"), uri3.getPath());
+  CPPUNIT_ASSERT_EQUAL(std::string("/lala/lulu.php"), uri3.getPath());
   CPPUNIT_ASSERT_EQUAL(std::string("wwwtech.de"), uri3.getHost());
   CPPUNIT_ASSERT_EQUAL(std::string("#lala"), uri3.getFragment());
   CPPUNIT_ASSERT_EQUAL(std::string("abc=def"), uri3.getQueryString());

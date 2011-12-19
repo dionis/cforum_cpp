@@ -48,21 +48,33 @@ namespace CForum {
     const std::string &getHost();
     int getPort();
     const std::string &getPath();
+    const std::string &getPathWoSuffix();
     const std::string &getMethod();
     const std::string &getQueryString();
     const std::string &getFragment();
     const std::string &getMedia();
 
+    const std::string &getScheme() const;
+    const std::string &getHost() const;
+    int getPort() const;
+    const std::string &getPath() const;
+    const std::string &getPathWoSuffix() const;
+    const std::string &getMethod() const;
+    const std::string &getQueryString() const;
+    const std::string &getFragment() const;
+    const std::string &getMedia() const;
+
     URI &operator=(const URI &);
 
-  private:
-    std::string scheme, host, path, method, media, queryString, fragment;
+  protected:
+    std::string scheme, host, path, pathWoSuffix, method, media, queryString, fragment;
     int port;
 
     void parseUri(const char *);
     void parsePath();
   };
 
+  /* getters */
 
   inline const std::string &URI::getScheme() {
     return scheme;
@@ -77,6 +89,10 @@ namespace CForum {
   }
 
   inline const std::string &URI::getPath() {
+    return path;
+  }
+
+  inline const std::string &URI::getPathWoSuffix() {
     return path;
   }
 
@@ -95,6 +111,45 @@ namespace CForum {
   inline const std::string &URI::getMedia() {
     return media;
   }
+
+  /* const getters */
+
+  inline const std::string &URI::getScheme() const {
+    return scheme;
+  }
+
+  inline const std::string &URI::getHost() const {
+    return host;
+  }
+
+  inline int URI::getPort() const {
+    return port;
+  }
+
+  inline const std::string &URI::getPath() const {
+    return path;
+  }
+
+  inline const std::string &URI::getPathWoSuffix() const {
+    return path;
+  }
+
+  inline const std::string &URI::getMethod() const {
+    return method;
+  }
+
+  inline const std::string &URI::getQueryString() const {
+    return queryString;
+  }
+
+  inline const std::string &URI::getFragment() const {
+    return fragment;
+  }
+
+  inline const std::string &URI::getMedia() const {
+    return media;
+  }
+
 }
 
 #endif

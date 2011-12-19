@@ -42,25 +42,27 @@ namespace CForum {
   }
 
   URI::URI(const URI &uri) {
-    scheme      = uri.scheme;
-    host        = uri.host;
-    path        = uri.path;
-    method      = uri.method;
-    media       = uri.media;
-    queryString = uri.queryString;
-    fragment    = uri.fragment;
-    port        = uri.port;
+    scheme       = uri.scheme;
+    host         = uri.host;
+    path         = uri.path;
+    pathWoSuffix = uri.pathWoSuffix;
+    method       = uri.method;
+    media        = uri.media;
+    queryString  = uri.queryString;
+    fragment     = uri.fragment;
+    port         = uri.port;
   }
 
   URI &URI::operator=(const URI &uri) {
-    scheme      = uri.scheme;
-    host        = uri.host;
-    path        = uri.path;
-    method      = uri.method;
-    media       = uri.media;
-    queryString = uri.queryString;
-    fragment    = uri.fragment;
-    port        = uri.port;
+    scheme       = uri.scheme;
+    host         = uri.host;
+    path         = uri.path;
+    pathWoSuffix = uri.pathWoSuffix;
+    method       = uri.method;
+    media        = uri.media;
+    queryString  = uri.queryString;
+    fragment     = uri.fragment;
+    port         = uri.port;
 
     return *this;
   }
@@ -98,6 +100,7 @@ namespace CForum {
     /* we got a string in the form of http://hostname */
     if(*ptr == '\0') {
       path  = "/";
+      pathWoSuffix = "/";
       return;
     }
 
@@ -146,8 +149,8 @@ namespace CForum {
     for(; last >= first && *last != '.' && isalnum(*last) && islower(*last); --last) ;
 
     if(*last == '.') {
-      media = std::string(last + 1);
-      path  = std::string(first, last - first);
+      media        = std::string(last + 1);
+      pathWoSuffix = std::string(first, last - first);
     }
   }
 
