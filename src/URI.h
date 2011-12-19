@@ -93,7 +93,7 @@ namespace CForum {
   }
 
   inline const std::string &URI::getPathWoSuffix() {
-    return path;
+    return pathWoSuffix;
   }
 
   inline const std::string &URI::getMethod() {
@@ -131,7 +131,7 @@ namespace CForum {
   }
 
   inline const std::string &URI::getPathWoSuffix() const {
-    return path;
+    return pathWoSuffix;
   }
 
   inline const std::string &URI::getMethod() const {
