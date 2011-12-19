@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief Request information, including CGI parameters
+ * \brief A (simple) URI parser. Provides infos about the different parts of an URI
  * \package framework
  *
- * Request information, including route, CGI parameters, etc, pp
+ * A (simple) URI parser. Provides infos about the different parts of an URI
  */
 
 /*
