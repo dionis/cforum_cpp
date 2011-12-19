@@ -28,44 +28,27 @@
  * THE SOFTWARE.
  */
 
-#ifndef REQUEST_H
-#define REQUEST_H
-
-#include <string>
-
-#include "cgi/CGI.h"
-#include "URI.h"
+#include "Request.h"
 
 namespace CForum {
-  class Request {
-  public:
-    Request();
-    Request(const Request &);
-
-    Request &operator=(const Request &);
-
-    URI &getUri();
-    CGI &getCGI();
-
-    static Request *fromCGIEnvironment();
-
-    ~Request();
-
-  protected:
-    URI requestUri;
-    CGI cgi;
-
-  };
-
-  inline URI &Request::getUri() {
-    return requestUri;
+  Request::Request() {
   }
-  inline CGI &Request::getCGI() {
-    return cgi;
+
+  Request::Request(const Request &rq) {
+  }
+
+  Request &Request::operator=(const Request &rq) {
+    return *this;
+  }
+
+
+  Request *Request::fromCGIEnvironment() {
+    return NULL;
+  }
+
+  Request::~Request() {
   }
 
 }
-
-#endif
 
 /* eof */
