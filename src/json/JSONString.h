@@ -36,6 +36,7 @@
 #include <sstream>
 #include <iostream>
 #include <string>
+#include <iomanip>
 
 #include <unicode/unistr.h>
 #include <unicode/bytestream.h>
@@ -48,7 +49,7 @@ namespace CForum {
     class String : public Element {
     public:
       String();
-      String(UnicodeString &);
+      String(const UnicodeString &);
       String(const String &);
 
       const String &operator=(const String &);

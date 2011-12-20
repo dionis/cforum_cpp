@@ -35,7 +35,7 @@
 namespace CForum {
   namespace JSON {
     String::String() : Element(), _data() {}
-    String::String(UnicodeString &str) : Element(), _data(str) {}
+    String::String(const UnicodeString &str) : Element(), _data(str) {}
     String::String(const String &str) : Element(), _data(str._data) {}
 
     const String &String::operator=(const String &str) {
@@ -87,15 +87,11 @@ namespace CForum {
               ostr << "\\t";
 
             default:
-              buff[0] = (char)c;
-              buff[1] = '\0';
-              ostr << buff;
+              ostr << (char)c;
             }
           }
           else {
-            len = snprintf(buff,49,"%04x",c);
-            buff[len] = 0;
-            ostr << buff;
+            ostr << std::hex << std::setw(4) << std::setfill('0') << c << std::dec << std::setw(0);
           }
 
           c = cit.next();
