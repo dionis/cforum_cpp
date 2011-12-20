@@ -334,12 +334,12 @@ namespace CForum {
 
       switch(tok.type) {
       case JSONTokenTypeObjectBegin:
-        *root = boost::shared_ptr<Element>(dynamic_cast<Element *>(new Object()));
+        *root = boost::make_shared<Object>();
         ptr = readObject(boost::dynamic_pointer_cast<Object>(*root),ptr,end);
         return ptr;
 
       case JSONTokenTypeArrayBegin:
-        *root = boost::shared_ptr<Element>(new Array());
+        *root = boost::make_shared<Array>();
         ptr = readArray(boost::dynamic_pointer_cast<Array>(*root),ptr,end);
         return ptr;
 
@@ -349,27 +349,27 @@ namespace CForum {
         return ptr;
 
       case JSONTokenTypeString:
-        *root = boost::shared_ptr<Element>(new String(tok.data));
+        *root = boost::make_shared<String>(tok.data);
         return ptr;
 
       case JSONTokenTypeNumberInt:
-        *root = boost::shared_ptr<Element>(new Number(tok.ival));
+        *root = boost::make_shared<Number>(tok.ival);
         return ptr;
 
       case JSONTokenTypeNumberFloat:
-        *root = boost::shared_ptr<Element>(new Number(tok.dval));
+        *root = boost::make_shared<Number>(tok.dval);
         return ptr;
 
       case JSONTokenTypeFalse:
-        *root = boost::shared_ptr<Element>(new Boolean(false));
+        *root = boost::make_shared<Boolean>(false);
         return ptr;
 
       case JSONTokenTypeTrue:
-        *root = boost::shared_ptr<Element>(new Boolean(true));
+        *root = boost::make_shared<Boolean>(true);
         return ptr;
 
       case JSONTokenTypeNull:
-        *root = boost::shared_ptr<Element>(new Null());
+        *root = boost::make_shared<Null>();
         return ptr;
 
       default:
