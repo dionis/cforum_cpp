@@ -44,6 +44,8 @@
 
 #include <v8.h>
 
+#include <cstring>
+
 #include "exceptions/CForumException.h"
 
 namespace CForum {
