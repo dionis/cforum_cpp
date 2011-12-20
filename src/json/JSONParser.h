@@ -39,6 +39,7 @@
 #include <iostream>
 #include <fstream>
 #include <iterator>
+#include <sstream>
 
 #include <cstdlib>
 #include <cstring>

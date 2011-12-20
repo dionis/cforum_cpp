@@ -37,25 +37,17 @@ namespace CForum {
 
     void Parser::parseFile(const std::string &filename, boost::shared_ptr<Element> &root) {
       std::ifstream fd(filename.c_str(), std::ifstream::in);
-      std::string str;
+      std::stringstream sst;
 
       if(!fd) {
         throw JSONException("File not found!",CForumException::FileNotFound);
       }
 
-      str.reserve(1024);
-
-      std::istream_iterator<std::string> begin(fd);
-      std::istream_iterator<std::string> end;
-
-      while(begin != end) {
-        str += *begin;
-        ++begin;
-      }
+      sst << fd.rdbuf();
 
       fd.close();
 
-      parse(str,root);
+      parse(sst.str(), root);
     }
 
     void Parser::parse(const UnicodeString &json_str, boost::shared_ptr<Element> &root) {
