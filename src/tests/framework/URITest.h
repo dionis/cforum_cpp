@@ -28,8 +28,8 @@
  * THE SOFTWARE.
  */
 
-#ifndef JSON_TEST_H
-#define JSON_TEST_H
+#ifndef URI_TEST_H
+#define URI_TEST_H
 
 #include <cppunit/extensions/HelperMacros.h>
 
