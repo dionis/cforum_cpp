@@ -32,6 +32,7 @@
 #define URI_H
 
 #include <cstring>
+#include <cstdlib>
 #include <string>
 #include <sstream>
 #include <iostream>
