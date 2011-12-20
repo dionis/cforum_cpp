@@ -52,7 +52,7 @@ namespace CForum {
   namespace JSON {
     class Object : public Element {
     public:
-      typedef std::hash_map<UnicodeString,boost::shared_ptr<Element>, hash_unicodestring > ObjectType_t;
+      typedef std::unordered_map<UnicodeString,boost::shared_ptr<Element>, hash_unicodestring > ObjectType_t;
 
       Object();
       Object(const Object &);

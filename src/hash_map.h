@@ -31,11 +31,7 @@
 #ifndef HASH_MAP_H
 #define HASH_MAP_H
 
-#ifdef __GNUC__
-#include <ext/hash_map>
-#else
-#include <hash_map>
-#endif
+#include <unordered_map>
 
 namespace std {
   using namespace __gnu_cxx;
