@@ -123,57 +123,73 @@ namespace CForum {
       return ptr;
     }
 
+    UChar Parser::parseUChar(const char *ptr, const char *end, const char **cont) {
+      char buff[10];
+      size_t i = 0;
+
+      while(ptr < end && isdigit(*ptr) && i < 4) {
+        buff[i++] = *ptr;
+      }
+
+      buff[i] = 0;
+      *cont = ptr;
+
+      return strtol(buff, NULL, 16);
+    }
+
+    inline bool Parser::isNext(const char *ptr, const char *end, const char c) {
+      return ptr + 1 < end && *(ptr+1) == c;
+    }
+
     const char *Parser::readDoubleQuoteString(const char *str,const char *end,Parser::Token &tok) {
       const char *ptr;
       tok.data = UnicodeString();
 
       for(ptr=str;ptr < end;++ptr) {
         switch(*ptr) {
-        case '\\':
-          if(*(ptr+1) == '\\') { /* backslash itself */
-            ++ptr;
-            tok.data += "\\";
-          }
-          else if(*(ptr+1) == '\"') { /* escaped double quotes */
-            ++ptr;
-            tok.data += "'";
-          }
-          else if(*(ptr+1) == 'n') { /* newline */
-            ++ptr;
-            tok.data += (UChar)0xA;
-          }
-          else if(*(ptr+1) == 'r') { /* carrige return */
-            ++ptr;
-            tok.data += (UChar)0xD;
-          }
-          else if(*(ptr+1) == 't') { /* tabulator */
-            ++ptr;
-            tok.data += (UChar)'\t';
-          }
-          else if(*(ptr+1) == 'f') { /* form feed */
-            ++ptr;
-            tok.data += (UChar)'\f';
-          }
-          else if(*(ptr+1) == 'b') { /* backspace */
-            ++ptr;
-            tok.data += (UChar)'\b';
-          }
-          else if(*(ptr+1) == 'u') { /* unicode escape sequence */
-            ptr += 2;
-            tok.data += (UChar)strtoll(ptr,(char **)&ptr,16);
-            --ptr;
-          }
-          else { /* everything else */
+          case '\\':
+            if(isNext(ptr, end, '\\')) { /* backslash itself */
+              ++ptr;
+              tok.data += "\\";
+            }
+            else if(isNext(ptr, end, '\"')) { /* escaped double quotes */
+              ++ptr;
+              tok.data += "'";
+            }
+            else if(isNext(ptr, end, 'n')) { /* newline */
+              ++ptr;
+              tok.data += (UChar)0xA;
+            }
+            else if(isNext(ptr, end, 'r')) { /* carrige return */
+              ++ptr;
+              tok.data += (UChar)0xD;
+            }
+            else if(isNext(ptr, end, 't')) { /* tabulator */
+              ++ptr;
+              tok.data += (UChar)'\t';
+            }
+            else if(isNext(ptr, end, 'f')) { /* form feed */
+              ++ptr;
+              tok.data += (UChar)'\f';
+            }
+            else if(isNext(ptr, end, 'b')) { /* backspace */
+              ++ptr;
+              tok.data += (UChar)'\b';
+            }
+            else if(isNext(ptr, end, 'u')) { /* unicode escape sequence */
+              tok.data = parseUChar(ptr + 2, end, &ptr);
+            }
+            else { /* everything else */
+              tok.data += *ptr;
+            }
+
+            break;
+
+          case '"':
+            return ptr + 1;
+
+          default:
             tok.data += *ptr;
-          }
-
-          break;
-
-        case '"':
-          return ptr + 1;
-
-        default:
-          tok.data += *ptr;
         }
       }
 

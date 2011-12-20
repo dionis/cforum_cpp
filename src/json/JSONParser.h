@@ -110,6 +110,9 @@ namespace CForum {
       const char *readObject(boost::shared_ptr<Object>,const char *,const char *);
       const char *readArray(boost::shared_ptr<Array>,const char *,const char *);
 
+      UChar parseUChar(const char *, const char *, const char **);
+      bool isNext(const char *, const char *, const char);
+
       class Token {
       public:
         enum JSONTokenType type;
