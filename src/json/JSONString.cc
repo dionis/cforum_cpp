@@ -48,8 +48,6 @@ namespace CForum {
 
     std::string String::toJSONString(const UnicodeString &str) {
       std::ostringstream ostr;
-      char buff[50];
-      size_t len;
 
       const UChar *data = str.getBuffer();
 
