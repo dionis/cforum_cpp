@@ -112,7 +112,7 @@ namespace CForum {
   };
 
   inline const UnicodeString CGI::getFirstValue(const UnicodeString &key, const char *realm) {
-    ArgumentListType u = getValue(key,realm);
+    ArgumentListType u = getValue(key, realm);
     if(u) {
       return u->at(0);
     }
@@ -121,7 +121,7 @@ namespace CForum {
   }
 
   inline const UnicodeString CGI::getFirstValue(const std::string &key, const char *realm) {
-    ArgumentListType u = getValue(key,realm);
+    ArgumentListType u = getValue(key, realm);
     if(u) {
       return u->at(0);
     }
@@ -130,7 +130,7 @@ namespace CForum {
   }
 
   inline const UnicodeString CGI::getFirstValue(const char *key, const char *realm) {
-    ArgumentListType u = getValue(key,realm);
+    ArgumentListType u = getValue(key, realm);
     if(u) {
       return u->at(0);
     }
@@ -139,13 +139,13 @@ namespace CForum {
   }
 
   inline CGI::ArgumentListType CGI::getValue(const std::string &key, const char *realm) {
-    UnicodeString str(key.c_str(),"UTF-8");
-    return getValue(str,realm);
+    UnicodeString str(key.c_str(), "UTF-8");
+    return getValue(str, realm);
   }
 
   inline CGI::ArgumentListType CGI::getValue(const char *key, const char *realm) {
-    UnicodeString str(key,"UTF-8");
-    return getValue(str,realm);
+    UnicodeString str(key, "UTF-8");
+    return getValue(str, realm);
   }
 
 
@@ -160,7 +160,7 @@ namespace CForum {
   }
 
   inline UnicodeString CGI::decode(const std::string &str) {
-    return decode(str.c_str(),str.length());
+    return decode(str.c_str(), str.length());
   }
 
 
@@ -218,11 +218,11 @@ namespace CForum {
     std::string ustr;
     str.toUTF8String(ustr);
 
-    parseString(ustr,realm);
+    parseString(ustr, realm);
   }
 
   inline void CGI::parseString(const std::string &str, const char realm) {
-    parseString(str.c_str(),realm);
+    parseString(str.c_str(), realm);
   }
 
 }
