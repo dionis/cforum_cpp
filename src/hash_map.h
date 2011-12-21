@@ -33,20 +33,10 @@
 
 #include <unordered_map>
 
-namespace std {
-  using namespace __gnu_cxx;
-}
-
 namespace CForum {
   struct hash_unicodestring {
     std::size_t operator()(const UnicodeString &ustr) const {
       return static_cast<std::size_t>(ustr.hashCode());
-    }
-  };
-
-  struct hash_str {
-    size_t operator()(const std::string &str) const {
-      return std::hash<const char *>()(str.c_str());
     }
   };
 

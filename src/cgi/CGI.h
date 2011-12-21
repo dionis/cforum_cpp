@@ -99,7 +99,7 @@ namespace CForum {
     static UnicodeString decode(const char *,size_t);
 
   protected:
-    typedef std::unordered_map<UnicodeString,ArgumentListType,hash_unicodestring > CGIValueContainer_t;
+    typedef std::unordered_map<UnicodeString, ArgumentListType, hash_unicodestring> CGIValueContainer_t;
 
     void saveParam(const UnicodeString &,const UnicodeString &, CGIValueContainer_t *);
 
@@ -107,8 +107,8 @@ namespace CForum {
     CGIValueContainer_t _post_values;
     CGIValueContainer_t _cookie_values;
 
-    std::unordered_map<std::string,std::string, hash_str> _cgi_values;
-    std::unordered_map<std::string,std::string, hash_str> _headers;
+    std::unordered_map<std::string, std::string> _cgi_values;
+    std::unordered_map<std::string, std::string> _headers;
   };
 
   inline const UnicodeString CGI::getFirstValue(const UnicodeString &key, const char *realm) {
