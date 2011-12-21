@@ -165,7 +165,6 @@ namespace CForum {
 
 
   inline void CGI::setCGIVariable(const char *name,const char *value) {
-    std::string nam = name, val = value;
     _cgi_values[name] = value;
   }
 
