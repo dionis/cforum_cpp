@@ -84,6 +84,8 @@ void JSONTest::testParser() {
   str_val1 = "test-value";
 
   CPPUNIT_ASSERT_EQUAL(str_val1,str_val);
+
+  delete pr;
 }
 
 void JSONTest::testGenerator() {
