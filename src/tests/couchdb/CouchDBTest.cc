@@ -34,6 +34,8 @@
 CPPUNIT_TEST_SUITE_REGISTRATION(CouchDBTest);
 
 void CouchDBTest::testInterface() {
+  curl_global_init(CURL_GLOBAL_ALL);
+
   CForum::CouchDB::Server srv("test","localhost");
   srv.setDatabase("test",true);
 
@@ -60,6 +62,8 @@ void CouchDBTest::testInterface() {
   CPPUNIT_ASSERT_EQUAL(std::string("lulu"),str);
 
   srv.deleteDatabase();
+
+  curl_global_cleanup();
 }
 
 
