@@ -4,7 +4,7 @@
 
 include_directories (BEFORE "${CMAKE_CURRENT_SOURCE_DIR}/.." "${CMAKE_CURRENT_SOURCE_DIR}")
 
-add_library(cfcgi_test SHARED CGITest.cc)
+add_library(cfcgi_test SHARED cgi_test.cc)
 target_link_libraries(cfcgi_test cfcgi cppunit)
 
 # eof

@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief URI parser interface testing
+ * \brief JSON parser interface testing
  * \package unittests
  *
- * Testing the URI parser interface
+ * Testing the JSON parser interface
  */
 
 /*
@@ -28,17 +28,43 @@
  * THE SOFTWARE.
  */
 
-#include "UserTest.h"
+#include "couchdb_test.h"
 
-CPPUNIT_TEST_SUITE_REGISTRATION(UserTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(CouchDBTest);
 
-void UserTest::testUser() {
-  CForum::User usr("ckruse");
-  CPPUNIT_ASSERT_EQUAL(std::string("ckruse"), usr.getUsername());
+void CouchDBTest::testInterface() {
+  curl_global_init(CURL_GLOBAL_ALL);
 
-  CForum::User usr1(UnicodeString("ckruse", "UTF-8"));
-  CPPUNIT_ASSERT_EQUAL(std::string("ckruse"), usr1.getUsername());
+  CForum::CouchDB::Server srv("test","localhost");
+  srv.setDatabase("test",true);
 
+  CForum::CouchDB::Document doc("{\"_id\": \"test\",\"lala\":\"lulu\"}");
+
+  try {
+  srv.putDocument(doc);
+  }
+  catch(CForum::CouchDB::CouchErrorException &e) {
+    printf("error: %s\n",e.getMessage().c_str());
+    return;
+  }
+
+  CForum::CouchDB::Document doc1 = srv.getDocument("test");
+  boost::shared_ptr<CForum::JSON::String> id = boost::dynamic_pointer_cast<CForum::JSON::String>(doc1.getValue("_id"));
+
+  std::string str;
+  id->getValue().toUTF8String(str);
+  CPPUNIT_ASSERT_EQUAL(std::string("test"),str);
+
+  str = "";
+  boost::shared_ptr<CForum::JSON::String> lala = boost::dynamic_pointer_cast<CForum::JSON::String>(doc1.getValue("lala"));
+  lala->getValue().toUTF8String(str);
+  CPPUNIT_ASSERT_EQUAL(std::string("lulu"),str);
+
+  srv.deleteDatabase();
+
+  curl_global_cleanup();
 }
+
+
 
 /* eof */

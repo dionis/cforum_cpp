@@ -28,41 +28,19 @@
  * THE SOFTWARE.
  */
 
-#include "CouchDBTest.h"
+#include "template_test.h"
 
-CPPUNIT_TEST_SUITE_REGISTRATION(CouchDBTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(TemplateTest);
 
-void CouchDBTest::testInterface() {
-  curl_global_init(CURL_GLOBAL_ALL);
+void TemplateTest::testParser() {
+  CForum::Template tpl;
 
-  CForum::CouchDB::Server srv("test","localhost");
-  srv.setDatabase("test",true);
+  tpl.setVariable("firstname",v8::String::New("CK"));
+  tpl.setVariable("mood",v8::String::New("froh"));
 
-  CForum::CouchDB::Document doc("{\"_id\": \"test\",\"lala\":\"lulu\"}");
+  std::string str = tpl.evaluateString(std::string("<% extend('../../../src/tests/template/lala.html') %>\n<h1>'la\nla'</h1>\n<p>Ich, <% _e(_v('firstname','Christian Kruse')) %>, im vollbesitz meiner geistigen kräfte, bin ${mood}. Deshalb..."));
 
-  try {
-  srv.putDocument(doc);
-  }
-  catch(CForum::CouchDB::CouchErrorException &e) {
-    printf("error: %s\n",e.getMessage().c_str());
-    return;
-  }
-
-  CForum::CouchDB::Document doc1 = srv.getDocument("test");
-  boost::shared_ptr<CForum::JSON::String> id = boost::dynamic_pointer_cast<CForum::JSON::String>(doc1.getValue("_id"));
-
-  std::string str;
-  id->getValue().toUTF8String(str);
-  CPPUNIT_ASSERT_EQUAL(std::string("test"),str);
-
-  str = "";
-  boost::shared_ptr<CForum::JSON::String> lala = boost::dynamic_pointer_cast<CForum::JSON::String>(doc1.getValue("lala"));
-  lala->getValue().toUTF8String(str);
-  CPPUNIT_ASSERT_EQUAL(std::string("lulu"),str);
-
-  srv.deleteDatabase();
-
-  curl_global_cleanup();
+  CPPUNIT_ASSERT_EQUAL(std::string("<head><title>Test</title></head><body>--\n<h1>'la\nla'</h1>\n<p>Ich, CK, im vollbesitz meiner geistigen kräfte, bin froh. Deshalb...--</body>"),str);
 }
 
 

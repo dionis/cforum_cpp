@@ -4,7 +4,7 @@
 
 include_directories (BEFORE "${CMAKE_CURRENT_SOURCE_DIR}/.." "${CMAKE_CURRENT_SOURCE_DIR}")
 
-add_library(cftemplate_test SHARED TemplateTest.cc)
+add_library(cftemplate_test SHARED template_test.cc)
 target_link_libraries(cftemplate_test cftemplate cppunit)
 
 # eof

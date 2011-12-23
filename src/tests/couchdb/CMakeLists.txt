@@ -4,7 +4,7 @@
 
 include_directories (BEFORE "${CMAKE_CURRENT_SOURCE_DIR}/.." "${CMAKE_CURRENT_SOURCE_DIR}")
 
-add_library(cfcouchdb_test SHARED CouchDBTest.cc)
+add_library(cfcouchdb_test SHARED couchdb_test.cc)
 target_link_libraries(cfcouchdb_test cfcouchdb cppunit)
 
 # eof

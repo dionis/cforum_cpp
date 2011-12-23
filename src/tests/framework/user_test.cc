@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief JSON parser interface testing
+ * \brief URI parser interface testing
  * \package unittests
  *
- * Testing the JSON parser interface
+ * Testing the URI parser interface
  */
 
 /*
@@ -28,21 +28,17 @@
  * THE SOFTWARE.
  */
 
-#include "TemplateTest.h"
+#include "user_test.h"
 
-CPPUNIT_TEST_SUITE_REGISTRATION(TemplateTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(UserTest);
 
-void TemplateTest::testParser() {
-  CForum::Template tpl;
+void UserTest::testUser() {
+  CForum::User usr("ckruse");
+  CPPUNIT_ASSERT_EQUAL(std::string("ckruse"), usr.getUsername());
 
-  tpl.setVariable("firstname",v8::String::New("CK"));
-  tpl.setVariable("mood",v8::String::New("froh"));
+  CForum::User usr1(UnicodeString("ckruse", "UTF-8"));
+  CPPUNIT_ASSERT_EQUAL(std::string("ckruse"), usr1.getUsername());
 
-  std::string str = tpl.evaluateString(std::string("<% extend('../../../src/tests/template/lala.html') %>\n<h1>'la\nla'</h1>\n<p>Ich, <% _e(_v('firstname','Christian Kruse')) %>, im vollbesitz meiner geistigen kräfte, bin ${mood}. Deshalb..."));
-
-  CPPUNIT_ASSERT_EQUAL(std::string("<head><title>Test</title></head><body>--\n<h1>'la\nla'</h1>\n<p>Ich, CK, im vollbesitz meiner geistigen kräfte, bin froh. Deshalb...--</body>"),str);
 }
-
-
 
 /* eof */
