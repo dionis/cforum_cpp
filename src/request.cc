@@ -34,17 +34,16 @@ namespace CForum {
   Request::Request() : requestUri(), cgi(), user() {
   }
 
-  Request::Request(const Request &rq) {
-    requestUri = rq.requestUri;
-    cgi        = rq.cgi;
-    user       = rq.user;
+  Request::Request(const Request &rq) : requestUri(rq.requestUri), cgi(rq.cgi), user(rq.user) {
   }
 
 
   Request &Request::operator=(const Request &rq) {
-    requestUri = rq.requestUri;
-    cgi        = rq.cgi;
-    user       = rq.user;
+    if(this != &rq) {
+      requestUri = rq.requestUri;
+      cgi        = rq.cgi;
+      user       = rq.user;
+    }
 
     return *this;
   }
