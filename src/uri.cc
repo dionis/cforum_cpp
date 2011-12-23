@@ -41,28 +41,24 @@ namespace CForum {
     parseUri(uri);
   }
 
-  URI::URI(const URI &uri) {
-    scheme       = uri.scheme;
-    host         = uri.host;
-    path         = uri.path;
-    pathWoSuffix = uri.pathWoSuffix;
-    method       = uri.method;
-    media        = uri.media;
-    queryString  = uri.queryString;
-    fragment     = uri.fragment;
-    port         = uri.port;
+  URI::URI(const URI &uri) : scheme(uri.scheme), host(uri.host), path(uri.path),
+                             pathWoSuffix(uri.pathWoSuffix), method(uri.method),
+                             media(uri.media), queryString(uri.queryString),
+                             fragment(uri.fragment), port(uri.port) {
   }
 
   URI &URI::operator=(const URI &uri) {
-    scheme       = uri.scheme;
-    host         = uri.host;
-    path         = uri.path;
-    pathWoSuffix = uri.pathWoSuffix;
-    method       = uri.method;
-    media        = uri.media;
-    queryString  = uri.queryString;
-    fragment     = uri.fragment;
-    port         = uri.port;
+    if(this != &uri) {
+      scheme       = uri.scheme;
+      host         = uri.host;
+      path         = uri.path;
+      pathWoSuffix = uri.pathWoSuffix;
+      method       = uri.method;
+      media        = uri.media;
+      queryString  = uri.queryString;
+      fragment     = uri.fragment;
+      port         = uri.port;
+    }
 
     return *this;
   }
