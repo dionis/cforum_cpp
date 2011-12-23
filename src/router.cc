@@ -30,7 +30,7 @@
  * THE SOFTWARE.
  */
 
-#include "Router.h"
+#include "router.h"
 
 namespace CForum {
   Router *Router::inst = NULL;

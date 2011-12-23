@@ -23,7 +23,7 @@ add_library(cfframework SHARED uri.cc user.cc request.cc)
 target_link_libraries(cfframework cfexceptions cfcgi)
 
 
-#add_library(cfrouter SHARED Router.cc)
+#add_library(cfrouter SHARED router.cc)
 #target_link_libraries(cfrouter ${ICU_LIBRARY})
 
 
