@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief Request information, including CGI parameters
+ * \brief CGI Request information, comes via CGI environment
  * \package framework
  *
- * Request information, including route, CGI parameters, etc, pp
+ * CGI Request information, comes via CGI environment
  */
 
 /*
@@ -28,28 +28,22 @@
  * THE SOFTWARE.
  */
 
+#ifndef CGI_REQUEST_H
+#define CGI_REQUEST_H
+
 #include "request.h"
 
 namespace CForum {
-  Request::Request() : requestUri(), cgi(), user() {
-  }
+  class CGIRequest : public Request {
+  public:
+    CGIRequest();
+    virtual ~CGIRequest();
 
-  Request::Request(const Request &rq) {
-    requestUri = rq.requestUri;
-    cgi        = rq.cgi;
-    user       = rq.user;
-  }
+  };
 
 
-  Request &Request::operator=(const Request &rq) {
-    requestUri = rq.requestUri;
-    cgi        = rq.cgi;
-    user       = rq.user;
-
-    return *this;
-  }
-
-  Request::~Request() { }
 }
+
+#endif
 
 /* eof */

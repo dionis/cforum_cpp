@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief Request information, including CGI parameters
+ * \brief CGI Request information, comes via CGI environment
  * \package framework
  *
- * Request information, including route, CGI parameters, etc, pp
+ * CGI Request information, comes via CGI environment
  */
 
 /*
@@ -28,28 +28,31 @@
  * THE SOFTWARE.
  */
 
-#include "request.h"
+#include "cgi_request.h"
 
 namespace CForum {
-  Request::Request() : requestUri(), cgi(), user() {
+  CGIRequest::CGIRequest() : Request::Request() {
+    std::string path_info = cgi.pathInfo(),
+      hostname = cgi.serverName(),
+      proto = cgi.serverProtocol(),
+      uri;
+
+    int port = cgi.serverPort();
+
+    /* TODO: check if SERVER_PROTOCOL contains http/https or if we have to do more */
+    uri = proto + "://" + hostname;
+    if((proto == "https" && port != 443) || (proto == "http" && port != 80)) {
+      uri += ":" + port;
+    }
+
+    uri += path_info.length() ? path_info : std::string("/");
+
+    requestUri = URI(uri);
   }
 
-  Request::Request(const Request &rq) {
-    requestUri = rq.requestUri;
-    cgi        = rq.cgi;
-    user       = rq.user;
-  }
+  CGIRequest::~CGIRequest() { }
 
-
-  Request &Request::operator=(const Request &rq) {
-    requestUri = rq.requestUri;
-    cgi        = rq.cgi;
-    user       = rq.user;
-
-    return *this;
-  }
-
-  Request::~Request() { }
 }
 
 /* eof */
+

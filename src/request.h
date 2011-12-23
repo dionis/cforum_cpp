@@ -35,6 +35,7 @@
 
 #include "cgi/cgi.h"
 #include "uri.h"
+#include "user.h"
 
 namespace CForum {
   class Request {
@@ -42,26 +43,36 @@ namespace CForum {
     Request();
     Request(const Request &);
 
-    Request &operator=(const Request &);
+    virtual Request &operator=(const Request &);
 
-    URI &getUri();
-    CGI &getCGI();
+    const URI &getUri() const;
+    const CGI &getCGI() const;
 
-    static Request *fromCGIEnvironment();
+    void setUser(const User &);
+    const User &getUser() const;
 
-    ~Request();
+
+    virtual ~Request() = 0;
 
   protected:
     URI requestUri;
     CGI cgi;
+    User user;
 
   };
 
-  inline URI &Request::getUri() {
+  inline const URI &Request::getUri() const {
     return requestUri;
   }
-  inline CGI &Request::getCGI() {
+  inline const CGI &Request::getCGI() const {
     return cgi;
+  }
+
+  inline void Request::setUser(const User &usr) {
+    user = usr;
+  }
+  inline const User &Request::getUser() const {
+    return user;
   }
 
 }
