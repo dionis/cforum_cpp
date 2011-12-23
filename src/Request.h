@@ -34,7 +34,7 @@
 #include <string>
 
 #include "cgi/CGI.h"
-#include "URI.h"
+#include "uri.h"
 
 namespace CForum {
   class Request {

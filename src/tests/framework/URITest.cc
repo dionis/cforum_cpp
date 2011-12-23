@@ -29,7 +29,6 @@
  */
 
 #include "URITest.h"
-#include "URI.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION(URITest);
 
