@@ -28,7 +28,7 @@
  * THE SOFTWARE.
  */
 
-#include "Template.h"
+#include "template.h"
 
 namespace CForum {
   Template::Extender::Extender() : _filename(), _vars(), _empty(true) {

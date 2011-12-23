@@ -33,6 +33,8 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+#include "template/template.h"
+
 class TemplateTest : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(TemplateTest);
   CPPUNIT_TEST(testParser);

@@ -28,7 +28,7 @@
  * THE SOFTWARE.
  */
 
-#include "Template.h"
+#include "template.h"
 
 namespace CForum {
   static v8::Handle<v8::Value> _pCallback(const v8::Arguments &args) {

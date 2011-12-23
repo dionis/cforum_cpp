@@ -29,7 +29,6 @@
  */
 
 #include "TemplateTest.h"
-#include "template/Template.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION(TemplateTest);
 
