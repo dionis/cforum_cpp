@@ -47,13 +47,13 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 
-#include "JSONElement.h"
-#include "JSONObject.h"
-#include "JSONArray.h"
-#include "JSONBoolean.h"
-#include "JSONString.h"
-#include "JSONNumber.h"
-#include "JSONNull.h"
+#include "json_element.h"
+#include "json_object.h"
+#include "json_array.h"
+#include "json_boolean.h"
+#include "json_string.h"
+#include "json_number.h"
+#include "json_null.h"
 
 #include "exceptions/JSONSyntaxException.h"
 

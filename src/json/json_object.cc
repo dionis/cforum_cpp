@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief JSONNull interface
+ * \brief JSONObject interface
  * \package JSON
  *
- * This defines the JSONNull interface
+ * This implements the JSONObject interface
  */
 
 /*
@@ -28,23 +28,50 @@
  * THE SOFTWARE.
  */
 
-#include "JSONNull.h"
+#include "json_object.h"
 
 namespace CForum {
   namespace JSON {
-    Null::Null() : Element() {
+    Object::Object() : Element(), _data() {}
+    Object::Object(const Object &obj) : Element(), _data(obj._data) {}
+
+    const Object &Object::operator=(const Object &obj) {
+      if(this != &obj) {
+        _data = obj._data;
+      }
+
+      return *this;
     }
 
-    std::string Null::toJSON() {
-      return std::string("null");
+    std::string Object::toJSON() {
+      std::ostringstream ostr;
+
+      bool isfirst = true;
+
+      ObjectType_t::iterator end = _data.end();
+      ObjectType_t::iterator it;
+
+      ostr << "{";
+
+      for(it = _data.begin(); it != end; ++it) {
+        if(!isfirst) {
+          ostr << ",";
+        }
+
+        isfirst = false;
+
+        ostr << String::toJSONString(it->first);
+        ostr << ":";
+        ostr << it->second->toJSON();
+      }
+
+      ostr << "}";
+
+      return ostr.str();
     }
 
-    void *Null::getValue() {
-      return NULL;
-    }
+    Object::~Object() {}
 
-    Null::~Null() {
-    }
   }
 }
 

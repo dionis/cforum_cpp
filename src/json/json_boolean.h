@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief JSONNumber interface
+ * \brief JSONBoolean interface
  * \package JSON
  *
- * This implements the JSONNumber interface
+ * This defines the JSONBoolean interface
  */
 
 /*
@@ -28,44 +28,32 @@
  * THE SOFTWARE.
  */
 
-#include "JSONNumber.h"
+#ifndef JSON_BOOLEAN_H
+#define JSON_BOOLEAN_H
+
+#include "config.h"
+
+#include "json_element.h"
 
 namespace CForum {
   namespace JSON {
-    Number::Number() : Element(), _ntype(JSONNumberTypeInt), _ddata(0), _idata(0) {}
-    Number::Number(double dval) : Element(), _ntype(JSONNumberTypeDouble), _ddata(dval), _idata(0) {}
-    Number::Number(int64_t ival) : Element(), _ntype(JSONNumberTypeInt), _ddata(0), _idata(ival) {}
-    Number::Number(const Number &n) : Element(), _ntype(n._ntype), _ddata(n._ddata), _idata(n._idata) {}
+    class Boolean : public Element {
+    public:
+      Boolean();
+      Boolean(bool);
+      Boolean(const Boolean &);
 
-    enum JSONNumberType Number::getNumberType() {
-      return _ntype;
-    }
+      virtual std::string toJSON();
+      virtual ~Boolean();
 
-    std::string Number::toJSON() {
-      std::ostringstream ostr;
+      bool getValue();
 
-
-      if(_ntype == JSONNumberTypeDouble) {
-        ostr << _ddata;
-      }
-      else {
-        ostr << _idata;
-      }
-
-      return ostr.str();
-    }
-
-    int64_t Number::getIValue() {
-      return _idata;
-    }
-
-    double Number::getDValue() {
-      return _ddata;
-    }
-
-    Number::~Number() {
-    }
+    protected:
+      bool _data;
+    };
   }
 }
+
+#endif
 
 /* eof */

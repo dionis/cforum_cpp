@@ -29,7 +29,6 @@
  */
 
 #include "JSONTest.h"
-#include "json/JSONParser.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION(JSONTest);
 

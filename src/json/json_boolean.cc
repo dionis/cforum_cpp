@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief JSONNumber interface
+ * \brief JSONBoolean interface
  * \package JSON
  *
- * This defines the JSONNumber interface
+ * This implements the JSONBoolean interface
  */
 
 /*
@@ -28,49 +28,30 @@
  * THE SOFTWARE.
  */
 
-#ifndef JSON_NUMBER_H
-#define JSON_NUMBER_H
-
-#include <sstream>
-#include <iostream>
-#include <string>
-
-#include "config.h"
-
-#include "JSONElement.h"
-
-#include <stdint.h>
+#include "json_boolean.h"
 
 namespace CForum {
   namespace JSON {
-    enum JSONNumberType {
-      JSONNumberTypeDouble,
-      JSONNumberTypeInt
-    };
+    Boolean::Boolean() : Element(), _data(false) {}
+    Boolean::Boolean(bool val) : Element(), _data(val) {}
+    Boolean::Boolean(const Boolean &b) : Element(), _data(b._data) {}
 
-    class Number : public Element {
-    public:
-      Number();
-      Number(double);
-      Number(int64_t);
-      Number(const Number &);
+    std::string Boolean::toJSON() {
+      if(_data) {
+        return std::string("true");
+      }
 
-      virtual std::string toJSON();
-      virtual ~Number();
+      return std::string("false");
+    }
 
-      int64_t getIValue();
-      double getDValue();
+    bool Boolean::getValue() {
+      return _data;
+    }
 
-      enum JSONNumberType getNumberType();
+    Boolean::~Boolean() {
+    }
 
-    protected:
-      enum JSONNumberType _ntype;
-      double _ddata;
-      int _idata;
-    };
   }
 }
-
-#endif
 
 /* eof */

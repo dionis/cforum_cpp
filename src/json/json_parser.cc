@@ -28,8 +28,7 @@
  * THE SOFTWARE.
  */
 
-#include "JSONParser.h"
-
+#include "json_parser.h"
 
 namespace CForum {
   namespace JSON {

@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief JSONArray interface
+ * \brief JSONObject interface
  * \package JSON
  *
- * This implements the JSONArray interface
+ * This defines the JSONObject interface
  */
 
 /*
@@ -28,44 +28,61 @@
  * THE SOFTWARE.
  */
 
-#include "JSONArray.h"
-#include "JSONParser.h"
+#ifndef JSON_OBJECT_H
+#define JSON_OBJECT_H
+
+#include "config.h"
+
+#include <sstream>
+#include <iostream>
+#include <string>
+
+#include <map>
+#include <boost/shared_ptr.hpp>
+
+#include <unicode/unistr.h>
+#include <unicode/bytestream.h>
+
+#include "hash_map.h"
+
+#include "json_element.h"
+#include "json_string.h"
 
 namespace CForum {
   namespace JSON {
-    Array::Array() : Element(), _data() {}
-    Array::Array(const Array &ary) : Element(), _data(ary._data) {}
+    class Object : public Element {
+    public:
+      typedef std::unordered_map<UnicodeString,boost::shared_ptr<Element>, hash_unicodestring > ObjectType_t;
 
-    const Array &Array::operator=(const Array &ary) {
-      if(this != &ary) {
-        _data = ary._data;
-      }
+      Object();
+      Object(const Object &);
 
-      return *this;
+      const Object &operator=(const Object &);
+
+      virtual std::string toJSON();
+      virtual ~Object();
+
+      ObjectType_t &getValue();
+      const ObjectType_t &getValue() const;
+
+    private:
+      ObjectType_t _data;
+
+    };
+
+    inline Object::ObjectType_t &Object::getValue() {
+      return _data;
     }
 
-    std::string Array::toJSON() {
-      std::ostringstream ostr;
-
-      int sz = _data.size();
-
-      ostr << "[";
-
-      for(int i=0;i<sz;++i) {
-        ostr << _data[i]->toJSON();
-        if(i < sz - 1) {
-          ostr << ",";
-        }
-      }
-
-      ostr << "]";
-
-      return ostr.str();
+    inline const Object::ObjectType_t &Object::getValue() const {
+      return _data;
     }
-
-    Array::~Array() {}
 
   }
 }
+
+#include "json_parser.h"
+
+#endif
 
 /* eof */

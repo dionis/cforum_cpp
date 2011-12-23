@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief Element interface
+ * \brief JSONNumber interface
  * \package JSON
  *
- * This implements the Element interface
+ * This defines the JSONNumber interface
  */
 
 /*
@@ -28,21 +28,49 @@
  * THE SOFTWARE.
  */
 
-#include "JSONElement.h"
+#ifndef JSON_NUMBER_H
+#define JSON_NUMBER_H
+
+#include <sstream>
+#include <iostream>
+#include <string>
+
+#include "config.h"
+
+#include "json_element.h"
+
+#include <stdint.h>
 
 namespace CForum {
   namespace JSON {
-    Element::Element() {
-    }
+    enum JSONNumberType {
+      JSONNumberTypeDouble,
+      JSONNumberTypeInt
+    };
 
-    std::string Element::toJSON() {
-      return std::string("");
-    }
+    class Number : public Element {
+    public:
+      Number();
+      Number(double);
+      Number(int64_t);
+      Number(const Number &);
 
-    Element::~Element() {
-    }
+      virtual std::string toJSON();
+      virtual ~Number();
 
+      int64_t getIValue();
+      double getDValue();
+
+      enum JSONNumberType getNumberType();
+
+    protected:
+      enum JSONNumberType _ntype;
+      double _ddata;
+      int _idata;
+    };
   }
 }
+
+#endif
 
 /* eof */

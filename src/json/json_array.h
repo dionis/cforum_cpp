@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief JSONBoolean interface
+ * \brief JSONArray interface
  * \package JSON
  *
- * This defines the JSONBoolean interface
+ * This defines the JSONArray interface
  */
 
 /*
@@ -28,31 +28,53 @@
  * THE SOFTWARE.
  */
 
-#ifndef JSON_BOOLEAN_H
-#define JSON_BOOLEAN_H
+#ifndef JSON_ARRAY_H
+#define JSON_ARRAY_H
 
 #include "config.h"
 
-#include "JSONElement.h"
+#include <sstream>
+#include <iostream>
+#include <string>
+
+#include <vector>
+#include <boost/shared_ptr.hpp>
+
+#include "json_element.h"
 
 namespace CForum {
   namespace JSON {
-    class Boolean : public Element {
+    class Array : public Element {
     public:
-      Boolean();
-      Boolean(bool);
-      Boolean(const Boolean &);
+      typedef std::vector<boost::shared_ptr<Element> > ArrayType_t;
+
+      Array();
+      Array(const Array &);
+
+      const Array &operator=(const Array &);
 
       virtual std::string toJSON();
-      virtual ~Boolean();
+      virtual ~Array();
 
-      bool getValue();
+      ArrayType_t &getValue();
+      const ArrayType_t &getValue() const;
 
     protected:
-      bool _data;
+      ArrayType_t _data;
     };
+
+    inline Array::ArrayType_t &Array::getValue() {
+      return _data;
+    }
+
+    inline const Array::ArrayType_t &Array::getValue() const {
+      return _data;
+    }
+
   }
 }
+
+#include "json_parser.h"
 
 #endif
 

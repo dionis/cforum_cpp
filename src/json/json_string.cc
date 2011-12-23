@@ -28,9 +28,7 @@
  * THE SOFTWARE.
  */
 
-#include "JSONString.h"
-
-#include <stdio.h>
+#include "json_string.h"
 
 namespace CForum {
   namespace JSON {

@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief JSONBoolean interface
+ * \brief JSONArray interface
  * \package JSON
  *
- * This implements the JSONBoolean interface
+ * This implements the JSONArray interface
  */
 
 /*
@@ -28,28 +28,41 @@
  * THE SOFTWARE.
  */
 
-#include "JSONBoolean.h"
+#include "json_array.h"
 
 namespace CForum {
   namespace JSON {
-    Boolean::Boolean() : Element(), _data(false) {}
-    Boolean::Boolean(bool val) : Element(), _data(val) {}
-    Boolean::Boolean(const Boolean &b) : Element(), _data(b._data) {}
+    Array::Array() : Element(), _data() {}
+    Array::Array(const Array &ary) : Element(), _data(ary._data) {}
 
-    std::string Boolean::toJSON() {
-      if(_data) {
-        return std::string("true");
+    const Array &Array::operator=(const Array &ary) {
+      if(this != &ary) {
+        _data = ary._data;
       }
 
-      return std::string("false");
+      return *this;
     }
 
-    bool Boolean::getValue() {
-      return _data;
+    std::string Array::toJSON() {
+      std::ostringstream ostr;
+
+      int sz = _data.size();
+
+      ostr << "[";
+
+      for(int i=0;i<sz;++i) {
+        ostr << _data[i]->toJSON();
+        if(i < sz - 1) {
+          ostr << ",";
+        }
+      }
+
+      ostr << "]";
+
+      return ostr.str();
     }
 
-    Boolean::~Boolean() {
-    }
+    Array::~Array() {}
 
   }
 }

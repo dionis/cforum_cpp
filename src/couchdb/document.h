@@ -36,7 +36,7 @@
 #include <unicode/unistr.h>
 #include <string>
 
-#include "json/JSONParser.h"
+#include "json/json_parser.h"
 #include "exceptions/CouchErrorException.h"
 
 namespace CForum {

@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief JSONString interface
+ * \brief Element interface
  * \package JSON
  *
- * This defines the JSONString interface
+ * This implements the Element interface
  */
 
 /*
@@ -28,54 +28,21 @@
  * THE SOFTWARE.
  */
 
-#ifndef JSON_STRING_H
-#define JSON_STRING_H
-
-#include "config.h"
-
-#include <sstream>
-#include <iostream>
-#include <string>
-#include <iomanip>
-
-#include <unicode/unistr.h>
-#include <unicode/bytestream.h>
-#include <unicode/uchriter.h>
-
-#include "JSONElement.h"
+#include "json_element.h"
 
 namespace CForum {
   namespace JSON {
-    class String : public Element {
-    public:
-      String();
-      String(const UnicodeString &);
-      String(const String &);
-
-      const String &operator=(const String &);
-
-      const UnicodeString &getValue();
-
-      virtual std::string toJSON();
-      virtual ~String();
-
-      static std::string toJSONString(const UnicodeString &);
-
-    protected:
-      UnicodeString _data;
-    };
-
-    inline const UnicodeString &String::getValue() {
-      return _data;
+    Element::Element() {
     }
 
-    inline std::string String::toJSON() {
-      return String::toJSONString(_data);
+    std::string Element::toJSON() {
+      return std::string("");
+    }
+
+    Element::~Element() {
     }
 
   }
 }
-
-#endif
 
 /* eof */

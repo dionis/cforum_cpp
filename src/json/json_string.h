@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief JSONArray interface
+ * \brief JSONString interface
  * \package JSON
  *
- * This defines the JSONArray interface
+ * This defines the JSONString interface
  */
 
 /*
@@ -28,47 +28,51 @@
  * THE SOFTWARE.
  */
 
-#ifndef JSON_ARRAY_H
-#define JSON_ARRAY_H
+#ifndef JSON_STRING_H
+#define JSON_STRING_H
 
 #include "config.h"
 
 #include <sstream>
 #include <iostream>
 #include <string>
+#include <iomanip>
 
-#include <vector>
-#include <boost/shared_ptr.hpp>
+#include <cstdio>
 
-#include "JSONElement.h"
+#include <unicode/unistr.h>
+#include <unicode/bytestream.h>
+#include <unicode/uchriter.h>
+
+#include "json_element.h"
 
 namespace CForum {
   namespace JSON {
-    class Array : public Element {
+    class String : public Element {
     public:
-      typedef std::vector<boost::shared_ptr<Element> > ArrayType_t;
+      String();
+      String(const UnicodeString &);
+      String(const String &);
 
-      Array();
-      Array(const Array &);
+      const String &operator=(const String &);
 
-      const Array &operator=(const Array &);
+      const UnicodeString &getValue();
 
       virtual std::string toJSON();
-      virtual ~Array();
+      virtual ~String();
 
-      ArrayType_t &getValue();
-      const ArrayType_t &getValue() const;
+      static std::string toJSONString(const UnicodeString &);
 
     protected:
-      ArrayType_t _data;
+      UnicodeString _data;
     };
 
-    inline Array::ArrayType_t &Array::getValue() {
+    inline const UnicodeString &String::getValue() {
       return _data;
     }
 
-    inline const Array::ArrayType_t &Array::getValue() const {
-      return _data;
+    inline std::string String::toJSON() {
+      return String::toJSONString(_data);
     }
 
   }

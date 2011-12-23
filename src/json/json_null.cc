@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief JSONObject interface
+ * \brief JSONNull interface
  * \package JSON
  *
- * This defines the JSONObject interface
+ * This defines the JSONNull interface
  */
 
 /*
@@ -28,59 +28,24 @@
  * THE SOFTWARE.
  */
 
-#ifndef JSON_OBJECT_H
-#define JSON_OBJECT_H
-
-#include "config.h"
-
-#include <sstream>
-#include <iostream>
-#include <string>
-
-#include <map>
-#include <boost/shared_ptr.hpp>
-
-#include <unicode/unistr.h>
-#include <unicode/bytestream.h>
-
-#include "hash_map.h"
-
-#include "JSONElement.h"
-#include "JSONString.h"
+#include "json_null.h"
 
 namespace CForum {
   namespace JSON {
-    class Object : public Element {
-    public:
-      typedef std::unordered_map<UnicodeString,boost::shared_ptr<Element>, hash_unicodestring > ObjectType_t;
-
-      Object();
-      Object(const Object &);
-
-      const Object &operator=(const Object &);
-
-      virtual std::string toJSON();
-      virtual ~Object();
-
-      ObjectType_t &getValue();
-      const ObjectType_t &getValue() const;
-
-    private:
-      ObjectType_t _data;
-
-    };
-
-    inline Object::ObjectType_t &Object::getValue() {
-      return _data;
+    Null::Null() : Element() {
     }
 
-    inline const Object::ObjectType_t &Object::getValue() const {
-      return _data;
+    std::string Null::toJSON() {
+      return std::string("null");
     }
 
+    void *Null::getValue() {
+      return NULL;
+    }
+
+    Null::~Null() {
+    }
   }
 }
-
-#endif
 
 /* eof */

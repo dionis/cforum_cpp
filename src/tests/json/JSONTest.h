@@ -33,6 +33,8 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+#include "json/json_parser.h"
+
 class JSONTest : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(JSONTest);
   CPPUNIT_TEST(testParser);
