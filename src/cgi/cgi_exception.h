@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief CGI interface definition
+ * \brief CGI exception interface definition
  * \package cgi
  *
- * This defines the CGI parser interface
+ * This defines the CGI exception interface
  */
 
 /*
@@ -28,23 +28,18 @@
  * THE SOFTWARE.
  */
 
-#ifndef CGIPARSEREXCEPTION_H
-#define CGIPARSEREXCEPTION_H
+#ifndef CGI_EXCEPTION_H
+#define CGI_EXCEPTION_H
 
 #include "exceptions/cforum_exception.h"
 
 namespace CForum {
-  class CGIParserException : public CForumException {
+  class CGIException : public CForumException {
   public:
-    CGIParserException();
-    CGIParserException(int);
-    CGIParserException(const char *,int);
-    CGIParserException(const std::string &,int);
-
-    static const int InvalidCGIEnvironment = 0x4da96289;
-    static const int NoCookiesGiven        = 0x4da962d0;
-    const static int NoDecodeValueGiven    = 0x4da96346;
-
+    CGIException();
+    CGIException(int);
+    CGIException(const char *, int);
+    CGIException(const std::string &, int);
   };
 }
 

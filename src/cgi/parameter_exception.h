@@ -31,10 +31,10 @@
 #ifndef PARAMETER_EXCEPTION_H
 #define PARAMETER_EXCEPTION_H
 
-#include "exceptions/cforum_exception.h"
+#include "cgi/cgi_exception.h"
 
 namespace CForum {
-  class ParameterException : public CForumException {
+  class ParameterException : public CGIException {
   public:
     ParameterException();
     ParameterException(int);

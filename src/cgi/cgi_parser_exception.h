@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief JSON exception
- * \package JSON
+ * \brief CGI interface definition
+ * \package cgi
  *
- * This implements the JSON exception interface
+ * This defines the CGI parser interface
  */
 
 /*
@@ -28,14 +28,26 @@
  * THE SOFTWARE.
  */
 
+#ifndef CGIPARSEREXCEPTION_H
+#define CGIPARSEREXCEPTION_H
 
-#include "parameter_exception.h"
+#include "cgi/cgi_exception.h"
 
 namespace CForum {
-  ParameterException::ParameterException() : CForumException() {}
-  ParameterException::ParameterException(int code) : CForumException(code) {}
-  ParameterException::ParameterException(const char *msg,int code) : CForumException(msg,code) {}
-  ParameterException::ParameterException(const std::string &msg,int code) : CForumException(msg,code) {}
+  class CGIParserException : public CGIException {
+  public:
+    CGIParserException();
+    CGIParserException(int);
+    CGIParserException(const char *,int);
+    CGIParserException(const std::string &,int);
+
+    static const int InvalidCGIEnvironment = 0x4da96289;
+    static const int NoCookiesGiven        = 0x4da962d0;
+    const static int NoDecodeValueGiven    = 0x4da96346;
+
+  };
 }
+
+#endif
 
 /* eof */

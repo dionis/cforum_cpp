@@ -42,10 +42,18 @@
 
 #include <boost/shared_ptr.hpp>
 
+#ifdef __APPLE__
+#include <crt_externs.h>
+#endif
+
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+
 #include "hash_map.h"
 
-#include "exceptions/parameter_exception.h"
-#include "exceptions/cgi_parser_exception.h"
+#include "cgi/parameter_exception.h"
+#include "cgi/cgi_parser_exception.h"
 
 namespace CForum {
   class CGI {

@@ -29,13 +29,13 @@
  */
 
 
-#include "cgi_parser_exception.h"
+#include "cgi/parameter_exception.h"
 
 namespace CForum {
-  CGIParserException::CGIParserException() : CForumException() {}
-  CGIParserException::CGIParserException(int code) : CForumException(code) {}
-  CGIParserException::CGIParserException(const char *msg,int code) : CForumException(msg,code) {}
-  CGIParserException::CGIParserException(const std::string &msg,int code) : CForumException(msg,code) {}
+  ParameterException::ParameterException() : CGIException() { }
+  ParameterException::ParameterException(int code) : CGIException(code) { }
+  ParameterException::ParameterException(const char *msg, int code) : CGIException(msg, code) { }
+  ParameterException::ParameterException(const std::string &msg, int code) : CGIException(msg,code) { }
 }
 
 /* eof */
