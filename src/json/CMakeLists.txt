@@ -14,6 +14,8 @@ add_library(cfjson SHARED
   json_boolean.cc
   json_number.cc
   json_parser.cc
+  json_syntax_exception.cc
+  json_exception.cc
 )
 
 target_link_libraries(cfjson cfexceptions ${ICU_LIBRARY})

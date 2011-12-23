@@ -3,7 +3,7 @@
  * \brief JSON syntax error exception
  * \package JSON
  *
- * This defines the JSON syntax error exception interface
+ * This implements the JSON syntax error exception interface
  */
 
 /*
@@ -28,37 +28,16 @@
  * THE SOFTWARE.
  */
 
-#ifndef JSON_SYNTAX_EXCEPTION_H
-#define JSON_SYNTAX_EXCEPTION_H
 
-#include "config.h"
-
-#include "json_exception.h"
+#include "json/json_syntax_exception.h"
 
 namespace CForum {
   namespace JSON {
-
-    class JSONSyntaxErrorException : public JSONException {
-    public:
-      JSONSyntaxErrorException();
-      JSONSyntaxErrorException(int);
-      JSONSyntaxErrorException(const char *,int);
-      JSONSyntaxErrorException(const std::string &,int);
-
-      static const int NoParseEnd               = 0x4d8dfcb5;
-      static const int CommentNotEnded          = 0x4d8dfcbc;
-      static const int StringNotTerminated      = 0x4d8dfcc2;
-      static const int FloatNumberError         = 0x4d986b4c;
-      static const int ArraySyntaxError         = 0x4d986b70;
-      static const int ObjectKeyMustBeString    = 0x4d8dfcc6;
-      static const int ObjectColonMustFollowKey = 0x4d8dfccc;
-      static const int ObjectCommaOrEOOMissing  = 0x4d8dfcd2;
-      static const int UnknownTokenType         = 0x4d8e06a1;
-    };
-
+    JSONSyntaxErrorException::JSONSyntaxErrorException() : JSONException() {}
+    JSONSyntaxErrorException::JSONSyntaxErrorException(int code) : JSONException(code) {}
+    JSONSyntaxErrorException::JSONSyntaxErrorException(const char *msg,int code) : JSONException(msg,code) {}
+    JSONSyntaxErrorException::JSONSyntaxErrorException(const std::string &msg,int code) : JSONException(msg,code) {}
   }
 }
-
-#endif
 
 /* eof */

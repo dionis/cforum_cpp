@@ -57,9 +57,9 @@ namespace CForum {
       Object();
       Object(const Object &);
 
-      const Object &operator=(const Object &);
+      Object &operator=(const Object &);
 
-      virtual std::string toJSON();
+      virtual std::string toJSON() const;
       virtual ~Object();
 
       ObjectType_t &getValue();

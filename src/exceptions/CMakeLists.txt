@@ -9,8 +9,6 @@ add_library(cfexceptions SHARED
   cforum_exception.cc
   config_error_exception.cc
   js_evaluator_exception.cc
-  json_syntax_exception.cc
-  json_exception.cc
   couch_error_exception.cc
   parameter_exception.cc
   cgi_parser_exception.cc

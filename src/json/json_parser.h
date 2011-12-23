@@ -47,15 +47,15 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 
-#include "json_element.h"
-#include "json_object.h"
-#include "json_array.h"
-#include "json_boolean.h"
-#include "json_string.h"
-#include "json_number.h"
-#include "json_null.h"
+#include "json/json_element.h"
+#include "json/json_object.h"
+#include "json/json_array.h"
+#include "json/json_boolean.h"
+#include "json/json_string.h"
+#include "json/json_number.h"
+#include "json/json_null.h"
 
-#include "exceptions/json_syntax_exception.h"
+#include "json/json_syntax_exception.h"
 
 namespace CForum {
   namespace JSON {
@@ -122,6 +122,34 @@ namespace CForum {
       };
 
     };
+
+    inline void Parser::parse(const UnicodeString &json_str, boost::shared_ptr<Element> &root) {
+      std::string tmp;
+
+      json_str.toUTF8String(tmp);
+      parse(tmp,root);
+    }
+
+    inline void Parser::parse(const std::string &json_str, boost::shared_ptr<Element> &root) {
+      parse(json_str.c_str(),json_str.length(),root);
+    }
+
+    inline void Parser::parse(const char *json_str, boost::shared_ptr<Element> &root) {
+      parse(json_str,strlen(json_str),root);
+    }
+
+    inline void Parser::parse(const char *json_str, size_t len, boost::shared_ptr<Element> &root) {
+      const char *end = readValue(&root,json_str,json_str + len-1);
+
+      if(end != json_str + len) {
+        end = eatWhitespacesAndComments(end,json_str+len);
+
+        if(end != json_str + len) {
+          throw JSONSyntaxErrorException("Error in syntax: not at end of JSON code after parsing",JSONSyntaxErrorException::NoParseEnd);
+        }
+      }
+    }
+
   }
 }
 

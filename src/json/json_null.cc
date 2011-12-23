@@ -28,23 +28,13 @@
  * THE SOFTWARE.
  */
 
-#include "json_null.h"
+#include "json/json_null.h"
 
 namespace CForum {
   namespace JSON {
-    Null::Null() : Element() {
-    }
+    Null::Null() : Element() { }
 
-    std::string Null::toJSON() {
-      return std::string("null");
-    }
-
-    void *Null::getValue() {
-      return NULL;
-    }
-
-    Null::~Null() {
-    }
+    Null::~Null() { }
   }
 }
 

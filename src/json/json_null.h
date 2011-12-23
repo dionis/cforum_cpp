@@ -33,7 +33,7 @@
 
 #include "config.h"
 
-#include "json_element.h"
+#include "json/json_element.h"
 
 namespace CForum {
   namespace JSON {
@@ -41,12 +41,21 @@ namespace CForum {
     public:
       Null();
 
-      virtual std::string toJSON();
+      virtual std::string toJSON() const;
 
       void *getValue();
 
       virtual ~Null();
     };
+
+    inline std::string Null::toJSON() const {
+      return std::string("null");
+    }
+
+    inline void *Null::getValue() {
+      return NULL;
+    }
+
   }
 }
 

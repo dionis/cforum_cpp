@@ -33,7 +33,7 @@
 
 #include "config.h"
 
-#include "json_element.h"
+#include "json/json_element.h"
 
 namespace CForum {
   namespace JSON {
@@ -43,7 +43,7 @@ namespace CForum {
       Boolean(bool);
       Boolean(const Boolean &);
 
-      virtual std::string toJSON();
+      virtual std::string toJSON() const;
       virtual ~Boolean();
 
       bool getValue();
@@ -51,6 +51,19 @@ namespace CForum {
     protected:
       bool _data;
     };
+
+    inline std::string Boolean::toJSON() const {
+      if(_data) {
+        return std::string("true");
+      }
+
+      return std::string("false");
+    }
+
+    inline bool Boolean::getValue() {
+      return _data;
+    }
+
   }
 }
 

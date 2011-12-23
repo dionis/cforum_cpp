@@ -41,7 +41,7 @@ namespace CForum {
     public:
       Element();
 
-      virtual std::string toJSON();
+      virtual std::string toJSON() const;
       virtual ~Element();
     };
   }

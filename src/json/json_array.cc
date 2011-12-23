@@ -28,14 +28,14 @@
  * THE SOFTWARE.
  */
 
-#include "json_array.h"
+#include "json/json_array.h"
 
 namespace CForum {
   namespace JSON {
-    Array::Array() : Element(), _data() {}
-    Array::Array(const Array &ary) : Element(), _data(ary._data) {}
+    Array::Array() : Element(), _data() { }
+    Array::Array(const Array &ary) : Element(), _data(ary._data) { }
 
-    const Array &Array::operator=(const Array &ary) {
+    Array &Array::operator=(const Array &ary) {
       if(this != &ary) {
         _data = ary._data;
       }
@@ -43,7 +43,7 @@ namespace CForum {
       return *this;
     }
 
-    std::string Array::toJSON() {
+    std::string Array::toJSON() const {
       std::ostringstream ostr;
 
       int sz = _data.size();
@@ -62,7 +62,7 @@ namespace CForum {
       return ostr.str();
     }
 
-    Array::~Array() {}
+    Array::~Array() { }
 
   }
 }

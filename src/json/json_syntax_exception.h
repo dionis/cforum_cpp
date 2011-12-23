@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief JSON exception
+ * \brief JSON syntax error exception
  * \package JSON
  *
- * This implements the JSON exception interface
+ * This defines the JSON syntax error exception interface
  */
 
 /*
@@ -28,16 +28,37 @@
  * THE SOFTWARE.
  */
 
+#ifndef JSON_SYNTAX_EXCEPTION_H
+#define JSON_SYNTAX_EXCEPTION_H
 
-#include "json_exception.h"
+#include "config.h"
+
+#include "json/json_exception.h"
 
 namespace CForum {
   namespace JSON {
-    JSONException::JSONException() : CForumException() {}
-    JSONException::JSONException(int code) : CForumException(code) {}
-    JSONException::JSONException(const char *msg,int code) : CForumException(msg,code) {}
-    JSONException::JSONException(const std::string &msg,int code) : CForumException(msg,code) {}
+
+    class JSONSyntaxErrorException : public JSONException {
+    public:
+      JSONSyntaxErrorException();
+      JSONSyntaxErrorException(int);
+      JSONSyntaxErrorException(const char *,int);
+      JSONSyntaxErrorException(const std::string &,int);
+
+      static const int NoParseEnd               = 0x4d8dfcb5;
+      static const int CommentNotEnded          = 0x4d8dfcbc;
+      static const int StringNotTerminated      = 0x4d8dfcc2;
+      static const int FloatNumberError         = 0x4d986b4c;
+      static const int ArraySyntaxError         = 0x4d986b70;
+      static const int ObjectKeyMustBeString    = 0x4d8dfcc6;
+      static const int ObjectColonMustFollowKey = 0x4d8dfccc;
+      static const int ObjectCommaOrEOOMissing  = 0x4d8dfcd2;
+      static const int UnknownTokenType         = 0x4d8e06a1;
+    };
+
   }
 }
+
+#endif
 
 /* eof */

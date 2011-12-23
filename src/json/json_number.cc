@@ -28,20 +28,16 @@
  * THE SOFTWARE.
  */
 
-#include "json_number.h"
+#include "json/json_number.h"
 
 namespace CForum {
   namespace JSON {
-    Number::Number() : Element(), _ntype(JSONNumberTypeInt), _ddata(0), _idata(0) {}
-    Number::Number(double dval) : Element(), _ntype(JSONNumberTypeDouble), _ddata(dval), _idata(0) {}
-    Number::Number(int64_t ival) : Element(), _ntype(JSONNumberTypeInt), _ddata(0), _idata(ival) {}
-    Number::Number(const Number &n) : Element(), _ntype(n._ntype), _ddata(n._ddata), _idata(n._idata) {}
+    Number::Number() : Element(), _ntype(JSONNumberTypeInt), _ddata(0), _idata(0) { }
+    Number::Number(double dval) : Element(), _ntype(JSONNumberTypeDouble), _ddata(dval), _idata(0) { }
+    Number::Number(int64_t ival) : Element(), _ntype(JSONNumberTypeInt), _ddata(0), _idata(ival) { }
+    Number::Number(const Number &n) : Element(), _ntype(n._ntype), _ddata(n._ddata), _idata(n._idata) { }
 
-    enum JSONNumberType Number::getNumberType() {
-      return _ntype;
-    }
-
-    std::string Number::toJSON() {
+    std::string Number::toJSON() const {
       std::ostringstream ostr;
 
 
@@ -55,16 +51,7 @@ namespace CForum {
       return ostr.str();
     }
 
-    int64_t Number::getIValue() {
-      return _idata;
-    }
-
-    double Number::getDValue() {
-      return _ddata;
-    }
-
-    Number::~Number() {
-    }
+    Number::~Number() { }
   }
 }
 

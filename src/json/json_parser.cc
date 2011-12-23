@@ -28,11 +28,11 @@
  * THE SOFTWARE.
  */
 
-#include "json_parser.h"
+#include "json/json_parser.h"
 
 namespace CForum {
   namespace JSON {
-    Parser::Parser() {}
+    Parser::Parser() { }
 
     void Parser::parseFile(const std::string &filename, boost::shared_ptr<Element> &root) {
       std::ifstream fd(filename.c_str(), std::ifstream::in);
@@ -47,33 +47,6 @@ namespace CForum {
       fd.close();
 
       parse(sst.str(), root);
-    }
-
-    void Parser::parse(const UnicodeString &json_str, boost::shared_ptr<Element> &root) {
-      std::string tmp;
-
-      json_str.toUTF8String(tmp);
-      parse(tmp,root);
-    }
-
-    void Parser::parse(const std::string &json_str, boost::shared_ptr<Element> &root) {
-      parse(json_str.c_str(),json_str.length(),root);
-    }
-
-    void Parser::parse(const char *json_str, boost::shared_ptr<Element> &root) {
-      parse(json_str,strlen(json_str),root);
-    }
-
-    void Parser::parse(const char *json_str, size_t len, boost::shared_ptr<Element> &root) {
-      const char *end = readValue(&root,json_str,json_str + len-1);
-
-      if(end != json_str + len) {
-        end = eatWhitespacesAndComments(end,json_str+len);
-
-        if(end != json_str + len) {
-          throw JSONSyntaxErrorException("Error in syntax: not at end of JSON code after parsing",JSONSyntaxErrorException::NoParseEnd);
-        }
-      }
     }
 
     const char *Parser::eatWhitespacesAndComments(const char *str,const char *end) {

@@ -44,7 +44,7 @@
 #include <unicode/bytestream.h>
 #include <unicode/uchriter.h>
 
-#include "json_element.h"
+#include "json/json_element.h"
 
 namespace CForum {
   namespace JSON {
@@ -54,11 +54,11 @@ namespace CForum {
       String(const UnicodeString &);
       String(const String &);
 
-      const String &operator=(const String &);
+      String &operator=(const String &);
 
-      const UnicodeString &getValue();
+      const UnicodeString &getValue() const;
 
-      virtual std::string toJSON();
+      virtual std::string toJSON() const;
       virtual ~String();
 
       static std::string toJSONString(const UnicodeString &);
@@ -67,11 +67,11 @@ namespace CForum {
       UnicodeString _data;
     };
 
-    inline const UnicodeString &String::getValue() {
+    inline const UnicodeString &String::getValue() const {
       return _data;
     }
 
-    inline std::string String::toJSON() {
+    inline std::string String::toJSON() const {
       return String::toJSONString(_data);
     }
 

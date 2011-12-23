@@ -28,28 +28,15 @@
  * THE SOFTWARE.
  */
 
-#include "json_boolean.h"
+#include "json/json_boolean.h"
 
 namespace CForum {
   namespace JSON {
-    Boolean::Boolean() : Element(), _data(false) {}
-    Boolean::Boolean(bool val) : Element(), _data(val) {}
-    Boolean::Boolean(const Boolean &b) : Element(), _data(b._data) {}
+    Boolean::Boolean() : Element(), _data(false) { }
+    Boolean::Boolean(bool val) : Element(), _data(val) { }
+    Boolean::Boolean(const Boolean &b) : Element(), _data(b._data) { }
 
-    std::string Boolean::toJSON() {
-      if(_data) {
-        return std::string("true");
-      }
-
-      return std::string("false");
-    }
-
-    bool Boolean::getValue() {
-      return _data;
-    }
-
-    Boolean::~Boolean() {
-    }
+    Boolean::~Boolean() { }
 
   }
 }

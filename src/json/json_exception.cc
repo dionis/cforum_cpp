@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief JSON syntax error exception
+ * \brief JSON exception
  * \package JSON
  *
- * This implements the JSON syntax error exception interface
+ * This implements the JSON exception interface
  */
 
 /*
@@ -29,14 +29,14 @@
  */
 
 
-#include "json_syntax_exception.h"
+#include "json/json_exception.h"
 
 namespace CForum {
   namespace JSON {
-    JSONSyntaxErrorException::JSONSyntaxErrorException() : JSONException() {}
-    JSONSyntaxErrorException::JSONSyntaxErrorException(int code) : JSONException(code) {}
-    JSONSyntaxErrorException::JSONSyntaxErrorException(const char *msg,int code) : JSONException(msg,code) {}
-    JSONSyntaxErrorException::JSONSyntaxErrorException(const std::string &msg,int code) : JSONException(msg,code) {}
+    JSONException::JSONException() : CForumException() {}
+    JSONException::JSONException(int code) : CForumException(code) {}
+    JSONException::JSONException(const char *msg,int code) : CForumException(msg,code) {}
+    JSONException::JSONException(const std::string &msg,int code) : CForumException(msg,code) {}
   }
 }
 

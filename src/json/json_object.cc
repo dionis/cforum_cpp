@@ -35,7 +35,7 @@ namespace CForum {
     Object::Object() : Element(), _data() {}
     Object::Object(const Object &obj) : Element(), _data(obj._data) {}
 
-    const Object &Object::operator=(const Object &obj) {
+    Object &Object::operator=(const Object &obj) {
       if(this != &obj) {
         _data = obj._data;
       }
@@ -43,13 +43,13 @@ namespace CForum {
       return *this;
     }
 
-    std::string Object::toJSON() {
+    std::string Object::toJSON() const {
       std::ostringstream ostr;
 
       bool isfirst = true;
 
-      ObjectType_t::iterator end = _data.end();
-      ObjectType_t::iterator it;
+      ObjectType_t::const_iterator end = _data.end();
+      ObjectType_t::const_iterator it;
 
       ostr << "{";
 

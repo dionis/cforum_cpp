@@ -40,7 +40,7 @@
 #include <vector>
 #include <boost/shared_ptr.hpp>
 
-#include "json_element.h"
+#include "json/json_element.h"
 
 namespace CForum {
   namespace JSON {
@@ -51,9 +51,9 @@ namespace CForum {
       Array();
       Array(const Array &);
 
-      const Array &operator=(const Array &);
+      Array &operator=(const Array &);
 
-      virtual std::string toJSON();
+      virtual std::string toJSON() const;
       virtual ~Array();
 
       ArrayType_t &getValue();

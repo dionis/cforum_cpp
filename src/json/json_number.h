@@ -37,7 +37,7 @@
 
 #include "config.h"
 
-#include "json_element.h"
+#include "json/json_element.h"
 
 #include <stdint.h>
 
@@ -55,7 +55,7 @@ namespace CForum {
       Number(int64_t);
       Number(const Number &);
 
-      virtual std::string toJSON();
+      virtual std::string toJSON() const;
       virtual ~Number();
 
       int64_t getIValue();
@@ -68,6 +68,19 @@ namespace CForum {
       double _ddata;
       int _idata;
     };
+
+    inline enum JSONNumberType Number::getNumberType() {
+      return _ntype;
+    }
+
+    inline int64_t Number::getIValue() {
+      return _idata;
+    }
+
+    inline double Number::getDValue() {
+      return _ddata;
+    }
+
   }
 }
 

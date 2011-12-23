@@ -28,15 +28,15 @@
  * THE SOFTWARE.
  */
 
-#include "json_string.h"
+#include "json/json_string.h"
 
 namespace CForum {
   namespace JSON {
-    String::String() : Element(), _data() {}
-    String::String(const UnicodeString &str) : Element(), _data(str) {}
-    String::String(const String &str) : Element(), _data(str._data) {}
+    String::String() : Element(), _data() { }
+    String::String(const UnicodeString &str) : Element(), _data(str) { }
+    String::String(const String &str) : Element(), _data(str._data) { }
 
-    const String &String::operator=(const String &str) {
+    String &String::operator=(const String &str) {
       if(this != &str) {
         _data = str._data;
       }
@@ -100,8 +100,7 @@ namespace CForum {
 
     }
 
-    String::~String() {
-    }
+    String::~String() { }
 
   }
 }

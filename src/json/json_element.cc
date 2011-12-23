@@ -28,19 +28,17 @@
  * THE SOFTWARE.
  */
 
-#include "json_element.h"
+#include "json/json_element.h"
 
 namespace CForum {
   namespace JSON {
-    Element::Element() {
-    }
+    Element::Element() { }
 
-    std::string Element::toJSON() {
+    std::string Element::toJSON() const {
       return std::string("");
     }
 
-    Element::~Element() {
-    }
+    Element::~Element() { }
 
   }
 }
