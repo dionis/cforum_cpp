@@ -28,7 +28,7 @@
  * THE SOFTWARE.
  */
 
-#include "document.h"
+#include "couchdb/document.h"
 
 namespace CForum {
   namespace CouchDB {

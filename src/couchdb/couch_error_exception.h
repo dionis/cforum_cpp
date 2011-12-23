@@ -3,7 +3,7 @@
  * \brief CouchDB error exception
  * \package couchdb
  *
- * This implements the CouchDB error exception interface
+ * This defines the CouchDB error exception interface
  */
 
 /*
@@ -28,28 +28,41 @@
  * THE SOFTWARE.
  */
 
+#ifndef COUCH_ERROR_EXCEPTION_H
+#define COUCH_ERROR_EXCEPTION_H
 
-#include "couch_error_exception.h"
+#include "config.h"
+
+#include "exceptions/cforum_exception.h"
 
 namespace CForum {
   namespace CouchDB {
-    CouchErrorException::CouchErrorException() : CForumException(), _error_msg(), _error_code(0) {}
-    CouchErrorException::CouchErrorException(int code) : CForumException(code), _error_msg(), _error_code(0) {}
-    CouchErrorException::CouchErrorException(const char *msg,int code) : CForumException(msg,code), _error_msg(), _error_code(0) {}
-    CouchErrorException::CouchErrorException(const std::string &msg,int code) : CForumException(msg,code), _error_msg(), _error_code(0) {}
 
-    CouchErrorException::CouchErrorException(const char *msg, int code, const char *errmsg, int errcode) : CForumException(msg,code), _error_msg(errmsg), _error_code(errcode) {}
+    class CouchErrorException : public CForumException {
+    public:
+      CouchErrorException();
+      CouchErrorException(int);
+      CouchErrorException(const char *, int);
+      CouchErrorException(const std::string &, int);
 
-    int CouchErrorException::getErrorCode() {
-      return _error_code;
-    }
+      CouchErrorException(const char *, int, const char *, int);
 
-    const std::string &CouchErrorException::getErrorMessage() {
-      return _error_msg;
-    }
+      int getErrorCode();
+      const std::string &getErrorMessage();
 
-    CouchErrorException::~CouchErrorException() throw() {}
+      virtual ~CouchErrorException() throw();
+
+      const static int ValueNotFound   = 0x4da963fb;
+      const static int HttpError       = 0x4da993c6;
+      const static int HttpStatusError = 0x4da99413;
+
+    protected:
+      std::string _error_msg;
+      int _error_code;
+    };
   }
 }
+
+#endif
 
 /* eof */

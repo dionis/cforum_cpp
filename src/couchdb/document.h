@@ -37,7 +37,7 @@
 #include <string>
 
 #include "json/json_parser.h"
-#include "exceptions/couch_error_exception.h"
+#include "couchdb/couch_error_exception.h"
 
 namespace CForum {
   namespace CouchDB {
