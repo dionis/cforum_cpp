@@ -13,18 +13,15 @@ add_subdirectory(jsevaluator)
 add_subdirectory(couchdb)
 add_subdirectory(cgi)
 add_subdirectory(template)
+add_subdirectory(routing)
 
 add_subdirectory(tests)
 
 add_library(cfconfigparser SHARED configparser.cc)
 target_link_libraries(cfconfigparser cfjsevaluator ${ICU_LIBRARY})
 
-add_library(cfframework SHARED uri.cc user.cc request.cc cgi_request.cc router.cc route.cc)
-target_link_libraries(cfframework cfexceptions cfcgi)
-
-
-#add_library(cfrouter SHARED router.cc)
-#target_link_libraries(cfrouter ${ICU_LIBRARY})
+add_library(cfframework SHARED uri.cc user.cc request.cc cgi_request.cc)
+target_link_libraries(cfframework cfexceptions cfcgi cfrouting)
 
 
 # eof
