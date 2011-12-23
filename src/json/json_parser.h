@@ -55,7 +55,7 @@
 #include "json_number.h"
 #include "json_null.h"
 
-#include "exceptions/JSONSyntaxException.h"
+#include "exceptions/json_syntax_exception.h"
 
 namespace CForum {
   namespace JSON {

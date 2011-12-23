@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief Exception interface implementation
+ * \brief JS evaluator error interface implementation
  * \package Exceptions
  *
- * This implements the basic CForum exception interface
+ * This implements the JS evaluator error interfae
  */
 
 /*
@@ -28,24 +28,13 @@
  * THE SOFTWARE.
  */
 
-#include "CForumException.h"
+#include "js_evaluator_exception.h"
 
 namespace CForum {
-  CForumException::CForumException() : _msg(""), _code(0) {}
-  CForumException::CForumException(int code) : _msg(""), _code(code) {}
-  CForumException::CForumException(const char *msg,int code) : _msg(msg), _code(code) {}
-  CForumException::CForumException(const std::string &msg,int code) : _msg(msg), _code(code) {}
-
-  CForumException::~CForumException() throw() {}
-
-  int CForumException::getCode() {
-    return _code;
-  }
-
-  const std::string &CForumException::getMessage() {
-    return _msg;
-  }
-
+  JSEvaluatorException::JSEvaluatorException() : CForumException() {}
+  JSEvaluatorException::JSEvaluatorException(int code) : CForumException(code) {}
+  JSEvaluatorException::JSEvaluatorException(const char *msg,int code) : CForumException(msg,code) {}
+  JSEvaluatorException::JSEvaluatorException(const std::string &msg,int code) : CForumException(msg,code) {}
 }
 
 /* eof */

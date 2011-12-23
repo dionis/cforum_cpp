@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief JS exception interface definition
- * \package Exceptions
+ * \brief JSON syntax error exception
+ * \package JSON
  *
- * This defines the JS error interface
+ * This defines the JSON syntax error exception interface
  */
 
 /*
@@ -28,24 +28,35 @@
  * THE SOFTWARE.
  */
 
-#ifndef JSEVALUATOR_EXCEPTION_H
-#define JSEVALUATOR_EXCEPTION_H
+#ifndef JSON_SYNTAX_EXCEPTION_H
+#define JSON_SYNTAX_EXCEPTION_H
 
 #include "config.h"
 
-#include "CForumException.h"
+#include "json_exception.h"
 
 namespace CForum {
-  class JSEvaluatorException : public CForumException {
-  public:
-    JSEvaluatorException();
-    JSEvaluatorException(int);
-    JSEvaluatorException(const char *,int);
-    JSEvaluatorException(const std::string &,int);
+  namespace JSON {
 
-    static const int JSException = 0x4d8dfcae;
+    class JSONSyntaxErrorException : public JSONException {
+    public:
+      JSONSyntaxErrorException();
+      JSONSyntaxErrorException(int);
+      JSONSyntaxErrorException(const char *,int);
+      JSONSyntaxErrorException(const std::string &,int);
 
-  };
+      static const int NoParseEnd               = 0x4d8dfcb5;
+      static const int CommentNotEnded          = 0x4d8dfcbc;
+      static const int StringNotTerminated      = 0x4d8dfcc2;
+      static const int FloatNumberError         = 0x4d986b4c;
+      static const int ArraySyntaxError         = 0x4d986b70;
+      static const int ObjectKeyMustBeString    = 0x4d8dfcc6;
+      static const int ObjectColonMustFollowKey = 0x4d8dfccc;
+      static const int ObjectCommaOrEOOMissing  = 0x4d8dfcd2;
+      static const int UnknownTokenType         = 0x4d8e06a1;
+    };
+
+  }
 }
 
 #endif

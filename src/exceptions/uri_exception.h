@@ -28,14 +28,25 @@
  * THE SOFTWARE.
  */
 
+#ifndef JSON_EXCEPTION_H
+#define JSON_EXCEPTION_H
 
-#include "URIException.h"
+#include "exceptions/cforum_exception.h"
 
 namespace CForum {
-  URIException::URIException() : CForumException() {}
-  URIException::URIException(int code) : CForumException(code) {}
-  URIException::URIException(const char *msg,int code) : CForumException(msg,code) {}
-  URIException::URIException(const std::string &msg,int code) : CForumException(msg,code) {}
+  class URIException : public CForumException {
+  public:
+    URIException();
+    URIException(int);
+    URIException(const char *,int);
+    URIException(const std::string &,int);
+
+    static const int NoSchemeFound     = 0x4eede051;
+    static const int NoHostnameFound   = 0x4eede137;
+    static const int InvalidPortNumber = 0x4eee5924;
+  };
 }
+
+#endif
 
 /* eof */

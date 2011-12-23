@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief JSON syntax error exception
- * \package JSON
+ * \brief CGI interface definition
+ * \package cgi
  *
- * This defines the JSON syntax error exception interface
+ * This defines the CGI parser interface
  */
 
 /*
@@ -28,35 +28,24 @@
  * THE SOFTWARE.
  */
 
-#ifndef JSON_SYNTAX_EXCEPTION_H
-#define JSON_SYNTAX_EXCEPTION_H
+#ifndef CGIPARSEREXCEPTION_H
+#define CGIPARSEREXCEPTION_H
 
-#include "config.h"
-
-#include "JSONException.h"
+#include "exceptions/cforum_exception.h"
 
 namespace CForum {
-  namespace JSON {
+  class CGIParserException : public CForumException {
+  public:
+    CGIParserException();
+    CGIParserException(int);
+    CGIParserException(const char *,int);
+    CGIParserException(const std::string &,int);
 
-    class JSONSyntaxErrorException : public JSONException {
-    public:
-      JSONSyntaxErrorException();
-      JSONSyntaxErrorException(int);
-      JSONSyntaxErrorException(const char *,int);
-      JSONSyntaxErrorException(const std::string &,int);
+    static const int InvalidCGIEnvironment = 0x4da96289;
+    static const int NoCookiesGiven        = 0x4da962d0;
+    const static int NoDecodeValueGiven    = 0x4da96346;
 
-      static const int NoParseEnd               = 0x4d8dfcb5;
-      static const int CommentNotEnded          = 0x4d8dfcbc;
-      static const int StringNotTerminated      = 0x4d8dfcc2;
-      static const int FloatNumberError         = 0x4d986b4c;
-      static const int ArraySyntaxError         = 0x4d986b70;
-      static const int ObjectKeyMustBeString    = 0x4d8dfcc6;
-      static const int ObjectColonMustFollowKey = 0x4d8dfccc;
-      static const int ObjectCommaOrEOOMissing  = 0x4d8dfcd2;
-      static const int UnknownTokenType         = 0x4d8e06a1;
-    };
-
-  }
+  };
 }
 
 #endif

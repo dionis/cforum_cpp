@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief Configuration error interface definition
- * \package Exceptions
+ * \brief JSON exception
+ * \package JSON
  *
- * This defines the configuration error exception
+ * This implements the JSON exception interface
  */
 
 /*
@@ -28,22 +28,14 @@
  * THE SOFTWARE.
  */
 
-#ifndef CONFIGERROR_EXCEPTION_H
-#define CONFIGERROR_EXCEPTION_H
 
-#include "config.h"
-#include "CForumException.h"
+#include "parameter_exception.h"
 
 namespace CForum {
-  class ConfigErrorException : public CForumException {
-  public:
-    ConfigErrorException();
-    ConfigErrorException(int);
-    ConfigErrorException(const char *,int);
-    ConfigErrorException(const std::string &,int);
-  };
+  ParameterException::ParameterException() : CForumException() {}
+  ParameterException::ParameterException(int code) : CForumException(code) {}
+  ParameterException::ParameterException(const char *msg,int code) : CForumException(msg,code) {}
+  ParameterException::ParameterException(const std::string &msg,int code) : CForumException(msg,code) {}
 }
-
-#endif
 
 /* eof */

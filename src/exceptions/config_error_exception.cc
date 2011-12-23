@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief CouchDB error exception
- * \package couchdb
+ * \brief Configuration error exception implementation
+ * \package Exceptions
  *
- * This defines the CouchDB error exception interface
+ * This implements the configuration error interface
  */
 
 /*
@@ -28,41 +28,13 @@
  * THE SOFTWARE.
  */
 
-#ifndef COUCH_ERROR_EXCEPTION_H
-#define COUCH_ERROR_EXCEPTION_H
-
-#include "config.h"
-
-#include "CForumException.h"
+#include "config_error_exception.h"
 
 namespace CForum {
-  namespace CouchDB {
-
-    class CouchErrorException : public CForumException {
-    public:
-      CouchErrorException();
-      CouchErrorException(int);
-      CouchErrorException(const char *, int);
-      CouchErrorException(const std::string &, int);
-
-      CouchErrorException(const char *, int, const char *, int);
-
-      int getErrorCode();
-      const std::string &getErrorMessage();
-
-      virtual ~CouchErrorException() throw();
-
-      const static int ValueNotFound   = 0x4da963fb;
-      const static int HttpError       = 0x4da993c6;
-      const static int HttpStatusError = 0x4da99413;
-
-    protected:
-      std::string _error_msg;
-      int _error_code;
-    };
-  }
+  ConfigErrorException::ConfigErrorException() : CForumException() {}
+  ConfigErrorException::ConfigErrorException(int code) : CForumException(code) {}
+  ConfigErrorException::ConfigErrorException(const char *msg,int code) : CForumException(msg,code) {}
+  ConfigErrorException::ConfigErrorException(const std::string &msg,int code) : CForumException(msg,code) {}
 }
-
-#endif
 
 /* eof */

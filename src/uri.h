@@ -37,7 +37,7 @@
 #include <sstream>
 #include <iostream>
 
-#include "exceptions/URIException.h"
+#include "exceptions/uri_exception.h"
 
 namespace CForum {
   class URI {

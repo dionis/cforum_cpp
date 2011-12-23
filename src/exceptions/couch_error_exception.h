@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief CGI interface definition
- * \package cgi
+ * \brief CouchDB error exception
+ * \package couchdb
  *
- * This defines the CGI parser interface
+ * This defines the CouchDB error exception interface
  */
 
 /*
@@ -28,21 +28,39 @@
  * THE SOFTWARE.
  */
 
-#ifndef PARAMETER_EXCEPTION_H
-#define PARAMETER_EXCEPTION_H
+#ifndef COUCH_ERROR_EXCEPTION_H
+#define COUCH_ERROR_EXCEPTION_H
 
-#include "exceptions/CForumException.h"
+#include "config.h"
+
+#include "cforum_exception.h"
 
 namespace CForum {
-  class ParameterException : public CForumException {
-  public:
-    ParameterException();
-    ParameterException(int);
-    ParameterException(const char *,int);
-    ParameterException(const std::string &,int);
+  namespace CouchDB {
 
-    const static int InvalidValue = 0x4da961f0;
-  };
+    class CouchErrorException : public CForumException {
+    public:
+      CouchErrorException();
+      CouchErrorException(int);
+      CouchErrorException(const char *, int);
+      CouchErrorException(const std::string &, int);
+
+      CouchErrorException(const char *, int, const char *, int);
+
+      int getErrorCode();
+      const std::string &getErrorMessage();
+
+      virtual ~CouchErrorException() throw();
+
+      const static int ValueNotFound   = 0x4da963fb;
+      const static int HttpError       = 0x4da993c6;
+      const static int HttpStatusError = 0x4da99413;
+
+    protected:
+      std::string _error_msg;
+      int _error_code;
+    };
+  }
 }
 
 #endif

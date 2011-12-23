@@ -6,15 +6,15 @@ include_directories (BEFORE "${CMAKE_CURRENT_SOURCE_DIR}/.." "${CMAKE_CURRENT_SO
 
 # libcfexceptions
 add_library(cfexceptions SHARED
-  CForumException.cc
-  ConfigErrorException.cc
-  JSEvaluatorException.cc
-  JSONSyntaxException.cc
-  JSONException.cc
-  CouchErrorException.cc
-  ParameterException.cc
-  CGIParserException.cc
-  URIException.cc
+  cforum_exception.cc
+  config_error_exception.cc
+  js_evaluator_exception.cc
+  json_syntax_exception.cc
+  json_exception.cc
+  couch_error_exception.cc
+  parameter_exception.cc
+  cgi_parser_exception.cc
+  uri_exception.cc
 )
 
 # eof

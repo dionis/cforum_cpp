@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief JSON exception
- * \package JSON
+ * \brief Exception interface implementation
+ * \package Exceptions
  *
- * This implements the JSON exception interface
+ * This implements the basic CForum exception interface
  */
 
 /*
@@ -28,14 +28,24 @@
  * THE SOFTWARE.
  */
 
-
-#include "CGIParserException.h"
+#include "cforum_exception.h"
 
 namespace CForum {
-  CGIParserException::CGIParserException() : CForumException() {}
-  CGIParserException::CGIParserException(int code) : CForumException(code) {}
-  CGIParserException::CGIParserException(const char *msg,int code) : CForumException(msg,code) {}
-  CGIParserException::CGIParserException(const std::string &msg,int code) : CForumException(msg,code) {}
+  CForumException::CForumException() : _msg(""), _code(0) {}
+  CForumException::CForumException(int code) : _msg(""), _code(code) {}
+  CForumException::CForumException(const char *msg,int code) : _msg(msg), _code(code) {}
+  CForumException::CForumException(const std::string &msg,int code) : _msg(msg), _code(code) {}
+
+  CForumException::~CForumException() throw() {}
+
+  int CForumException::getCode() {
+    return _code;
+  }
+
+  const std::string &CForumException::getMessage() {
+    return _msg;
+  }
+
 }
 
 /* eof */

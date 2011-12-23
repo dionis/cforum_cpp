@@ -29,7 +29,7 @@
  */
 
 
-#include "JSONSyntaxException.h"
+#include "json_syntax_exception.h"
 
 namespace CForum {
   namespace JSON {

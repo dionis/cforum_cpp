@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief CouchDB error exception
- * \package couchdb
+ * \brief URI syntax error exception
+ * \package framework
  *
- * This implements the CouchDB error exception interface
+ * This defines the URI syntax error exception interface
  */
 
 /*
@@ -29,27 +29,13 @@
  */
 
 
-#include "CouchErrorException.h"
+#include "uri_exception.h"
 
 namespace CForum {
-  namespace CouchDB {
-    CouchErrorException::CouchErrorException() : CForumException(), _error_msg(), _error_code(0) {}
-    CouchErrorException::CouchErrorException(int code) : CForumException(code), _error_msg(), _error_code(0) {}
-    CouchErrorException::CouchErrorException(const char *msg,int code) : CForumException(msg,code), _error_msg(), _error_code(0) {}
-    CouchErrorException::CouchErrorException(const std::string &msg,int code) : CForumException(msg,code), _error_msg(), _error_code(0) {}
-
-    CouchErrorException::CouchErrorException(const char *msg, int code, const char *errmsg, int errcode) : CForumException(msg,code), _error_msg(errmsg), _error_code(errcode) {}
-
-    int CouchErrorException::getErrorCode() {
-      return _error_code;
-    }
-
-    const std::string &CouchErrorException::getErrorMessage() {
-      return _error_msg;
-    }
-
-    CouchErrorException::~CouchErrorException() throw() {}
-  }
+  URIException::URIException() : CForumException() {}
+  URIException::URIException(int code) : CForumException(code) {}
+  URIException::URIException(const char *msg,int code) : CForumException(msg,code) {}
+  URIException::URIException(const std::string &msg,int code) : CForumException(msg,code) {}
 }
 
 /* eof */

@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief URI syntax error exception
- * \package framework
+ * \brief JSON exception
+ * \package JSON
  *
- * This defines the URI syntax error exception interface
+ * This implements the JSON exception interface
  */
 
 /*
@@ -28,25 +28,16 @@
  * THE SOFTWARE.
  */
 
-#ifndef JSON_EXCEPTION_H
-#define JSON_EXCEPTION_H
 
-#include "exceptions/CForumException.h"
+#include "json_exception.h"
 
 namespace CForum {
-  class URIException : public CForumException {
-  public:
-    URIException();
-    URIException(int);
-    URIException(const char *,int);
-    URIException(const std::string &,int);
-
-    static const int NoSchemeFound     = 0x4eede051;
-    static const int NoHostnameFound   = 0x4eede137;
-    static const int InvalidPortNumber = 0x4eee5924;
-  };
+  namespace JSON {
+    JSONException::JSONException() : CForumException() {}
+    JSONException::JSONException(int code) : CForumException(code) {}
+    JSONException::JSONException(const char *msg,int code) : CForumException(msg,code) {}
+    JSONException::JSONException(const std::string &msg,int code) : CForumException(msg,code) {}
+  }
 }
-
-#endif
 
 /* eof */

@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief JSON syntax error exception
- * \package JSON
+ * \brief Configuration error interface definition
+ * \package Exceptions
  *
- * This defines the JSON syntax error exception interface
+ * This defines the configuration error exception
  */
 
 /*
@@ -28,24 +28,20 @@
  * THE SOFTWARE.
  */
 
-#ifndef JSON_EXCEPTION_H
-#define JSON_EXCEPTION_H
+#ifndef CONFIGERROR_EXCEPTION_H
+#define CONFIGERROR_EXCEPTION_H
 
-#include "exceptions/CForumException.h"
+#include "config.h"
+#include "cforum_exception.h"
 
 namespace CForum {
-  namespace JSON {
-
-    class JSONException : public CForumException {
-    public:
-      JSONException();
-      JSONException(int);
-      JSONException(const char *,int);
-      JSONException(const std::string &,int);
-
-    };
-
-  }
+  class ConfigErrorException : public CForumException {
+  public:
+    ConfigErrorException();
+    ConfigErrorException(int);
+    ConfigErrorException(const char *,int);
+    ConfigErrorException(const std::string &,int);
+  };
 }
 
 #endif

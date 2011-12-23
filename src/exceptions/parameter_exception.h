@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief Configuration error exception implementation
- * \package Exceptions
+ * \brief CGI interface definition
+ * \package cgi
  *
- * This implements the configuration error interface
+ * This defines the CGI parser interface
  */
 
 /*
@@ -28,13 +28,23 @@
  * THE SOFTWARE.
  */
 
-#include "ConfigErrorException.h"
+#ifndef PARAMETER_EXCEPTION_H
+#define PARAMETER_EXCEPTION_H
+
+#include "exceptions/cforum_exception.h"
 
 namespace CForum {
-  ConfigErrorException::ConfigErrorException() : CForumException() {}
-  ConfigErrorException::ConfigErrorException(int code) : CForumException(code) {}
-  ConfigErrorException::ConfigErrorException(const char *msg,int code) : CForumException(msg,code) {}
-  ConfigErrorException::ConfigErrorException(const std::string &msg,int code) : CForumException(msg,code) {}
+  class ParameterException : public CForumException {
+  public:
+    ParameterException();
+    ParameterException(int);
+    ParameterException(const char *,int);
+    ParameterException(const std::string &,int);
+
+    const static int InvalidValue = 0x4da961f0;
+  };
 }
+
+#endif
 
 /* eof */

@@ -29,15 +29,13 @@
  */
 
 
-#include "JSONException.h"
+#include "cgi_parser_exception.h"
 
 namespace CForum {
-  namespace JSON {
-    JSONException::JSONException() : CForumException() {}
-    JSONException::JSONException(int code) : CForumException(code) {}
-    JSONException::JSONException(const char *msg,int code) : CForumException(msg,code) {}
-    JSONException::JSONException(const std::string &msg,int code) : CForumException(msg,code) {}
-  }
+  CGIParserException::CGIParserException() : CForumException() {}
+  CGIParserException::CGIParserException(int code) : CForumException(code) {}
+  CGIParserException::CGIParserException(const char *msg,int code) : CForumException(msg,code) {}
+  CGIParserException::CGIParserException(const std::string &msg,int code) : CForumException(msg,code) {}
 }
 
 /* eof */

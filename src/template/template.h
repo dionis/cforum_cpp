@@ -46,7 +46,7 @@
 
 #include <cstring>
 
-#include "exceptions/CForumException.h"
+#include "exceptions/cforum_exception.h"
 
 namespace CForum {
   class Template {

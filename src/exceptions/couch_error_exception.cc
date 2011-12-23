@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief CGI interface definition
- * \package cgi
+ * \brief CouchDB error exception
+ * \package couchdb
  *
- * This defines the CGI parser interface
+ * This implements the CouchDB error exception interface
  */
 
 /*
@@ -28,26 +28,28 @@
  * THE SOFTWARE.
  */
 
-#ifndef CGIPARSEREXCEPTION_H
-#define CGIPARSEREXCEPTION_H
 
-#include "exceptions/CForumException.h"
+#include "couch_error_exception.h"
 
 namespace CForum {
-  class CGIParserException : public CForumException {
-  public:
-    CGIParserException();
-    CGIParserException(int);
-    CGIParserException(const char *,int);
-    CGIParserException(const std::string &,int);
+  namespace CouchDB {
+    CouchErrorException::CouchErrorException() : CForumException(), _error_msg(), _error_code(0) {}
+    CouchErrorException::CouchErrorException(int code) : CForumException(code), _error_msg(), _error_code(0) {}
+    CouchErrorException::CouchErrorException(const char *msg,int code) : CForumException(msg,code), _error_msg(), _error_code(0) {}
+    CouchErrorException::CouchErrorException(const std::string &msg,int code) : CForumException(msg,code), _error_msg(), _error_code(0) {}
 
-    static const int InvalidCGIEnvironment = 0x4da96289;
-    static const int NoCookiesGiven        = 0x4da962d0;
-    const static int NoDecodeValueGiven    = 0x4da96346;
+    CouchErrorException::CouchErrorException(const char *msg, int code, const char *errmsg, int errcode) : CForumException(msg,code), _error_msg(errmsg), _error_code(errcode) {}
 
-  };
+    int CouchErrorException::getErrorCode() {
+      return _error_code;
+    }
+
+    const std::string &CouchErrorException::getErrorMessage() {
+      return _error_msg;
+    }
+
+    CouchErrorException::~CouchErrorException() throw() {}
+  }
 }
-
-#endif
 
 /* eof */

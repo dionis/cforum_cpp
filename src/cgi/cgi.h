@@ -44,8 +44,8 @@
 
 #include "hash_map.h"
 
-#include "exceptions/ParameterException.h"
-#include "exceptions/CGIParserException.h"
+#include "exceptions/parameter_exception.h"
+#include "exceptions/cgi_parser_exception.h"
 
 namespace CForum {
   class CGI {
