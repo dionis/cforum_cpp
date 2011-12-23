@@ -32,6 +32,9 @@
 #define JSON_TEST_H
 
 #include <cppunit/extensions/HelperMacros.h>
+#include <cstdlib>
+
+#include "cgi/cgi.h"
 
 class CGITest : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(CGITest);

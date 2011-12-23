@@ -38,7 +38,7 @@
 
 #include <curl/curl.h>
 
-#include "cgi/CGI.h"
+#include "cgi/cgi.h"
 #include "document.h"
 
 namespace CForum {

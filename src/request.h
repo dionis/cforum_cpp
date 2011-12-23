@@ -33,7 +33,7 @@
 
 #include <string>
 
-#include "cgi/CGI.h"
+#include "cgi/cgi.h"
 #include "uri.h"
 
 namespace CForum {

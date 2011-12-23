@@ -28,7 +28,7 @@
  * THE SOFTWARE.
  */
 
-#include "CGI.h"
+#include "cgi.h"
 
 #ifdef __APPLE__
 #include <crt_externs.h>
