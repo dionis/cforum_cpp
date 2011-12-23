@@ -31,7 +31,7 @@
 #ifndef ROUTE_SYNTAX_EXCEPTION_H
 #define ROUTE_SYNTAX_EXCEPTION_H
 
-#include "exceptions/route_exception.h"
+#include "routing/route_exception.h"
 
 namespace CForum {
   class RouteSyntaxException : public RouteException {

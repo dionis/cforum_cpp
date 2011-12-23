@@ -36,7 +36,7 @@
 #include <sstream>
 
 #include "controller.h"
-#include "exceptions/route_syntax_exception.h"
+#include "routing/route_syntax_exception.h"
 
 namespace CForum {
   class Route {

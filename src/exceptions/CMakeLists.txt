@@ -15,8 +15,6 @@ add_library(cfexceptions SHARED
   parameter_exception.cc
   cgi_parser_exception.cc
   uri_exception.cc
-  route_exception.cc
-  route_syntax_exception.cc
 )
 
 # eof

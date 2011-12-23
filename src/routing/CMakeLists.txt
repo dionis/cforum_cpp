@@ -6,7 +6,7 @@ include_directories (BEFORE "${CMAKE_CURRENT_SOURCE_DIR}/.." "${CMAKE_CURRENT_SO
 
 
 # cfrouting
-add_library(cfrouting SHARED router.cc route.cc)
+add_library(cfrouting SHARED router.cc route.cc route_exception.cc route_syntax_exception.cc)
 
 target_link_libraries(cfrouting cfexceptions ${ICU_LIBRARY})
 
