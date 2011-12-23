@@ -44,7 +44,7 @@
 
 #include <v8.h>
 
-#include "jsevaluator/JSEvaluator.h"
+#include "jsevaluator/js_evaluator.h"
 #include "exceptions/ConfigErrorException.h"
 
 namespace CForum {
