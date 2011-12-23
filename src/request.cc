@@ -28,7 +28,7 @@
  * THE SOFTWARE.
  */
 
-#include "Request.h"
+#include "request.h"
 
 namespace CForum {
   Request::Request() {
