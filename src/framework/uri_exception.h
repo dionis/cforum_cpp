@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief CGI Request information, comes via CGI environment
+ * \brief URI syntax error exception
  * \package framework
  *
- * CGI Request information, comes via CGI environment
+ * This defines the URI syntax error exception interface
  */
 
 /*
@@ -28,20 +28,23 @@
  * THE SOFTWARE.
  */
 
-#ifndef CGI_REQUEST_H
-#define CGI_REQUEST_H
+#ifndef URI_EXCEPTION_H
+#define URI_EXCEPTION_H
 
-#include "request.h"
+#include "exceptions/cforum_exception.h"
 
 namespace CForum {
-  class CGIRequest : public Request {
+  class URIException : public CForumException {
   public:
-    CGIRequest();
-    virtual ~CGIRequest();
+    URIException();
+    URIException(int);
+    URIException(const char *,int);
+    URIException(const std::string &,int);
 
+    static const int NoSchemeFound     = 0x4eede051;
+    static const int NoHostnameFound   = 0x4eede137;
+    static const int InvalidPortNumber = 0x4eee5924;
   };
-
-
 }
 
 #endif

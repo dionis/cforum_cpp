@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief CGI Request information, comes via CGI environment
+ * \brief User information
  * \package framework
  *
- * CGI Request information, comes via CGI environment
+ * User information
  */
 
 /*
@@ -28,31 +28,27 @@
  * THE SOFTWARE.
  */
 
-#include "cgi_request.h"
+#include "framework/user.h"
 
 namespace CForum {
-  CGIRequest::CGIRequest() : Request::Request() {
-    std::string path_info = cgi.pathInfo(),
-      hostname = cgi.serverName(),
-      proto = cgi.serverProtocol(),
-      uri;
 
-    int port = cgi.serverPort();
-
-    /* TODO: check if SERVER_PROTOCOL contains http/https or if we have to do more */
-    uri = proto + "://" + hostname;
-    if((proto == "https" && port != 443) || (proto == "http" && port != 80)) {
-      uri += ":" + port;
-    }
-
-    uri += path_info.length() ? path_info : std::string("/");
-
-    requestUri = URI(uri);
+  User::User() : username() { }
+  User::User(const char *usrname) : username(usrname) { }
+  User::User(const std::string &usrname) : username(usrname) { }
+  User::User(const UnicodeString &usrname) : username() {
+    usrname.toUTF8String(username);
   }
 
-  CGIRequest::~CGIRequest() { }
+  User::User(const User &usr) {
+    username = usr.username;
+  }
 
+  User &User::operator=(const User &usr) {
+    username = usr.username;
+    return *this;
+  }
+
+  User::~User() { }
 }
 
 /* eof */
-

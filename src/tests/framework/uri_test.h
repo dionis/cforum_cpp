@@ -33,7 +33,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "uri.h"
+#include "framework/uri.h"
 
 class URITest : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(URITest);

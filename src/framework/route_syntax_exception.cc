@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief User information
+ * Routing syntax errors throw this exception or one of it's subclasses
  * \package framework
  *
- * User information
+ * Routing syntax errors throw this exception or one of it's subclasses
  */
 
 /*
@@ -28,27 +28,14 @@
  * THE SOFTWARE.
  */
 
-#include "user.h"
+
+#include "framework/route_syntax_exception.h"
 
 namespace CForum {
-
-  User::User() : username() { }
-  User::User(const char *usrname) : username(usrname) { }
-  User::User(const std::string &usrname) : username(usrname) { }
-  User::User(const UnicodeString &usrname) : username() {
-    usrname.toUTF8String(username);
-  }
-
-  User::User(const User &usr) {
-    username = usr.username;
-  }
-
-  User &User::operator=(const User &usr) {
-    username = usr.username;
-    return *this;
-  }
-
-  User::~User() { }
+  RouteSyntaxException::RouteSyntaxException() : RouteException() { }
+  RouteSyntaxException::RouteSyntaxException(int code) : RouteException(code) { }
+  RouteSyntaxException::RouteSyntaxException(const char *msg, int code) : RouteException(msg, code) { }
+  RouteSyntaxException::RouteSyntaxException(const std::string &msg, int code) : RouteException(msg, code) { }
 }
 
 /* eof */

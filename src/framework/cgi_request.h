@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief Routing syntax errors throw this exception
+ * \brief CGI Request information, comes via CGI environment
  * \package framework
  *
- * Routing syntax errors errors throw this exception
+ * CGI Request information, comes via CGI environment
  */
 
 /*
@@ -28,23 +28,19 @@
  * THE SOFTWARE.
  */
 
-#ifndef ROUTE_SYNTAX_EXCEPTION_H
-#define ROUTE_SYNTAX_EXCEPTION_H
+#ifndef CGI_REQUEST_H
+#define CGI_REQUEST_H
 
-#include "routing/route_exception.h"
+#include "framework/request.h"
 
 namespace CForum {
-  class RouteSyntaxException : public RouteException {
+  class CGIRequest : public Request {
   public:
-      RouteSyntaxException();
-      RouteSyntaxException(int);
-      RouteSyntaxException(const char *, int);
-      RouteSyntaxException(const std::string &, int);
-
-      static const int NamedPatternNotClosedError = 0x4ef4d6ed;
-      static const int NamedPatternIdInvalidError = 0x4ef4d838;
+    CGIRequest();
+    virtual ~CGIRequest();
 
   };
+
 
 }
 

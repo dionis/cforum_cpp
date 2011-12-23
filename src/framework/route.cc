@@ -30,7 +30,7 @@
  * THE SOFTWARE.
  */
 
-#include "routing/route.h"
+#include "framework/route.h"
 
 namespace CForum {
   Route::Pattern::Pattern() : names(), pattern() { }

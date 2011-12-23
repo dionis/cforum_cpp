@@ -33,7 +33,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "user.h"
+#include "framework/user.h"
 
 class UserTest : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(UserTest);

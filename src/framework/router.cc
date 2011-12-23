@@ -1,9 +1,11 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief URI syntax error exception
- * \package framework
+ * \brief Router implementation; routes request to the specific modules
+ * \package JSEvaluator
  *
- * This defines the URI syntax error exception interface
+ * Routing is done via several criterias: of course via path, via desired
+ * media, via POST/GET difference, etc, pp. Each module can specify a path
+ * and one to N additional criterias. If all match, the module is called.
  */
 
 /*
@@ -28,14 +30,43 @@
  * THE SOFTWARE.
  */
 
-
-#include "uri_exception.h"
+#include "framework//router.h"
 
 namespace CForum {
-  URIException::URIException() : CForumException() {}
-  URIException::URIException(int code) : CForumException(code) {}
-  URIException::URIException(const char *msg,int code) : CForumException(msg,code) {}
-  URIException::URIException(const std::string &msg,int code) : CForumException(msg,code) {}
+  Router::Router() {}
+
+  // TODO: implement
+  Router::Router(const Router &router) {
+    (void)router;
+  }
+
+  // TODO: implement
+  Router &Router::operator=(const Router &r) {
+    (void)r;
+    return *this;
+  }
+
+  bool Router::registerRoute(const std::string &str) {
+    return registerRoute(str.c_str());
+  }
+
+  bool Router::registerRoute(const UnicodeString &str) {
+    std::string val;
+    str.toUTF8String(val);
+
+    return registerRoute(val.c_str());
+  }
+
+  bool Router::registerRoute(const char *str) {
+    register const char *ptr;
+
+    for(ptr=str;*ptr;++ptr) {
+    }
+
+    return true;
+  }
+
 }
+
 
 /* eof */

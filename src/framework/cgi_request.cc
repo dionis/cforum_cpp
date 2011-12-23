@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * Routing syntax errors throw this exception or one of it's subclasses
+ * \brief CGI Request information, comes via CGI environment
  * \package framework
  *
- * Routing syntax errors throw this exception or one of it's subclasses
+ * CGI Request information, comes via CGI environment
  */
 
 /*
@@ -28,14 +28,31 @@
  * THE SOFTWARE.
  */
 
-
-#include "route_syntax_exception.h"
+#include "framework/cgi_request.h"
 
 namespace CForum {
-  RouteSyntaxException::RouteSyntaxException() : RouteException() { }
-  RouteSyntaxException::RouteSyntaxException(int code) : RouteException(code) { }
-  RouteSyntaxException::RouteSyntaxException(const char *msg, int code) : RouteException(msg, code) { }
-  RouteSyntaxException::RouteSyntaxException(const std::string &msg, int code) : RouteException(msg, code) { }
+  CGIRequest::CGIRequest() : Request::Request() {
+    std::string path_info = cgi.pathInfo(),
+      hostname = cgi.serverName(),
+      proto = cgi.serverProtocol(),
+      uri;
+
+    int port = cgi.serverPort();
+
+    /* TODO: check if SERVER_PROTOCOL contains http/https or if we have to do more */
+    uri = proto + "://" + hostname;
+    if((proto == "https" && port != 443) || (proto == "http" && port != 80)) {
+      uri += ":" + port;
+    }
+
+    uri += path_info.length() ? path_info : std::string("/");
+
+    requestUri = URI(uri);
+  }
+
+  CGIRequest::~CGIRequest() { }
+
 }
 
 /* eof */
+

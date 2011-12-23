@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief URI syntax error exception
+ * \brief Routing syntax errors throw this exception
  * \package framework
  *
- * This defines the URI syntax error exception interface
+ * Routing syntax errors errors throw this exception
  */
 
 /*
@@ -28,23 +28,24 @@
  * THE SOFTWARE.
  */
 
-#ifndef JSON_EXCEPTION_H
-#define JSON_EXCEPTION_H
+#ifndef ROUTE_SYNTAX_EXCEPTION_H
+#define ROUTE_SYNTAX_EXCEPTION_H
 
-#include "exceptions/cforum_exception.h"
+#include "framework//route_exception.h"
 
 namespace CForum {
-  class URIException : public CForumException {
+  class RouteSyntaxException : public RouteException {
   public:
-    URIException();
-    URIException(int);
-    URIException(const char *,int);
-    URIException(const std::string &,int);
+      RouteSyntaxException();
+      RouteSyntaxException(int);
+      RouteSyntaxException(const char *, int);
+      RouteSyntaxException(const std::string &, int);
 
-    static const int NoSchemeFound     = 0x4eede051;
-    static const int NoHostnameFound   = 0x4eede137;
-    static const int InvalidPortNumber = 0x4eee5924;
+      static const int NamedPatternNotClosedError = 0x4ef4d6ed;
+      static const int NamedPatternIdInvalidError = 0x4ef4d838;
+
   };
+
 }
 
 #endif

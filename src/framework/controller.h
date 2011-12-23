@@ -33,7 +33,7 @@
 
 #include <string>
 
-#include "request.h"
+#include "framework/request.h"
 
 namespace CForum {
   class Controller {
