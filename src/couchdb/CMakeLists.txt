@@ -6,7 +6,7 @@ include_directories (BEFORE "${CMAKE_CURRENT_SOURCE_DIR}/.." "${CMAKE_CURRENT_SO
 
 
 # libcfcouchdb
-add_library(cfcouchdb SHARED Server.cc Document.cc Chunk.cc Response.cc)
+add_library(cfcouchdb SHARED server.cc document.cc chunk.cc response.cc)
 
 target_link_libraries(cfcouchdb cfexceptions cfjson cfcgi ${CURL_LIBRARY})
 

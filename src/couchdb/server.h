@@ -39,7 +39,7 @@
 #include <curl/curl.h>
 
 #include "cgi/CGI.h"
-#include "Document.h"
+#include "document.h"
 
 namespace CForum {
   namespace CouchDB {

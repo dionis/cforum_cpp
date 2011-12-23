@@ -33,6 +33,8 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+#include "couchdb/server.h"
+
 class CouchDBTest : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(CouchDBTest);
   CPPUNIT_TEST(testInterface);

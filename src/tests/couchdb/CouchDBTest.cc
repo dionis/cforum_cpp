@@ -29,7 +29,6 @@
  */
 
 #include "CouchDBTest.h"
-#include "couchdb/Server.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION(CouchDBTest);
 
