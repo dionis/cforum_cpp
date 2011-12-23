@@ -31,7 +31,11 @@
 #ifndef HASH_MAP_H
 #define HASH_MAP_H
 
-#include <unordered_map>
+#include <tr1/unordered_map>
+
+namespace std {
+  using namespace tr1;
+}
 
 namespace CForum {
   struct hash_unicodestring {
