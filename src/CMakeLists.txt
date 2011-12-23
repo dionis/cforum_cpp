@@ -16,7 +16,7 @@ add_subdirectory(template)
 
 add_subdirectory(tests)
 
-add_library(cfconfigparser SHARED Configparser.cc)
+add_library(cfconfigparser SHARED configparser.cc)
 target_link_libraries(cfconfigparser cfjsevaluator ${ICU_LIBRARY})
 
 add_library(cfframework SHARED uri.cc user.cc request.cc)
