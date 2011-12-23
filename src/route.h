@@ -33,18 +33,40 @@
 #ifndef ROUTE_H
 #define ROUTE_H
 
+#include <sstream>
+
 #include "controller.h"
+#include "exceptions/route_syntax_exception.h"
 
 namespace CForum {
   class Route {
   public:
+    class Pattern {
+    public:
+      Pattern();
+      Pattern(const std::string &, const std::vector<std::string> &);
+      Pattern(const Pattern &);
+
+      Pattern &operator=(const Pattern &);
+
+      const std::string &getPattern() const;
+      void setPattern(const std::string &);
+
+      const std::vector<std::string> &getNames() const;
+      void setNames(const std::vector<std::string> &);
+
+    protected:
+      std::vector<std::string> names;
+      std::string pattern;
+    };
+
     Route(Controller &);
     Route(Controller &, const std::string &);
     Route(const Route &);
 
     Route &operator=(const Route &);
 
-    const std::vector<std::string> getPatterns() const;
+    const std::vector<Route::Pattern> getPatterns() const;
     void addPattern(const std::string &);
 
     Controller &getController();
@@ -52,18 +74,17 @@ namespace CForum {
     const std::string &getName() const;
     void setName(const std::string &);
 
+    ~Route();
+
   protected:
     std::string name;
-    std::vector<std::string> patterns;
+    std::vector<Route::Pattern> patterns;
     Controller &controller;
+
   };
 
-  inline const std::vector<std::string> Route::getPatterns() const {
+  inline const std::vector<Route::Pattern> Route::getPatterns() const {
     return patterns;
-  }
-
-  inline void Route::addPattern(const std::string &pattern) {
-    patterns.push_back(pattern);
   }
 
   inline Controller &Route::getController() {
@@ -77,6 +98,22 @@ namespace CForum {
     name = nam;
   }
 
+
+  inline const std::string &Route::Pattern::getPattern() const {
+    return pattern;
+  }
+
+  inline void Route::Pattern::setPattern(const std::string &patt) {
+    pattern = patt;
+  }
+
+  inline const std::vector<std::string> &Route::Pattern::getNames() const {
+    return names;
+  }
+
+  inline void Route::Pattern::setNames(const std::vector<std::string> &nams) {
+    names = nams;
+  }
 
 }
 

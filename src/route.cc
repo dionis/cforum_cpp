@@ -33,14 +33,22 @@
 #include "route.h"
 
 namespace CForum {
-  Route::Route(Controller &cnt) : name(), patterns(), controller(cnt) {
+  Route::Pattern::Pattern() : names(), pattern() { }
+  Route::Pattern::Pattern(const std::string &pat, const std::vector<std::string> &nams) : names(nams), pattern(pat) { }
+  Route::Pattern::Pattern(const Route::Pattern &pat) : names(pat.names), pattern(pat.pattern) { }
+
+  Route::Pattern &Route::Pattern::operator=(const Route::Pattern &pat) {
+    if(this != &pat) {
+      pattern = pat.pattern;
+      names   = pat.names;
+    }
+
+    return *this;
   }
 
-  Route::Route(Controller &cnt, const std::string &nam) : name(nam), patterns(), controller(cnt) {
-  }
-
-  Route::Route(const Route &r) : name(r.name), patterns(r.patterns), controller(r.controller) {
-  }
+  Route::Route(Controller &cnt) : name(), patterns(), controller(cnt) { }
+  Route::Route(Controller &cnt, const std::string &nam) : name(nam), patterns(), controller(cnt) { }
+  Route::Route(const Route &r) : name(r.name), patterns(r.patterns), controller(r.controller) { }
 
   Route &Route::operator=(const Route &r) {
     if(this != &r) {
@@ -51,5 +59,68 @@ namespace CForum {
 
     return *this;
   }
+
+  void Route::addPattern(const std::string &pattern) {
+    const char *ptr = pattern.c_str(), *start;
+    std::ostringstream ostr;
+    std::vector<std::string> names;
+
+    for(; *ptr; ++ptr) {
+      switch(*ptr) {
+        case '<':
+          if(isalpha(*(ptr + 1))) {
+            start = ptr;
+
+            for(; *ptr && isalnum(*ptr); ++ptr) ;
+
+            /* now we've got a named pattern! */
+            if(*ptr == ':') {
+              names.push_back(std::string(start, ptr - start));
+              start = ++ptr;
+              ostr << '(';
+
+              for(; *ptr && *ptr != '>'; ++ptr) {
+                switch(*ptr) {
+                  case '\\':
+                    if(*(ptr + 1) == '>') {
+                      ostr << '>';
+                      ++ptr;
+                      break;
+                    }
+
+                  default:
+                    ostr << *ptr;
+                }
+              }
+
+              if(*ptr != '>') {
+                throw RouteSyntaxException("Error: named <pattern> is not closed!", RouteSyntaxException::NamedPatternNotClosedError);
+              }
+
+              ostr << ')';
+
+              break;
+            }
+          }
+
+          throw RouteSyntaxException("Error: <pattern> opened but invalid pattern id given!", RouteSyntaxException::NamedPatternIdInvalidError);
+
+        case '\\':
+          if(*(ptr + 1) == '<') {
+            ostr << '<';
+            ++ptr;
+            break;
+          }
+
+        default:
+          ostr << *ptr;
+      }
+
+    }
+
+    patterns.push_back(Route::Pattern(ostr.str(), names));
+  }
+
+  Route::~Route() { }
 
 }
