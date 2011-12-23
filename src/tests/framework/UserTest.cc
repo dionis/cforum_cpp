@@ -29,7 +29,6 @@
  */
 
 #include "UserTest.h"
-#include "User.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION(UserTest);
 
