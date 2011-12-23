@@ -34,6 +34,19 @@
 namespace CForum {
   namespace CouchDB {
     Server::Response::Response() : _headers(), _body(), _message(), _status(0), _version(0) {}
+    Server::Response::Response(const Server::Response &rsp) : _headers(rsp._headers), _body(rsp._body), _message(rsp._message), _status(rsp._status), _version(rsp._version) { }
+
+    Server::Response &Server::Response::operator=(const Server::Response &rsp) {
+      if(this != &rsp) {
+        _headers = rsp._headers;
+        _body    = rsp._body;
+        _message = rsp._message;
+        _status  = rsp._status;
+        _version = rsp._version;
+      }
+
+      return *this;
+    }
 
     void Server::Response::addContent(const std::string &cnt) {
       _body += cnt;

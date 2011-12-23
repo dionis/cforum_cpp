@@ -46,9 +46,12 @@ namespace CForum {
     class Server {
     public:
       Server(const std::string &);
-      Server(const std::string &,const std::string &);
-      Server(const std::string &,const std::string &,const std::string &);
-      Server(const std::string &,const std::string &,const std::string &,int);
+      Server(const std::string &, const std::string &);
+      Server(const std::string &, const std::string &, const std::string &);
+      Server(const std::string &, const std::string &, const std::string &,int);
+      Server(const Server &);
+
+      Server &operator=(const Server &);
 
       ~Server();
 
@@ -80,6 +83,9 @@ namespace CForum {
         Chunk();
         Chunk(const std::string &);
         Chunk(const char *,size_t);
+        Chunk(const Chunk &);
+
+        Chunk &operator=(const Chunk &);
 
         void setPos(size_t);
         size_t getPos() const;
@@ -98,6 +104,9 @@ namespace CForum {
       class Response {
       public:
         Response();
+        Response(const Response &);
+
+        Response &operator=(const Response &);
 
         void addContent(const std::string &);
 

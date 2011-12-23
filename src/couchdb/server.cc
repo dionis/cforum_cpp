@@ -110,11 +110,50 @@ namespace CForum {
     }
 
 
-    Server::Server() : _host(), _db(), _protocol("http"), _user(), _pass(), _authed(false), _port(5984), _curl(NULL), _connect(1) {}
-    Server::Server(const std::string &db) : _host("localhost"), _db(db), _protocol("http"), _user(), _pass(), _authed(false), _port(5984), _curl(NULL), _connect(1) {}
-    Server::Server(const std::string &db,const std::string &host) : _host(host), _db(db), _protocol("http"), _user(), _pass(), _authed(false), _port(5984), _curl(NULL), _connect(1) {}
-    Server::Server(const std::string &db,const std::string &host,const std::string &protocol) : _host(host), _db(db), _protocol(protocol), _user(), _pass(), _authed(false), _port(5984), _curl(NULL), _connect(1) {}
-    Server::Server(const std::string &db,const std::string &host,const std::string &protocol,int port) : _host(host), _db(db), _protocol(protocol), _user(), _pass(), _authed(false), _port(port), _curl(NULL), _connect(1) {}
+    Server::Server() : _host(), _db(), _protocol("http"),
+                       _user(), _pass(), _authed(false),
+                       _port(5984), _curl(NULL), _connect(1) { }
+
+    Server::Server(const std::string &db) : _host("localhost"), _db(db), _protocol("http"),
+                                            _user(), _pass(), _authed(false),
+                                            _port(5984), _curl(NULL), _connect(1) { }
+
+    Server::Server(const std::string &db, const std::string &host) : _host(host), _db(db), _protocol("http"),
+                                                                     _user(), _pass(), _authed(false),
+                                                                     _port(5984), _curl(NULL), _connect(1) { }
+
+    Server::Server(const std::string &db, const std::string &host, const std::string &protocol) : _host(host), _db(db), _protocol(protocol),
+                                                                                                  _user(), _pass(), _authed(false),
+                                                                                                  _port(5984), _curl(NULL), _connect(1) { }
+
+    Server::Server(const std::string &db, const std::string &host, const std::string &protocol, int port) : _host(host), _db(db), _protocol(protocol),
+                                                                                                            _user(), _pass(), _authed(false),
+                                                                                                            _port(port), _curl(NULL), _connect(1) { }
+
+    Server::Server(const Server &srv) : _host(srv._host), _db(srv._db), _protocol(srv._protocol),
+                                        _user(srv._user), _pass(srv._pass), _authed(srv._authed),
+                                        _port(srv._port), _curl(NULL), _connect(1) { }
+
+    Server &Server::operator=(const Server &srv) {
+      if(this != &srv) {
+        _host     = srv._host;
+        _db       = srv._db;
+        _protocol = srv._protocol;
+        _user     = srv._user;
+        _pass     = srv._pass;
+        _authed   = srv._authed;
+        _port     = srv._port;
+        _connect  = 1;
+
+        if(_curl) {
+          curl_easy_cleanup(_curl);
+        }
+
+        _curl     = NULL;
+      }
+
+      return *this;
+    }
 
     Server::~Server() {
       if(_curl) {

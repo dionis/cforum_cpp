@@ -74,22 +74,13 @@ namespace CForum {
       delete prsr;
     }
 
-    boost::shared_ptr<JSON::Element> Document::getValue(const UnicodeString &key) {
-      if(_root) {
-        JSON::Object::ObjectType_t &mp = _root->getValue();
-        JSON::Object::ObjectType_t::iterator it = mp.find(key);
 
-        if(it != mp.end()) {
-          return it->second;
-        }
+    Document &Document::operator=(const Document &doc) {
+      if(this != &doc) {
+        _root = boost::shared_ptr<JSON::Object>(new JSON::Object(*(doc._root)));
       }
 
-      std::string str;
-      key.toUTF8String(str);
-      str += " value not found!";
-      throw CouchErrorException(str,CouchErrorException::ValueNotFound);
-
-      return boost::shared_ptr<JSON::Element>();
+      return *this;
     }
 
     const boost::shared_ptr<JSON::Element> Document::getValue(const UnicodeString &key) const {

@@ -33,8 +33,19 @@
 namespace CForum {
   namespace CouchDB {
     Server::Chunk::Chunk() : _pos(0), _buff() {}
-    Server::Chunk::Chunk(const std::string &buff) : _pos(0), _buff(buff) {}
-    Server::Chunk::Chunk(const char *buff,size_t len) : _pos(0), _buff(buff,len) {}
+    Server::Chunk::Chunk(const std::string &buff) : _pos(0), _buff(buff) { }
+    Server::Chunk::Chunk(const char *buff, size_t len) : _pos(0), _buff(buff, len) { }
+    Server::Chunk::Chunk(const Server::Chunk &chk) : _pos(chk._pos), _buff(chk._buff) { }
+
+    Server::Chunk &Server::Chunk::operator=(const Server::Chunk &chk) {
+      if(this != &chk) {
+        _pos  = chk._pos;
+        _buff = chk._buff;
+      }
+
+      return *this;
+    }
+
 
     void Server::Chunk::setPos(size_t pos) {
       _pos = pos;
