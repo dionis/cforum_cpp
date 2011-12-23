@@ -3,7 +3,7 @@
  * \brief Controller interface: each controller may implement an action
  * \package framework
  *
- * A controller handles a request. Each controller may work on N requests.
+ * A controller handles a request. Each request may be handled by N controllers.
  */
 
 /*
@@ -33,15 +33,15 @@
 
 #include <string>
 
-#include "Request.h"
+#include "request.h"
 
 namespace CForum {
   class Controller {
   public:
-    virtual Controller() = 0;
-    virtual ~Controller();
+    Controller();
+    virtual ~Controller() = 0;
 
-    virtual std::string *handleRequest(const Request *rq);
+    virtual const std::string &handleRequest(const Request *rq);
 
   protected:
     Request *rq;

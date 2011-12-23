@@ -1,11 +1,11 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief Router implementation; routes request to the specific modules
- * \package JSEvaluator
+ * \brief describes a route to a module
+ * \package framework
  *
- * Routing is done via several criterias: of course via path, via desired
- * media, via POST/GET difference, etc, pp. Each module can specify a path
- * and one to N additional criterias. If all match, the module is called.
+ * This class describes a route to a module; a route
+ * is defined by (a) URL pattern(s); if the URL matches,
+ * the module will get executed
  */
 
 /*
@@ -30,43 +30,26 @@
  * THE SOFTWARE.
  */
 
-#include "router.h"
+#include "route.h"
 
 namespace CForum {
-  Router::Router() {}
-
-  // TODO: implement
-  Router::Router(const Router &router) {
-    (void)router;
+  Route::Route(Controller &cnt) : name(), patterns(), controller(cnt) {
   }
 
-  // TODO: implement
-  Router &Router::operator=(const Router &r) {
-    (void)r;
+  Route::Route(Controller &cnt, const std::string &nam) : name(nam), patterns(), controller(cnt) {
+  }
+
+  Route::Route(const Route &r) : name(r.name), patterns(r.patterns), controller(r.controller) {
+  }
+
+  Route &Route::operator=(const Route &r) {
+    if(this != &r) {
+      name       = r.name;
+      patterns   = r.patterns;
+      controller = r.controller;
+    }
+
     return *this;
   }
 
-  bool Router::registerRoute(const std::string &str) {
-    return registerRoute(str.c_str());
-  }
-
-  bool Router::registerRoute(const UnicodeString &str) {
-    std::string val;
-    str.toUTF8String(val);
-
-    return registerRoute(val.c_str());
-  }
-
-  bool Router::registerRoute(const char *str) {
-    register const char *ptr;
-
-    for(ptr=str;*ptr;++ptr) {
-    }
-
-    return true;
-  }
-
 }
-
-
-/* eof */

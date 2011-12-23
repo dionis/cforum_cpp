@@ -1,11 +1,11 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief Router implementation; routes request to the specific modules
- * \package JSEvaluator
+ * \brief describes a route to a module
+ * \package framework
  *
- * Routing is done via several criterias: of course via path, via desired
- * media, via POST/GET difference, etc, pp. Each module can specify a path
- * and one to N additional criterias. If all match, the module is called.
+ * This class describes a route to a module; a route
+ * is defined by (a) URL pattern(s); if the URL matches,
+ * the module will get executed
  */
 
 /*
@@ -30,43 +30,56 @@
  * THE SOFTWARE.
  */
 
-#include "router.h"
+#ifndef ROUTE_H
+#define ROUTE_H
+
+#include "controller.h"
 
 namespace CForum {
-  Router::Router() {}
+  class Route {
+  public:
+    Route(Controller &);
+    Route(Controller &, const std::string &);
+    Route(const Route &);
 
-  // TODO: implement
-  Router::Router(const Router &router) {
-    (void)router;
+    Route &operator=(const Route &);
+
+    const std::vector<std::string> getPatterns() const;
+    void addPattern(const std::string &);
+
+    Controller &getController();
+
+    const std::string &getName() const;
+    void setName(const std::string &);
+
+  protected:
+    std::string name;
+    std::vector<std::string> patterns;
+    Controller &controller;
+  };
+
+  inline const std::vector<std::string> Route::getPatterns() const {
+    return patterns;
   }
 
-  // TODO: implement
-  Router &Router::operator=(const Router &r) {
-    (void)r;
-    return *this;
+  inline void Route::addPattern(const std::string &pattern) {
+    patterns.push_back(pattern);
   }
 
-  bool Router::registerRoute(const std::string &str) {
-    return registerRoute(str.c_str());
+  inline Controller &Route::getController() {
+    return controller;
   }
 
-  bool Router::registerRoute(const UnicodeString &str) {
-    std::string val;
-    str.toUTF8String(val);
-
-    return registerRoute(val.c_str());
+  inline const std::string &Route::getName() const {
+    return name;
+  }
+  inline void Route::setName(const std::string &nam) {
+    name = nam;
   }
 
-  bool Router::registerRoute(const char *str) {
-    register const char *ptr;
-
-    for(ptr=str;*ptr;++ptr) {
-    }
-
-    return true;
-  }
 
 }
 
+#endif
 
 /* eof */

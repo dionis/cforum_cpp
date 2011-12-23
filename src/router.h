@@ -42,18 +42,14 @@
 namespace CForum {
   class Router {
   public:
-    static Router *instance();
+    Router();
+    Router(const Router &);
+    Router &operator=(const Router &);
 
     bool registerRoute(const std::string &);
     bool registerRoute(const char *);
     bool registerRoute(const UnicodeString &);
 
-  private:
-    Router();
-    Router(const Router &);
-    Router &operator=(const Router &);
-
-    static Router *inst;
 
   };
 }
