@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief JS exception interface definition
+ * \brief JS evaluator error interface implementation
  * \package Exceptions
  *
- * This defines the JS error interface
+ * This implements the JS evaluator error interfae
  */
 
 /*
@@ -28,26 +28,13 @@
  * THE SOFTWARE.
  */
 
-#ifndef JSEVALUATOR_EXCEPTION_H
-#define JSEVALUATOR_EXCEPTION_H
-
-#include "config.h"
-
-#include "cforum_exception.h"
+#include "jsevaluator/js_evaluator_exception.h"
 
 namespace CForum {
-  class JSEvaluatorException : public CForumException {
-  public:
-    JSEvaluatorException();
-    JSEvaluatorException(int);
-    JSEvaluatorException(const char *,int);
-    JSEvaluatorException(const std::string &,int);
-
-    static const int JSException = 0x4d8dfcae;
-
-  };
+  JSEvaluatorException::JSEvaluatorException() : CForumException() {}
+  JSEvaluatorException::JSEvaluatorException(int code) : CForumException(code) {}
+  JSEvaluatorException::JSEvaluatorException(const char *msg,int code) : CForumException(msg,code) {}
+  JSEvaluatorException::JSEvaluatorException(const std::string &msg,int code) : CForumException(msg,code) {}
 }
-
-#endif
 
 /* eof */

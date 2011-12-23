@@ -37,7 +37,7 @@
 #include <fstream>
 #include <iterator>
 
-#include "exceptions/js_evaluator_exception.h"
+#include "jsevaluator/js_evaluator_exception.h"
 
 namespace CForum {
   class JSEvaluator {
