@@ -69,7 +69,7 @@ namespace CForum {
       switch(*ptr) {
         case '<':
           if(isalpha(*(ptr + 1))) {
-            start = ptr;
+            start = ++ptr;
 
             for(; *ptr && isalnum(*ptr); ++ptr) ;
 
