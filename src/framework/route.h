@@ -35,8 +35,11 @@
 
 #include <sstream>
 
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
+
 #include "framework/controller.h"
-#include "framework//route_syntax_exception.h"
+#include "framework/route_syntax_exception.h"
 
 namespace CForum {
   class Route {
@@ -60,16 +63,16 @@ namespace CForum {
       std::string pattern;
     };
 
-    Route(Controller &);
-    Route(Controller &, const std::string &);
+    Route(boost::shared_ptr<Controller>);
+    Route(boost::shared_ptr<Controller>, const std::string &);
     Route(const Route &);
 
     Route &operator=(const Route &);
 
-    const std::vector<Route::Pattern> getPatterns() const;
+    const std::vector<Route::Pattern> &getPatterns() const;
     void addPattern(const std::string &);
 
-    Controller &getController();
+    boost::shared_ptr<Controller> getController();
 
     const std::string &getName() const;
     void setName(const std::string &);
@@ -79,15 +82,15 @@ namespace CForum {
   protected:
     std::string name;
     std::vector<Route::Pattern> patterns;
-    Controller &controller;
+    boost::shared_ptr<Controller> controller;
 
   };
 
-  inline const std::vector<Route::Pattern> Route::getPatterns() const {
+  inline const std::vector<Route::Pattern> &Route::getPatterns() const {
     return patterns;
   }
 
-  inline Controller &Route::getController() {
+  inline boost::shared_ptr<Controller> Route::getController() {
     return controller;
   }
 

@@ -46,8 +46,8 @@ namespace CForum {
     return *this;
   }
 
-  Route::Route(Controller &cnt) : name(), patterns(), controller(cnt) { }
-  Route::Route(Controller &cnt, const std::string &nam) : name(nam), patterns(), controller(cnt) { }
+  Route::Route(boost::shared_ptr<Controller> cnt) : name(), patterns(), controller(cnt) { }
+  Route::Route(boost::shared_ptr<Controller> cnt, const std::string &nam) : name(nam), patterns(), controller(cnt) { }
   Route::Route(const Route &r) : name(r.name), patterns(r.patterns), controller(r.controller) { }
 
   Route &Route::operator=(const Route &r) {
