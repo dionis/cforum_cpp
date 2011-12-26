@@ -1,9 +1,11 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief Controller interface: each controller may implement an action
+ * \brief describes a route to a module
  * \package framework
  *
- * A controller handles a request. Each request may be handled by N controllers.
+ * This class describes a route to a module; a route
+ * is defined by (a) URL pattern(s); if the URL matches,
+ * the module will get executed
  */
 
 /*
@@ -28,28 +30,17 @@
  * THE SOFTWARE.
  */
 
-#ifndef CONTROLLER_H
-#define CONTROLLER_H
-
-#include <string>
-
-#include "framework/request.h"
+#include "framework/controller.h"
 
 namespace CForum {
-  class Controller {
-  public:
-    Controller();
-    virtual ~Controller();
+  Controller::Controller() : rq(NULL) { }
 
-    virtual const std::string &handleRequest(const Request *rq) = 0;
+  Controller::~Controller() {
+    if(rq) {
+      delete rq;
+    }
+  }
 
-  protected:
-    Request *rq;
-
-  };
 }
-
-
-#endif
 
 /* eof */

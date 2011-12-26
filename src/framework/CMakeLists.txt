@@ -14,6 +14,7 @@ add_library(cfframework SHARED
   route.cc
   route_exception.cc
   route_syntax_exception.cc
+  controller.cc
 )
 
 target_link_libraries(cfframework cfexceptions cfcgi ${ICU_LIBRARY})
