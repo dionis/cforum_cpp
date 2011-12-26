@@ -30,7 +30,7 @@
  * THE SOFTWARE.
  */
 
-#include "framework//router.h"
+#include "framework/router.h"
 
 namespace CForum {
   Router::Router() {}
