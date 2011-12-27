@@ -38,6 +38,11 @@
 #include <vector>
 
 #include <unicode/unistr.h>
+#include <boost/shared_ptr.hpp>
+
+#include "hash_map.h"
+
+#include "framework/route.h"
 
 namespace CForum {
   class Router {
@@ -46,12 +51,32 @@ namespace CForum {
     Router(const Router &);
     Router &operator=(const Router &);
 
-    bool registerRoute(const std::string &);
-    bool registerRoute(const char *);
-    bool registerRoute(const UnicodeString &);
+    void registerRoute(const std::string &, boost::shared_ptr<Route>);
+    void registerRoute(const char *, boost::shared_ptr<Route>);
+    void registerRoute(const UnicodeString &, boost::shared_ptr<Route>);
 
+    std::string dispatch(boost::shared_ptr<Request>);
+
+  protected:
+    std::unordered_map<std::string, boost::shared_ptr<Route> > routes;
 
   };
+
+  inline void Router::registerRoute(const std::string &name, boost::shared_ptr<Route> route) {
+    routes[name] = route;
+  }
+
+  inline void Router::registerRoute(const char *name, boost::shared_ptr<Route> route) {
+    routes[std::string(name)] = route;
+  }
+
+  inline void Router::registerRoute(const UnicodeString &name, boost::shared_ptr<Route> route) {
+    std::string nam;
+    name.toUTF8String(nam);
+
+    routes[nam] = route;
+  }
+
 }
 
 

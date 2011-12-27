@@ -34,9 +34,8 @@
 #define ROUTE_H
 
 #include <sstream>
-
+#include <pcre++.h>
 #include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
 
 #include "framework/controller.h"
 #include "framework/route_syntax_exception.h"
@@ -55,12 +54,16 @@ namespace CForum {
       const std::string &getPattern() const;
       void setPattern(const std::string &);
 
+      boost::shared_ptr<pcrepp::Pcre> getCompiledPattern();
+      void setCompiledPattern(boost::shared_ptr<pcrepp::Pcre>);
+
       const std::vector<std::string> &getNames() const;
       void setNames(const std::vector<std::string> &);
 
     protected:
       std::vector<std::string> names;
       std::string pattern;
+      boost::shared_ptr<pcrepp::Pcre> regex;
     };
 
     Route(boost::shared_ptr<Controller>);
@@ -108,6 +111,13 @@ namespace CForum {
 
   inline void Route::Pattern::setPattern(const std::string &patt) {
     pattern = patt;
+  }
+
+  inline boost::shared_ptr<pcrepp::Pcre> Route::Pattern::getCompiledPattern() {
+    return regex;
+  }
+  inline void Route::Pattern::setCompiledPattern(boost::shared_ptr<pcrepp::Pcre> pat) {
+    regex = pat;
   }
 
   inline const std::vector<std::string> &Route::Pattern::getNames() const {

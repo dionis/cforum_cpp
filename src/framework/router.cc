@@ -33,37 +33,26 @@
 #include "framework/router.h"
 
 namespace CForum {
-  Router::Router() {}
+  Router::Router() : routes() {}
 
-  // TODO: implement
-  Router::Router(const Router &router) {
-    (void)router;
+  Router::Router(const Router &router) : routes(router.routes) {
   }
 
-  // TODO: implement
   Router &Router::operator=(const Router &r) {
-    (void)r;
+    if(this != &r) {
+      routes = r.routes;
+    }
+
     return *this;
   }
 
-  bool Router::registerRoute(const std::string &str) {
-    return registerRoute(str.c_str());
-  }
+  std::string dispatch(boost::shared_ptr<Request> rq) {
+    const URI uri = rq->getUri();
+    std::string path = uri.getPath();
 
-  bool Router::registerRoute(const UnicodeString &str) {
-    std::string val;
-    str.toUTF8String(val);
 
-    return registerRoute(val.c_str());
-  }
 
-  bool Router::registerRoute(const char *str) {
-    register const char *ptr;
-
-    for(ptr=str;*ptr;++ptr) {
-    }
-
-    return true;
+    return std::string();
   }
 
 }

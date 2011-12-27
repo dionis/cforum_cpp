@@ -17,6 +17,6 @@ add_library(cfframework SHARED
   controller.cc
 )
 
-target_link_libraries(cfframework cfexceptions cfcgi ${ICU_LIBRARY})
+target_link_libraries(cfframework cfexceptions cfcgi ${ICU_LIBRARY} ${PCREPP_LIBRARIES})
 
 # eof
