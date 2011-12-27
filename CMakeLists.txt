@@ -24,18 +24,22 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules/")
 set(CMAKE_C_FLAGS "-std=c99")
 # 2) Debug flags: We want to activate debbuging codes and warnings should be errors, also define CF_DEBUG
 set(CMAKE_C_FLAGS_DEBUG "-O0 -ggdb -Wall -W -pedantic -Werror -DCF_DEBUG")
+set(CMAKE_CXX_FLAGS_DEBUG "-O0 -ggdb -Wall -W -pedantic -Werror -DCF_DEBUG")
 # 3) Release flags: We want to optimize the source code
 set(CMAKE_C_FLAGS_RELEASE "-O2")
+set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 # 4) Release + Debug Info flags: Optimize code but add debug symbols
 set(CMAKE_C_FLAGS_RELWITHDEBINFO "-O2 -g")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
 # 5) Release optimized for size
 set(CMAKE_C_FLAGS_MINSIZEREL "-Os")
+set(CMAKE_CXX_FLAGS_MINSIZEREL "-Os")
 
 # Add default definitions
 #   _GNU_SOURCE: allows us to use system implementation of strdup etc. if
 #                available (else we provide our own)
 #   _REENTRANT:  select reentrant functions by default (thread safety)
-add_definitions(-D_REENTRANT -D_GNU_SOURCE)
+add_definitions(-D_REENTRANT -D_GNU_SOURCE "-include config.hh")
 
 # Include Useful Macros
 include(CheckLibraryExists)

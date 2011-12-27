@@ -31,8 +31,6 @@
 #ifndef JSON_TEST_H
 #define JSON_TEST_H
 
-#include "config.hh"
-
 #include <cppunit/extensions/HelperMacros.h>
 #include <cstdlib>
 

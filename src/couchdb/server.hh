@@ -31,8 +31,6 @@
 #ifndef COUCH_INTERFACE_H
 #define COUCH_INTERFACE_H
 
-#include "config.hh"
-
 #include <unicode/unistr.h>
 #include <string>
 
