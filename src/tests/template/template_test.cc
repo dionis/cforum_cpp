@@ -28,7 +28,7 @@
  * THE SOFTWARE.
  */
 
-#include "template_test.h"
+#include "template_test.hh"
 
 CPPUNIT_TEST_SUITE_REGISTRATION(TemplateTest);
 

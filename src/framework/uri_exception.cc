@@ -29,7 +29,7 @@
  */
 
 
-#include "framework/uri_exception.h"
+#include "framework/uri_exception.hh"
 
 namespace CForum {
   URIException::URIException() : CForumException() {}

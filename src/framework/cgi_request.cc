@@ -28,7 +28,7 @@
  * THE SOFTWARE.
  */
 
-#include "framework/cgi_request.h"
+#include "framework/cgi_request.hh"
 
 namespace CForum {
   CGIRequest::CGIRequest() : Request::Request() {

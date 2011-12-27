@@ -28,7 +28,7 @@
  * THE SOFTWARE.
  */
 
-#include "json_test.h"
+#include "json_test.hh"
 
 CPPUNIT_TEST_SUITE_REGISTRATION(JSONTest);
 

@@ -29,7 +29,7 @@
  */
 
 
-#include "cgi/cgi_exception.h"
+#include "cgi/cgi_exception.hh"
 
 namespace CForum {
   CGIException::CGIException() : CForumException() { }

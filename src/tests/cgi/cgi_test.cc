@@ -28,7 +28,7 @@
  * THE SOFTWARE.
  */
 
-#include "cgi_test.h"
+#include "cgi_test.hh"
 
 CPPUNIT_TEST_SUITE_REGISTRATION(CGITest);
 

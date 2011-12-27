@@ -29,7 +29,7 @@
  */
 
 
-#include "framework/route_exception.h"
+#include "framework/route_exception.hh"
 
 namespace CForum {
   RouteException::RouteException() : CForumException() { }

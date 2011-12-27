@@ -28,7 +28,7 @@
  * THE SOFTWARE.
  */
 
-#include "framework/user.h"
+#include "framework/user.hh"
 
 namespace CForum {
 

@@ -29,7 +29,7 @@
  */
 
 
-#include "cgi/parameter_exception.h"
+#include "cgi/parameter_exception.hh"
 
 namespace CForum {
   ParameterException::ParameterException() : CGIException() { }

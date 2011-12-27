@@ -28,7 +28,7 @@
  * THE SOFTWARE.
  */
 
-#include "jsevaluator/js_evaluator.h"
+#include "jsevaluator/js_evaluator.hh"
 
 namespace CForum {
   JSEvaluator::JSEvaluator() : _handle(), _context(v8::Context::New()), _context_scope(_context) {}

@@ -29,7 +29,7 @@
  */
 
 
-#include "couchdb/couch_error_exception.h"
+#include "couchdb/couch_error_exception.hh"
 
 namespace CForum {
   namespace CouchDB {

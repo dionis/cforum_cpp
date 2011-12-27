@@ -28,7 +28,7 @@
  * THE SOFTWARE.
  */
 
-#include "json/json_boolean.h"
+#include "json/json_boolean.hh"
 
 namespace CForum {
   namespace JSON {

@@ -28,7 +28,7 @@
  * THE SOFTWARE.
  */
 
-#include "user_test.h"
+#include "user_test.hh"
 
 CPPUNIT_TEST_SUITE_REGISTRATION(UserTest);
 

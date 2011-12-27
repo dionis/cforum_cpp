@@ -28,7 +28,7 @@
  * THE SOFTWARE.
  */
 
-#include "json/json_null.h"
+#include "json/json_null.hh"
 
 namespace CForum {
   namespace JSON {

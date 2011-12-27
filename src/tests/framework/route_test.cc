@@ -28,25 +28,11 @@
  * THE SOFTWARE.
  */
 
-#include "route_test.h"
+#include "route_test.hh"
 
 CPPUNIT_TEST_SUITE_REGISTRATION(RouteTest);
 
 using namespace CForum;
-
-class MyController : public Controller {
-public:
-  virtual const std::string &handleRequest(const Request *rq) {
-    (void)rq;
-    throw std::exception();
-    return x;
-  }
-
-  virtual ~MyController() { }
-
-private:
-  std::string x;
-};
 
 void RouteTest::testEmpty() {
   boost::shared_ptr<MyController> c(new MyController());

@@ -28,7 +28,7 @@
  * THE SOFTWARE.
  */
 
-#include "uri_test.h"
+#include "uri_test.hh"
 
 CPPUNIT_TEST_SUITE_REGISTRATION(URITest);
 

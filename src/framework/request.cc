@@ -28,7 +28,7 @@
  * THE SOFTWARE.
  */
 
-#include "request.h"
+#include "request.hh"
 
 namespace CForum {
   Request::Request() : requestUri(), cgi(), user() {

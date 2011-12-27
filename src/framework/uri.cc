@@ -28,7 +28,7 @@
  * THE SOFTWARE.
  */
 
-#include "framework/uri.h"
+#include "framework/uri.hh"
 
 namespace CForum {
   URI::URI() {}

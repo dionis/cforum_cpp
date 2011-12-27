@@ -28,7 +28,7 @@
  * THE SOFTWARE.
  */
 
-#include "jsevaluator/js_evaluator_exception.h"
+#include "jsevaluator/js_evaluator_exception.hh"
 
 namespace CForum {
   JSEvaluatorException::JSEvaluatorException() : CForumException() {}

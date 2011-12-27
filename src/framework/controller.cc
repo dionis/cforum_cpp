@@ -30,7 +30,7 @@
  * THE SOFTWARE.
  */
 
-#include "framework/controller.h"
+#include "framework/controller.hh"
 
 namespace CForum {
   Controller::Controller() : rq(NULL) { }

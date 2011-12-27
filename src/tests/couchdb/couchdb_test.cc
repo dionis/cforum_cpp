@@ -28,7 +28,7 @@
  * THE SOFTWARE.
  */
 
-#include "couchdb_test.h"
+#include "couchdb_test.hh"
 
 CPPUNIT_TEST_SUITE_REGISTRATION(CouchDBTest);
 

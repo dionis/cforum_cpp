@@ -29,7 +29,7 @@
  */
 
 
-#include "cgi/cgi_parser_exception.h"
+#include "cgi/cgi_parser_exception.hh"
 
 namespace CForum {
   CGIParserException::CGIParserException() : CGIException() {}

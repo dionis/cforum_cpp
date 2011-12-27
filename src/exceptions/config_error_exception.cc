@@ -28,7 +28,7 @@
  * THE SOFTWARE.
  */
 
-#include "config_error_exception.h"
+#include "exceptions/config_error_exception.hh"
 
 namespace CForum {
   ConfigErrorException::ConfigErrorException() : CForumException() {}

@@ -30,17 +30,18 @@
  * THE SOFTWARE.
  */
 
-#include "framework/route.h"
+#include "framework/route.hh"
 
 namespace CForum {
-  Route::Pattern::Pattern() : names(), pattern() { }
-  Route::Pattern::Pattern(const std::string &pat, const std::vector<std::string> &nams) : names(nams), pattern(pat) { }
-  Route::Pattern::Pattern(const Route::Pattern &pat) : names(pat.names), pattern(pat.pattern) { }
+  Route::Pattern::Pattern() : names(), pattern(), regex() { }
+  Route::Pattern::Pattern(const std::string &pat, const std::vector<std::string> &nams) : names(nams), pattern(pat), regex(boost::make_shared<pcrepp::Pcre>(pat)) { }
+  Route::Pattern::Pattern(const Route::Pattern &pat) : names(pat.names), pattern(pat.pattern), regex(boost::make_shared<pcrepp::Pcre>(*pat.regex)) { }
 
   Route::Pattern &Route::Pattern::operator=(const Route::Pattern &pat) {
     if(this != &pat) {
       pattern = pat.pattern;
       names   = pat.names;
+      *regex  = *pat.regex;
     }
 
     return *this;

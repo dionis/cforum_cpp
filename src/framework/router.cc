@@ -30,13 +30,12 @@
  * THE SOFTWARE.
  */
 
-#include "framework/router.h"
+#include "framework/router.hh"
 
 namespace CForum {
   Router::Router() : routes() {}
 
-  Router::Router(const Router &router) : routes(router.routes) {
-  }
+  Router::Router(const Router &router) : routes(router.routes) { }
 
   Router &Router::operator=(const Router &r) {
     if(this != &r) {
@@ -46,11 +45,24 @@ namespace CForum {
     return *this;
   }
 
-  std::string dispatch(boost::shared_ptr<Request> rq) {
+  std::string Router::dispatch(boost::shared_ptr<Request> rq) {
     const URI uri = rq->getUri();
     std::string path = uri.getPath();
 
+    std::unordered_map<std::string, boost::shared_ptr<Route> >::iterator end = routes.end(), it;
 
+    for(it = routes.begin(); it != end; ++it) {
+      const std::vector<Route::Pattern> &patterns = it->second->getPatterns();
+      std::vector<Route::Pattern>::const_iterator pats_end = patterns.end(), pats_it;
+
+      printf("route: %s\n", it->first.c_str());
+
+      for(pats_it = patterns.begin(); pats_it != pats_end; ++pats_it) {
+        printf("Pattern:  %s\n", pats_it->getPattern().c_str());
+      }
+
+      printf("\n");
+    }
 
     return std::string();
   }

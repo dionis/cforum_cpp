@@ -28,7 +28,7 @@
  * THE SOFTWARE.
  */
 
-#include "configparser.h"
+#include "configparser.hh"
 
 namespace CForum {
   Configparser::Configparser() : _evaluator(), _script(NULL), _result(NULL) {

@@ -29,7 +29,7 @@
  */
 
 
-#include "framework/route_syntax_exception.h"
+#include "framework/route_syntax_exception.hh"
 
 namespace CForum {
   RouteSyntaxException::RouteSyntaxException() : RouteException() { }

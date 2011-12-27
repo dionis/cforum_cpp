@@ -28,7 +28,7 @@
  * THE SOFTWARE.
  */
 
-#include "template.h"
+#include "template.hh"
 
 namespace CForum {
   std::string Template::parseFile(const std::string &filename) {

@@ -28,11 +28,11 @@
  * THE SOFTWARE.
  */
 
-#include "cforum_exception.h"
+#include "exceptions/cforum_exception.hh"
 
 namespace CForum {
-  CForumException::CForumException() : _msg(""), _code(0) {}
-  CForumException::CForumException(int code) : _msg(""), _code(code) {}
+  CForumException::CForumException() : _msg(), _code(0) {}
+  CForumException::CForumException(int code) : _msg(), _code(code) {}
   CForumException::CForumException(const char *msg,int code) : _msg(msg), _code(code) {}
   CForumException::CForumException(const std::string &msg,int code) : _msg(msg), _code(code) {}
 

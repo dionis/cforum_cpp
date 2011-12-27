@@ -28,7 +28,7 @@
  * THE SOFTWARE.
  */
 
-#include "cgi/cgi.h"
+#include "cgi/cgi.hh"
 
 namespace CForum {
   CGI::CGI() : _get_values(), _post_values(), _cookie_values(), _cgi_values() {}
