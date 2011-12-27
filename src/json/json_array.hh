@@ -72,7 +72,7 @@ namespace CForum {
   }
 }
 
-#include "json_parser.hh"
+#include "json/json_parser.hh"
 
 #endif
 

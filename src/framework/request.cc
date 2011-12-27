@@ -28,14 +28,11 @@
  * THE SOFTWARE.
  */
 
-#include "request.hh"
+#include "framework/request.hh"
 
 namespace CForum {
-  Request::Request() : requestUri(), cgi(), user() {
-  }
-
-  Request::Request(const Request &rq) : requestUri(rq.requestUri), cgi(rq.cgi), user(rq.user) {
-  }
+  Request::Request() : requestUri(), cgi(), user() { }
+  Request::Request(const Request &rq) : requestUri(rq.requestUri), cgi(rq.cgi), user(rq.user) { }
 
 
   Request &Request::operator=(const Request &rq) {

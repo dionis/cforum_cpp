@@ -43,8 +43,8 @@
 
 #include "hash_map.hh"
 
-#include "json_element.hh"
-#include "json_string.hh"
+#include "json/json_element.hh"
+#include "json/json_string.hh"
 
 namespace CForum {
   namespace JSON {
@@ -79,7 +79,7 @@ namespace CForum {
   }
 }
 
-#include "json_parser.hh"
+#include "json/json_parser.hh"
 
 #endif
 
