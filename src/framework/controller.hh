@@ -42,7 +42,7 @@ namespace CForum {
     Controller();
     virtual ~Controller();
 
-    virtual const std::string &handleRequest(boost::shared_ptr<Request>) = 0;
+    virtual const std::string handleRequest(boost::shared_ptr<Request>, const std::map<std::string, std::string> &) = 0;
 
   protected:
     Request *rq;

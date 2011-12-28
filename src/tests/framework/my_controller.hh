@@ -38,12 +38,9 @@
 
 class MyController : public CForum::Controller {
 public:
-  virtual const std::string &handleRequest(boost::shared_ptr<CForum::Request>);
+  virtual const std::string handleRequest(boost::shared_ptr<CForum::Request>, const std::map<std::string, std::string> &);
 
   virtual ~MyController();
-
-private:
-  std::string x;
 };
 
 

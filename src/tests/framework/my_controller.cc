@@ -30,10 +30,10 @@
 
 #include "my_controller.hh"
 
-const std::string &MyController::handleRequest(boost::shared_ptr<CForum::Request> rq) {
+const std::string MyController::handleRequest(boost::shared_ptr<CForum::Request> rq, const std::map<std::string, std::string> &vars) {
   (void)rq;
-  throw std::exception();
-  return x;
+  (void)vars;
+  return "MyController::handleRequest";
 }
 
 MyController::~MyController() { }
