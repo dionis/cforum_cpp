@@ -71,7 +71,7 @@ namespace CForum {
       ACL();
       ACL(const Route::ACL &);
 
-      virtual bool check(boost::shared_ptr<Request>) = 0;
+      virtual bool check(boost::shared_ptr<Request>, const std::map<std::string, std::string> &) = 0;
 
       virtual ~ACL();
     };
