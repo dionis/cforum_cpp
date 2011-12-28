@@ -17,6 +17,8 @@ add_library(cfframework SHARED
   controller.cc
   framework_exception.cc
   not_found_exception.cc
+  internal_error_exception.cc
+  notification_center.cc
 )
 
 target_link_libraries(cfframework cfexceptions cfcgi ${ICU_LIBRARY} ${PCREPP_LIBRARIES})
