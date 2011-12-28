@@ -31,23 +31,35 @@
 #include "framework/cgi_request.hh"
 
 namespace CForum {
-  CGIRequest::CGIRequest() : Request::Request() {
+  CGIRequest::CGIRequest() : Request::Request(), cgi(CGI::fromCGIEnvironment()) {
     std::string path_info = cgi.pathInfo(),
       hostname = cgi.serverName(),
-      proto = cgi.serverProtocol(),
+      https = cgi.getCGIVariable("HTTPS"),
       uri;
 
     int port = cgi.serverPort();
 
     /* TODO: check if SERVER_PROTOCOL contains http/https or if we have to do more */
-    uri = proto + "://" + hostname;
-    if((proto == "https" && port != 443) || (proto == "http" && port != 80)) {
+    uri = (https.length() == 0 ? "http://" : "https://") + hostname;
+    if((https.length() != 0 && port != 443) || port != 80) {
       uri += ":" + port;
     }
 
     uri += path_info.length() ? path_info : std::string("/");
 
     requestUri = URI(uri);
+  }
+
+  CGIRequest::CGIRequest(const CGIRequest &rq) : Request::Request(rq), cgi(rq.cgi) { }
+
+  CGIRequest &CGIRequest::operator=(const CGIRequest &rq) {
+    if(this != &rq) {
+      requestUri = rq.requestUri;
+      user       = rq.user;
+      cgi        = rq.cgi;
+    }
+
+    return *this;
   }
 
   CGIRequest::~CGIRequest() { }

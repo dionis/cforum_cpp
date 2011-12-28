@@ -45,27 +45,23 @@ namespace CForum {
 
     virtual Request &operator=(const Request &);
 
-    const URI &getUri() const;
-    const CGI &getCGI() const;
+    virtual const URI &getUri() const;
+    virtual const CGI &getCGI() const = 0;
 
-    void setUser(const User &);
-    const User &getUser() const;
+    virtual void setUser(const User &);
+    virtual const User &getUser() const;
 
 
     virtual ~Request() = 0;
 
   protected:
     URI requestUri;
-    CGI cgi;
     User user;
 
   };
 
   inline const URI &Request::getUri() const {
     return requestUri;
-  }
-  inline const CGI &Request::getCGI() const {
-    return cgi;
   }
 
   inline void Request::setUser(const User &usr) {

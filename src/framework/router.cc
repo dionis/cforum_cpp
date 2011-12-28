@@ -48,8 +48,10 @@ namespace CForum {
   std::string Router::dispatch(boost::shared_ptr<Request> rq) {
     const URI uri = rq->getUri();
     std::string path = uri.getPath();
-
     std::unordered_map<std::string, boost::shared_ptr<Route> >::iterator end = routes.end(), it;
+    boost::shared_ptr<Route::ACL> acl;
+    bool runIt = false, hadOne = false;
+    std::ostringstream retval;
 
     for(it = routes.begin(); it != end; ++it) {
       const std::vector<Route::Pattern> &patterns = it->second->getPatterns();
@@ -58,10 +60,30 @@ namespace CForum {
       printf("route: %s\n", it->first.c_str());
 
       for(pats_it = patterns.begin(); pats_it != pats_end; ++pats_it) {
-        printf("Pattern:  %s\n", pats_it->getPattern().c_str());
+        if(pats_it->getCompiledPattern()->search(path)) {
+          runIt = false;
+          acl = it->second->getAcl();
+
+          if(acl && acl->check(rq)) {
+            runIt = true;
+          }
+          else if(!acl) {
+            runIt = true;
+          }
+
+          if(runIt) {
+            retval << it->second->getController()->handleRequest(rq);
+            hadOne = true;
+          }
+        }
       }
 
       printf("\n");
+
+      if(!hadOne) {
+
+      }
+
     }
 
     return std::string();

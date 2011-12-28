@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief Controller interface: each controller may implement an action
- * \package framework
+ * \brief Router interface testing
+ * \package unittests
  *
- * A controller handles a request. Each request may be handled by N controllers.
+ * Router interface testing
  */
 
 /*
@@ -28,29 +28,43 @@
  * THE SOFTWARE.
  */
 
-#ifndef CONTROLLER_H
-#define CONTROLLER_H
+#include "router_test.hh"
 
-#include <string>
-#include <boost/shared_ptr.hpp>
+CPPUNIT_TEST_SUITE_REGISTRATION(RouterTest);
 
-#include "framework/request.hh"
+using namespace CForum;
 
-namespace CForum {
-  class Controller {
-  public:
-    Controller();
-    virtual ~Controller();
-
-    virtual const std::string &handleRequest(boost::shared_ptr<Request>) = 0;
-
-  protected:
-    Request *rq;
-
-  };
+void RouterTest::setUp() {
+  setenv("REQUEST_METHOD", "GET", 1);
+  setenv("QUERY_STRING", "", 1);
+  setenv("PATH_INFO", "/just/a/test", 1);
+  setenv("SERVER_NAME", "localhost", 1);
+  setenv("SERVER_PROTOCOL", "http", 1);
+  setenv("SERVER_PORT", "80", 1);
 }
 
+void RouterTest::testMatching() {
+  boost::shared_ptr<MyController> c(new MyController());
+  boost::shared_ptr<Route> route(boost::make_shared<Route>(c));
+  Router router;
+  boost::shared_ptr<CGIRequest> request(boost::make_shared<CGIRequest>());
 
-#endif
+  route->addPattern("^/just/a/test$");
+
+  router.registerRoute("test-route", route);
+
+  router.dispatch(request);
+
+}
+
+void RouterTest::tearDown() {
+  unsetenv("REQUEST_METHOD");
+  unsetenv("QUERY_STRING");
+  unsetenv("PATH_INFO");
+  unsetenv("SERVER_NAME");
+  unsetenv("SERVER_PROTOCOL");
+  unsetenv("SERVER_PORT");
+}
+
 
 /* eof */

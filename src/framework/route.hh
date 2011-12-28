@@ -55,7 +55,7 @@ namespace CForum {
       const std::string &getPattern() const;
       void setPattern(const std::string &);
 
-      boost::shared_ptr<pcrepp::Pcre> getCompiledPattern();
+      const boost::shared_ptr<pcrepp::Pcre> getCompiledPattern() const;
 
       const std::vector<std::string> &getNames() const;
       void setNames(const std::vector<std::string> &);
@@ -65,6 +65,17 @@ namespace CForum {
       std::string pattern;
       boost::shared_ptr<pcrepp::Pcre> regex;
     };
+
+    class ACL {
+    public:
+      ACL();
+      ACL(const Route::ACL &);
+
+      virtual bool check(boost::shared_ptr<Request>) = 0;
+
+      virtual ~ACL();
+    };
+
 
     Route(boost::shared_ptr<Controller>);
     Route(boost::shared_ptr<Controller>, const std::string &);
@@ -77,6 +88,9 @@ namespace CForum {
 
     boost::shared_ptr<Controller> getController();
 
+    void setAcl(boost::shared_ptr<Route::ACL>);
+    const boost::shared_ptr<Route::ACL> getAcl() const;
+
     const std::string &getName() const;
     void setName(const std::string &);
 
@@ -86,6 +100,7 @@ namespace CForum {
     std::string name;
     std::vector<Route::Pattern> patterns;
     boost::shared_ptr<Controller> controller;
+    boost::shared_ptr<Route::ACL> acl;
 
   };
 
@@ -114,7 +129,7 @@ namespace CForum {
     regex   = boost::make_shared<pcrepp::Pcre>(patt);
   }
 
-  inline boost::shared_ptr<pcrepp::Pcre> Route::Pattern::getCompiledPattern() {
+  inline const boost::shared_ptr<pcrepp::Pcre> Route::Pattern::getCompiledPattern() const {
     return regex;
   }
 
@@ -124,6 +139,14 @@ namespace CForum {
 
   inline void Route::Pattern::setNames(const std::vector<std::string> &nams) {
     names = nams;
+  }
+
+  inline void Route::setAcl(boost::shared_ptr<Route::ACL> acl) {
+    this->acl = acl;
+  }
+
+  inline const boost::shared_ptr<Route::ACL> Route::getAcl() const {
+    return acl;
   }
 
 }

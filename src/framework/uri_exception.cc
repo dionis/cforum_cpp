@@ -32,10 +32,10 @@
 #include "framework/uri_exception.hh"
 
 namespace CForum {
-  URIException::URIException() : CForumException() {}
-  URIException::URIException(int code) : CForumException(code) {}
-  URIException::URIException(const char *msg,int code) : CForumException(msg,code) {}
-  URIException::URIException(const std::string &msg,int code) : CForumException(msg,code) {}
+  URIException::URIException() : FrameworkException() {}
+  URIException::URIException(int code) : FrameworkException(code) {}
+  URIException::URIException(const char *msg,int code) : FrameworkException(msg,code) {}
+  URIException::URIException(const std::string &msg,int code) : FrameworkException(msg,code) {}
 }
 
 /* eof */

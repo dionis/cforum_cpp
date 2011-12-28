@@ -37,11 +37,21 @@ namespace CForum {
   class CGIRequest : public Request {
   public:
     CGIRequest();
+    CGIRequest(const CGIRequest &);
     virtual ~CGIRequest();
+
+    virtual CGIRequest &operator=(const CGIRequest &);
+
+    virtual const CGI &getCGI() const;
+
+  protected:
+    CGI cgi;
 
   };
 
-
+  inline const CGI &CGIRequest::getCGI() const {
+    return cgi;
+  }
 }
 
 #endif

@@ -36,6 +36,7 @@
 #include <cstdlib>
 #include <string>
 #include <vector>
+#include <sstream>
 
 #include <unicode/unistr.h>
 #include <boost/shared_ptr.hpp>

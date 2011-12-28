@@ -31,10 +31,10 @@
 #ifndef URI_EXCEPTION_H
 #define URI_EXCEPTION_H
 
-#include "exceptions/cforum_exception.hh"
+#include "framework/framework_exception.hh"
 
 namespace CForum {
-  class URIException : public CForumException {
+  class URIException : public FrameworkException {
   public:
     URIException();
     URIException(int);

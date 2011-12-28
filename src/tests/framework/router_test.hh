@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief Controller interface: each controller may implement an action
- * \package framework
+ * \brief URI parser interface testing
+ * \package unittests
  *
- * A controller handles a request. Each request may be handled by N controllers.
+ * Testing the URI parser interface
  */
 
 /*
@@ -28,28 +28,28 @@
  * THE SOFTWARE.
  */
 
-#ifndef CONTROLLER_H
-#define CONTROLLER_H
+#ifndef URI_TEST_H
+#define URI_TEST_H
 
-#include <string>
-#include <boost/shared_ptr.hpp>
+#include <cppunit/extensions/HelperMacros.h>
 
-#include "framework/request.hh"
+#include <cstdlib>
 
-namespace CForum {
-  class Controller {
-  public:
-    Controller();
-    virtual ~Controller();
+#include "framework/router.hh"
+#include "framework/cgi_request.hh"
 
-    virtual const std::string &handleRequest(boost::shared_ptr<Request>) = 0;
+#include "my_controller.hh"
 
-  protected:
-    Request *rq;
+class RouterTest : public CppUnit::TestFixture {
+  CPPUNIT_TEST_SUITE(RouterTest);
+  CPPUNIT_TEST(testMatching);
+  CPPUNIT_TEST_SUITE_END();
 
-  };
-}
-
+public:
+  void setUp();
+  void testMatching();
+  void tearDown();
+};
 
 #endif
 

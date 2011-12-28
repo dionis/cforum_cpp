@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief Controller interface: each controller may implement an action
+ * \brief Framework exception, all framework errors throw a child exception
  * \package framework
  *
- * A controller handles a request. Each request may be handled by N controllers.
+ * Framework exception, all framework errors throw a child exception
  */
 
 /*
@@ -28,29 +28,14 @@
  * THE SOFTWARE.
  */
 
-#ifndef CONTROLLER_H
-#define CONTROLLER_H
 
-#include <string>
-#include <boost/shared_ptr.hpp>
-
-#include "framework/request.hh"
+#include "framework/not_found_exception.hh"
 
 namespace CForum {
-  class Controller {
-  public:
-    Controller();
-    virtual ~Controller();
-
-    virtual const std::string &handleRequest(boost::shared_ptr<Request>) = 0;
-
-  protected:
-    Request *rq;
-
-  };
+  NotFoundException::NotFoundException() : FrameworkException() { }
+  NotFoundException::NotFoundException(int code) : FrameworkException(code) { }
+  NotFoundException::NotFoundException(const char *msg, int code) : FrameworkException(msg, code) { }
+  NotFoundException::NotFoundException(const std::string &msg, int code) : FrameworkException(msg, code) { }
 }
-
-
-#endif
 
 /* eof */

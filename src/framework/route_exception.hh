@@ -31,15 +31,15 @@
 #ifndef ROUTE_EXCEPTION_H
 #define ROUTE_EXCEPTION_H
 
-#include "exceptions/cforum_exception.hh"
+#include "framework/framework_exception.hh"
 
 namespace CForum {
-  class RouteException : public CForumException {
+  class RouteException : public FrameworkException {
   public:
-      RouteException();
-      RouteException(int);
-      RouteException(const char *, int);
-      RouteException(const std::string &, int);
+    RouteException();
+    RouteException(int);
+    RouteException(const char *, int);
+    RouteException(const std::string &, int);
   };
 
 }

@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief Controller interface: each controller may implement an action
- * \package framework
+ * \brief Test controller for unit testing
+ * \package unittests
  *
- * A controller handles a request. Each request may be handled by N controllers.
+ * Test controller for unit testing
  */
 
 /*
@@ -28,29 +28,14 @@
  * THE SOFTWARE.
  */
 
-#ifndef CONTROLLER_H
-#define CONTROLLER_H
+#include "my_controller.hh"
 
-#include <string>
-#include <boost/shared_ptr.hpp>
-
-#include "framework/request.hh"
-
-namespace CForum {
-  class Controller {
-  public:
-    Controller();
-    virtual ~Controller();
-
-    virtual const std::string &handleRequest(boost::shared_ptr<Request>) = 0;
-
-  protected:
-    Request *rq;
-
-  };
+const std::string &MyController::handleRequest(boost::shared_ptr<CForum::Request> rq) {
+  (void)rq;
+  throw std::exception();
+  return x;
 }
 
-
-#endif
+MyController::~MyController() { }
 
 /* eof */

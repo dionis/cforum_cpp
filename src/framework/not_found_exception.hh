@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief Controller interface: each controller may implement an action
+ * \brief when a ressource could not be found this exception gets throwed
  * \package framework
  *
- * A controller handles a request. Each request may be handled by N controllers.
+ * when a ressource could not be found this exception gets throwed
  */
 
 /*
@@ -28,28 +28,21 @@
  * THE SOFTWARE.
  */
 
-#ifndef CONTROLLER_H
-#define CONTROLLER_H
+#ifndef NOT_FOUND_EXCEPTION_H
+#define NOT_FOUND_EXCEPTION_H
 
-#include <string>
-#include <boost/shared_ptr.hpp>
-
-#include "framework/request.hh"
+#include "framework/framework_exception.hh"
 
 namespace CForum {
-  class Controller {
+  class NotFoundException : public FrameworkException {
   public:
-    Controller();
-    virtual ~Controller();
-
-    virtual const std::string &handleRequest(boost::shared_ptr<Request>) = 0;
-
-  protected:
-    Request *rq;
-
+    NotFoundException();
+    NotFoundException(int);
+    NotFoundException(const char *, int);
+    NotFoundException(const std::string &, int);
   };
-}
 
+}
 
 #endif
 
