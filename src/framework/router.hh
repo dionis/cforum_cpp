@@ -45,6 +45,9 @@
 
 #include "framework/route.hh"
 
+#include "framework/not_found_exception.hh"
+#include "framework/internal_error_exception.hh"
+
 namespace CForum {
   class Router {
   public:

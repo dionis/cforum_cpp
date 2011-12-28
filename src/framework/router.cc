@@ -52,6 +52,9 @@ namespace CForum {
     boost::shared_ptr<Route::ACL> acl;
     bool runIt = false, hadOne = false;
     std::ostringstream retval;
+    std::string str;
+    size_t i;
+    boost::shared_ptr<pcrepp::Pcre> regex;
 
     for(it = routes.begin(); it != end; ++it) {
       const std::vector<Route::Pattern> &patterns = it->second->getPatterns();
@@ -60,11 +63,20 @@ namespace CForum {
       printf("route: %s\n", it->first.c_str());
 
       for(pats_it = patterns.begin(); pats_it != pats_end; ++pats_it) {
-        if(pats_it->getCompiledPattern()->search(path)) {
+        regex = pats_it->getCompiledPattern();
+
+        if(regex->search(path)) {
+          const std::vector<std::string> &names = pats_it->getNames();
+          std::map<std::string, std::string> vars;
+
+          for(i = 0; i < names.size(); ++i) {
+            vars[names[i]] = (*regex)[i];
+          }
+
           runIt = false;
           acl = it->second->getAcl();
 
-          if(acl && acl->check(rq)) {
+          if(acl && acl->check(rq, vars)) {
             runIt = true;
           }
           else if(!acl) {
@@ -72,21 +84,27 @@ namespace CForum {
           }
 
           if(runIt) {
-            retval << it->second->getController()->handleRequest(rq);
+            retval << it->second->getController()->handleRequest(rq, vars);
             hadOne = true;
           }
         }
       }
 
+      printf("retval: %s\n", retval.str().c_str());
       printf("\n");
-
-      if(!hadOne) {
-
-      }
-
     }
 
-    return std::string();
+    if(!hadOne) {
+      throw NotFoundException("No route matched!", NotFoundException::NoRouteMatchedError);
+    }
+
+    str = retval.str();
+
+    if(str.empty()) {
+      throw InternalErrorException("No output has been generated!", InternalErrorException::NoOutputGeneratedError);
+    }
+
+    return str;
   }
 
 }
