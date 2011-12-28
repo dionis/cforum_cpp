@@ -49,7 +49,7 @@ void RouterTest::testMatching() {
   Router router;
   boost::shared_ptr<CGIRequest> request(boost::make_shared<CGIRequest>());
 
-  route->addPattern("^/just/a/test$");
+  route->addPattern("^/just/a/<action:test>$");
 
   router.registerRoute("test-route", route);
 
