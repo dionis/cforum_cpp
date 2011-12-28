@@ -40,6 +40,9 @@ namespace CForum {
     NotFoundException(int);
     NotFoundException(const char *, int);
     NotFoundException(const std::string &, int);
+
+    static const int NoRouteMatchedError = 0x4efb11e9;
+
   };
 
 }
