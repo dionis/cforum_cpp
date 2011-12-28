@@ -32,6 +32,7 @@
 #define HASH_MAP_H
 
 #include <tr1/unordered_map>
+#include <unicode/unistr.h>
 
 namespace std {
   using namespace tr1;
