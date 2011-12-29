@@ -1,7 +1,7 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
  * \brief Router implementation; routes request to the specific modules
- * \package JSEvaluator
+ * \package framework
  *
  * Routing is done via several criterias: of course via path, via desired
  * media, via POST/GET difference, etc, pp. Each module can specify a path
