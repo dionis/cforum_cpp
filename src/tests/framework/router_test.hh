@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief URI parser interface testing
+ * \brief router interface testing
  * \package unittests
  *
- * Testing the URI parser interface
+ * router interface testing
  */
 
 /*
@@ -28,8 +28,8 @@
  * THE SOFTWARE.
  */
 
-#ifndef URI_TEST_H
-#define URI_TEST_H
+#ifndef ROUTER_TEST_H
+#define ROUTER_TEST_H
 
 #include <cppunit/extensions/HelperMacros.h>
 
