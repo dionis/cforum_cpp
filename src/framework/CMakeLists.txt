@@ -19,6 +19,10 @@ add_library(cfframework SHARED
   not_found_exception.cc
   internal_error_exception.cc
   notification_center.cc
+  session.cc
+  session_file_storage.cc
+  session_value.cc
+  session_storage.cc
 )
 
 target_link_libraries(cfframework cfexceptions cfcgi ${ICU_LIBRARY} ${PCREPP_LIBRARIES})
