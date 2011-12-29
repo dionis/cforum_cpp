@@ -50,24 +50,26 @@ namespace CForum {
     std::string path = uri.getPath();
     std::unordered_map<std::string, boost::shared_ptr<Route> >::iterator end = routes.end(), it;
     boost::shared_ptr<Route::ACL> acl;
-    bool runIt = false, hadOne = false;
+    bool runIt = false;
+    int handlers = 0;
     std::ostringstream retval;
     std::string str;
     size_t i;
     boost::shared_ptr<pcrepp::Pcre> regex;
+    std::map<std::string, std::string> vars;
+    std::vector<Route::Pattern>::const_iterator pats_end, pats_it;
+
 
     for(it = routes.begin(); it != end; ++it) {
       const std::vector<Route::Pattern> &patterns = it->second->getPatterns();
-      std::vector<Route::Pattern>::const_iterator pats_end = patterns.end(), pats_it;
-
-      printf("route: %s\n", it->first.c_str());
+      pats_end = patterns.end();
 
       for(pats_it = patterns.begin(); pats_it != pats_end; ++pats_it) {
         regex = pats_it->getCompiledPattern();
 
         if(regex->search(path)) {
           const std::vector<std::string> &names = pats_it->getNames();
-          std::map<std::string, std::string> vars;
+          vars.clear();
 
           for(i = 0; i < names.size(); ++i) {
             vars[names[i]] = (*regex)[i];
@@ -85,16 +87,13 @@ namespace CForum {
 
           if(runIt) {
             retval << it->second->getController()->handleRequest(rq, vars);
-            hadOne = true;
+            ++handlers;
           }
         }
       }
-
-      printf("retval: %s\n", retval.str().c_str());
-      printf("\n");
     }
 
-    if(!hadOne) {
+    if(handlers == 0) {
       throw NotFoundException("No route matched!", NotFoundException::NoRouteMatchedError);
     }
 
