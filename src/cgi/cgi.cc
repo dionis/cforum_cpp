@@ -61,9 +61,9 @@ namespace CForum {
   }
 
   void CGI::parseString(const char *data, const char realm) {
-    const char  *pos = data,*pos1 = data;
+    const char  *pos = data, *pos1 = data;
     UnicodeString name,value;
-    int len = 0,namlen = 0,vallen = 0;
+    int len = 0, namlen = 0, vallen = 0, num = 0;
     CGIValueContainer_t *container;
 
     switch(realm) {
@@ -87,6 +87,10 @@ namespace CForum {
     }
 
     while((pos = strstr(pos1,"=")) != NULL) {
+      if(num > 1024) { /* hardcoded maximum number of parameters to parse to prevent hash based DoS */
+        throw CGIParserException("Too many values to decode!", CGIParserException::TooManyValues);
+      }
+
       namlen = pos - pos1;
       name   = CGI::decode(pos1,namlen);
 
@@ -111,6 +115,8 @@ namespace CForum {
 
       saveParam(name,value,container);
     }
+
+    ++num;
   }
 
   CGI CGI::fromCGIEnvironment() {
