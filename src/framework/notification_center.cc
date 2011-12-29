@@ -47,17 +47,18 @@ namespace CForum {
     notifications[name].push_back(receiver);
   }
 
-  void NotificationCenter::notify(const std::string &name, void *arg) {
+  void NotificationCenter::notify(const std::string &name, boost::shared_ptr<Request> rq, void *arg) {
     std::vector<boost::shared_ptr<NotificationReceiver> > receivers = notifications[name];
     std::vector<boost::shared_ptr<NotificationReceiver> >::iterator it, end;
 
     if(receivers.size() > 0) {
       for(end = receivers.end(), it = receivers.begin(); it != end; ++it) {
-        (*it)->receiveNotification(arg);
+        (*it)->receiveNotification(rq, arg);
       }
     }
   }
 
+  NotificationCenter::NotificationReceiver::~NotificationReceiver() { }
 }
 
 /* eof */

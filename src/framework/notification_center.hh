@@ -37,6 +37,7 @@
 
 #include <boost/shared_ptr.hpp>
 
+#include "framework/request.hh"
 #include "hash_map.hh"
 
 namespace CForum {
@@ -44,7 +45,8 @@ namespace CForum {
   public:
     class NotificationReceiver {
     public:
-      virtual void receiveNotification(void *) = 0;
+      virtual void receiveNotification(boost::shared_ptr<Request>, void *) = 0;
+      virtual ~NotificationReceiver();
     };
 
     NotificationCenter();
@@ -53,7 +55,7 @@ namespace CForum {
     NotificationCenter &operator=(const NotificationCenter &);
 
     void registerNotification(const std::string &, boost::shared_ptr<NotificationReceiver>);
-    void notify(const std::string &, void *);
+    void notify(const std::string &, boost::shared_ptr<Request>, void *);
 
   protected:
     std::unordered_map<std::string, std::vector<boost::shared_ptr<NotificationReceiver> > > notifications;
