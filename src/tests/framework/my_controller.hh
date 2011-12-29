@@ -43,6 +43,12 @@ public:
   virtual ~MyController();
 };
 
+class MyControllerEmpty : public CForum::Controller {
+public:
+  virtual const std::string handleRequest(boost::shared_ptr<CForum::Request>, const std::map<std::string, std::string> &);
+
+  virtual ~MyControllerEmpty();
+};
 
 #endif
 

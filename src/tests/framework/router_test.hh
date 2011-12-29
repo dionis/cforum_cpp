@@ -43,11 +43,19 @@
 class RouterTest : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(RouterTest);
   CPPUNIT_TEST(testMatching);
+  CPPUNIT_TEST(testNoMatch);
+  CPPUNIT_TEST(testAclTrue);
+  CPPUNIT_TEST(testAclFalse);
+  CPPUNIT_TEST(testEmpty);
   CPPUNIT_TEST_SUITE_END();
 
 public:
   void setUp();
   void testMatching();
+  void testNoMatch();
+  void testAclTrue();
+  void testAclFalse();
+  void testEmpty();
   void tearDown();
 };
 

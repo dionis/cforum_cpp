@@ -34,6 +34,26 @@ CPPUNIT_TEST_SUITE_REGISTRATION(RouterTest);
 
 using namespace CForum;
 
+class MyAcl : public Route::ACL {
+public:
+  virtual bool check(boost::shared_ptr<Request> rq, const std::map<std::string, std::string> &vars) {
+    (void)rq;
+    (void)vars;
+    return false;
+  }
+};
+
+class MyAcl1 : public Route::ACL {
+public:
+  virtual bool check(boost::shared_ptr<Request> rq, const std::map<std::string, std::string> &vars) {
+    (void)rq;
+    (void)vars;
+    return true;
+  }
+};
+
+
+
 void RouterTest::setUp() {
   setenv("REQUEST_METHOD", "GET", 1);
   setenv("QUERY_STRING", "", 1);
@@ -53,8 +73,85 @@ void RouterTest::testMatching() {
 
   router.registerRoute("test-route", route);
 
-  router.dispatch(request);
+  std::string rslt = router.dispatch(request);
+  CPPUNIT_ASSERT_EQUAL(std::string("MyController::handleRequest"), rslt);
+}
 
+
+void RouterTest::testNoMatch() {
+  boost::shared_ptr<MyController> c(new MyController());
+  boost::shared_ptr<Route> route(boost::make_shared<Route>(c));
+  Router router;
+  boost::shared_ptr<CGIRequest> request(boost::make_shared<CGIRequest>());
+
+  route->addPattern("^/wefwef/just/a/<action:test>$");
+
+  router.registerRoute("test-route", route);
+
+  try {
+    std::string rslt = router.dispatch(request);
+    CPPUNIT_FAIL("Fail: route matched but shouldn't");
+  }
+  catch(NotFoundException &e) {
+  }
+}
+
+void RouterTest::testAclFalse() {
+  boost::shared_ptr<MyController> c(new MyController());
+  boost::shared_ptr<Route> route(boost::make_shared<Route>(c));
+  Router router;
+  boost::shared_ptr<CGIRequest> request(boost::make_shared<CGIRequest>());
+  boost::shared_ptr<MyAcl1> acl(boost::make_shared<MyAcl1>());
+
+  route->addPattern("^/just/a/<action:test>$");
+  route->setAcl(acl);
+
+  router.registerRoute("test-route", route);
+
+  try {
+    std::string rslt = router.dispatch(request);
+  }
+  catch(NotFoundException &e) {
+    CPPUNIT_FAIL("Fail: route didn't match but shouldt!");
+  }
+}
+
+void RouterTest::testAclTrue() {
+  boost::shared_ptr<MyController> c(new MyController());
+  boost::shared_ptr<Route> route(boost::make_shared<Route>(c));
+  Router router;
+  boost::shared_ptr<CGIRequest> request(boost::make_shared<CGIRequest>());
+  boost::shared_ptr<MyAcl> acl(boost::make_shared<MyAcl>());
+
+  route->addPattern("^/just/a/<action:test>$");
+  route->setAcl(acl);
+
+  router.registerRoute("test-route", route);
+
+  try {
+    std::string rslt = router.dispatch(request);
+    CPPUNIT_FAIL("Fail: route matched but shouldn't");
+  }
+  catch(NotFoundException &e) {
+  }
+}
+
+void RouterTest::testEmpty() {
+  boost::shared_ptr<MyControllerEmpty> c(boost::make_shared<MyControllerEmpty>());
+  boost::shared_ptr<Route> route(boost::make_shared<Route>(c));
+  Router router;
+  boost::shared_ptr<CGIRequest> request(boost::make_shared<CGIRequest>());
+
+  route->addPattern("^/just/a/<action:test>$");
+
+  router.registerRoute("test-route", route);
+
+  try {
+    std::string rslt = router.dispatch(request);
+    CPPUNIT_FAIL("Fail: route returned something but shouldn't");
+  }
+  catch(InternalErrorException &e) {
+  }
 }
 
 void RouterTest::tearDown() {

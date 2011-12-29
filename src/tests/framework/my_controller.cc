@@ -36,6 +36,13 @@ const std::string MyController::handleRequest(boost::shared_ptr<CForum::Request>
   return "MyController::handleRequest";
 }
 
+const std::string MyControllerEmpty::handleRequest(boost::shared_ptr<CForum::Request> rq, const std::map<std::string, std::string> &vars) {
+  (void)rq;
+  (void)vars;
+  return "";
+}
+
 MyController::~MyController() { }
+MyControllerEmpty::~MyControllerEmpty() { }
 
 /* eof */
