@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief internal server error exception
- * \package framework
+ * \brief session testing
+ * \package unittests
  *
- * internal server error exception
+ * session testing
  */
 
 /*
@@ -28,24 +28,25 @@
  * THE SOFTWARE.
  */
 
-#ifndef INTERNAL_ERROR_EXCEPTION_H
-#define INTERNAL_ERROR_EXCEPTION_H
+#ifndef SESSION_TEST_H
+#define SESSION_TEST_H
 
-#include "framework/framework_exception.hh"
+#include <cppunit/extensions/HelperMacros.h>
 
-namespace CForum {
-  class InternalErrorException : public FrameworkException {
-  public:
-    InternalErrorException();
-    InternalErrorException(int);
-    InternalErrorException(const char *, int);
-    InternalErrorException(const std::string &, int);
+#include <boost/make_shared.hpp>
 
-    static const int NoOutputGeneratedError = 0x4efb1370;
-    static const int CouldNotGetTimeError   = 0x4eff24f6;
-  };
+#include "framework/session.hh"
 
-}
+class SessionTest : public CppUnit::TestFixture {
+  CPPUNIT_TEST_SUITE(SessionTest);
+  CPPUNIT_TEST(testWriteSession);
+  CPPUNIT_TEST(testReadSession);
+  CPPUNIT_TEST_SUITE_END();
+
+public:
+  void testWriteSession();
+  void testReadSession();
+};
 
 #endif
 

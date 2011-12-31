@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief internal server error exception
+ * \brief session exception, e.g. session already exists
  * \package framework
  *
- * internal server error exception
+ * session exception, e.g. session already exists
  */
 
 /*
@@ -28,25 +28,14 @@
  * THE SOFTWARE.
  */
 
-#ifndef INTERNAL_ERROR_EXCEPTION_H
-#define INTERNAL_ERROR_EXCEPTION_H
 
-#include "framework/framework_exception.hh"
+#include "framework/session_exception.hh"
 
 namespace CForum {
-  class InternalErrorException : public FrameworkException {
-  public:
-    InternalErrorException();
-    InternalErrorException(int);
-    InternalErrorException(const char *, int);
-    InternalErrorException(const std::string &, int);
-
-    static const int NoOutputGeneratedError = 0x4efb1370;
-    static const int CouldNotGetTimeError   = 0x4eff24f6;
-  };
-
+  SessionException::SessionException() : InternalErrorException() { }
+  SessionException::SessionException(int code) : InternalErrorException(code) { }
+  SessionException::SessionException(const char *msg, int code) : InternalErrorException(msg, code) { }
+  SessionException::SessionException(const std::string &msg, int code) : InternalErrorException(msg, code) { }
 }
-
-#endif
 
 /* eof */

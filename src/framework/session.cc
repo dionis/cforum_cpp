@@ -31,44 +31,103 @@
 #include "framework/session.hh"
 
 namespace CForum {
+  inline std::string generateSessionId(boost::shared_ptr<Session::Storage> stor) {
+    std::ostringstream sids;
+    std::string sid;
+
+    int i, l, maxlen = 30;
+    char *remaddr = getenv("REMOTE_ADDR");
+    static const char chars[] = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789_-";
+    struct timeval  tp;
+
+    if(!remaddr) {
+      remaddr = (char *)"127.0.0.1";
+    }
+
+    if(gettimeofday(&tp,NULL) != 0) {
+      throw InternalErrorException("ERROR getting time!", InternalErrorException::CouldNotGetTimeError);
+    }
+
+    srand(tp.tv_usec);
+
+    do {
+      l = strlen(remaddr);
+
+      if(maxlen <= l) {
+        l = maxlen;
+      }
+
+      for(i = 0; i < l; ++i) {
+        sids << chars[remaddr[i] % 59 + (unsigned int)(rand() % 3)];
+      }
+
+      l = rand() % (maxlen - 1);
+      for(; i < l; ++i) {
+        sids << chars[rand() % 63];
+      }
+
+      sid = sids.str();
+      sids.str("");
+    } while(!stor->create(sid));
+
+    return sid;
+  }
+
   Session::Session() : expires(1800),
-                       path("/tmp/"),
-                       sessionId(),
+                       storage(boost::make_shared<FileStorage>()),
+                       sessionId(generateSessionId(storage)),
                        sessionKey("CFORUM_SID"),
                        values(),
-                       storage(boost::make_shared<FileStorage>()) { }
+                       destroyed(false) { }
 
-  Session::Session(const std::string &id) : expires(1800),
-                                   path("/tmp/"),
-                                   sessionId(id),
-                                   sessionKey("CFORUM_SID"),
-                                   values(),
-                                   storage(boost::make_shared<FileStorage>()) { }
+  Session::Session(const std::string &id, bool only_new) : expires(1800),
+                                            storage(boost::make_shared<FileStorage>()),
+                                            sessionId(id),
+                                            sessionKey("CFORUM_SID"),
+                                            values(),
+                                            destroyed(false)
+  {
+    if(only_new) {
+      if(storage->exists(sessionId)) {
+        throw SessionException("Session already exists!", 0);
+      }
+
+      storage->create(sessionId);
+    }
+  }
 
   Session::Session(const boost::shared_ptr<Session::Storage> &stor) : expires(1800),
-                                                                      path("/tmp/"),
-                                                                      sessionId(),
+                                                                      storage(stor),
+                                                                      sessionId(generateSessionId(storage)),
                                                                       sessionKey("CFORUM_SID"),
                                                                       values(),
-                                                                      storage(stor) { }
+                                                                      destroyed(false) { }
 
-  Session::Session(const std::string &id, const boost::shared_ptr<Session::Storage> &stor) : expires(1800),
-                                                                                             path("/tmp/"),
-                                                                                             sessionId(id),
-                                                                                             sessionKey("CFORUM_SID"),
-                                                                                             values(),
-                                                                                             storage(stor) { }
+  Session::Session(const std::string &id, const boost::shared_ptr<Session::Storage> &stor, bool only_new) : expires(1800),
+                                                                                                            storage(stor),
+                                                                                                            sessionId(id),
+                                                                                                            sessionKey("CFORUM_SID"),
+                                                                                                            values(),
+                                                                                                            destroyed(false)
+  {
+    if(only_new) {
+      if(storage->exists(sessionId)) {
+        throw SessionException("Session already exists!", 0);
+      }
+
+      storage->create(sessionId);
+    }
+  }
   Session::Session(const Session &sess) : expires(sess.expires),
-                                          path(sess.path),
+                                          storage(sess.storage),
                                           sessionId(sess.sessionId),
                                           sessionKey(sess.sessionKey),
                                           values(sess.values),
-                                          storage(sess.storage) { }
+                                          destroyed(false) { }
 
   Session &Session::operator=(const Session &s) {
     if(this != &s) {
       expires    = s.expires;
-      path       = s.path;
       sessionId  = s.sessionId;
       sessionKey = s.sessionKey;
       values     = s.values;
@@ -83,15 +142,18 @@ namespace CForum {
   }
 
   bool Session::save() {
+    return storage->saveSession(sessionId, values);
     return true;
   }
 
   bool Session::load() {
-    return true;
+    return storage->loadSession(sessionId, values);
   }
 
   Session::~Session() {
-    save();
+    if(!destroyed) {
+      save();
+    }
   }
 
 

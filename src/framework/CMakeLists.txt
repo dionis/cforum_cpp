@@ -23,8 +23,9 @@ add_library(cfframework SHARED
   session_file_storage.cc
   session_value.cc
   session_storage.cc
+  session_exception.cc
 )
 
-target_link_libraries(cfframework cfexceptions cfcgi ${ICU_LIBRARY} ${PCREPP_LIBRARIES})
+target_link_libraries(cfframework cfexceptions cfcgi boost_serialization boost_filesystem boost_system ${ICU_LIBRARY} ${PCREPP_LIBRARIES})
 
 # eof

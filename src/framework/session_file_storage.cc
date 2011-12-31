@@ -32,19 +32,59 @@
 #include "framework/session_file_storage.hh"
 
 namespace CForum {
-  FileStorage::FileStorage() { }
-  FileStorage::FileStorage(const FileStorage &fs) {
-    (void)fs;
+  FileStorage::FileStorage() : sessionPath("/tmp"), prefix("sess_") { }
+  FileStorage::FileStorage(const FileStorage &fs) : sessionPath(fs.sessionPath), prefix(fs.prefix) { }
+
+  bool FileStorage::create(const std::string &sid) {
+    std::string fname = getFilename(sid);
+
+    int fd = open(fname.c_str(), O_CREAT|O_EXCL, S_IRUSR|S_IWUSR);
+
+    if(fd == -1) {
+      return false;
+    }
+
+    close(fd);
+    return true;
   }
 
-  std::unordered_map<std::string, boost::shared_ptr<Session::Value> > FileStorage::readSession(const std::string &sid) {
-    (void)sid;
-    return std::unordered_map<std::string, boost::shared_ptr<Session::Value> >();
+  bool FileStorage::destroy(const std::string &sid) {
+    std::string fname = getFilename(sid);
+    return unlink(fname.c_str()) == 0;
+  }
+
+  bool FileStorage::loadSession(const std::string &sid, std::unordered_map<std::string, boost::shared_ptr<Session::Value> > &values) {
+    std::string fname = getFilename(sid);
+    std::ifstream fd(fname.c_str(), std::ifstream::in);
+    boost::archive::text_iarchive ar(fd);
+
+    ar & values;
+
+    fd.close();
+
+    return true;
+  }
+
+  bool FileStorage::exists(const std::string &sid) {
+    std::string fname = getFilename(sid);
+    struct stat st;
+
+    if(stat(fname.c_str(), &st) == 0) {
+      return true;
+    }
+
+    return false;
   }
 
   bool FileStorage::saveSession(const std::string &sid, const std::unordered_map<std::string, boost::shared_ptr<Session::Value> > &vals) {
-    (void)sid;
-    (void)vals;
+    std::string fname = getFilename(sid);
+    std::ofstream fd(fname.c_str(), std::ios::trunc | std::ios::out);
+    boost::archive::text_oarchive ar(fd);
+
+    ar & vals;
+
+    fd.close();
+
     return true;
   }
 
