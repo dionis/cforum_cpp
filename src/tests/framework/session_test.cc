@@ -96,9 +96,20 @@ void SessionTest::testReadSession() {
 
   CPPUNIT_ASSERT_EQUAL(103, ptr2->x);
   CPPUNIT_ASSERT_EQUAL(104, ptr2->y);
+}
 
-  s.destroy();
+void SessionTest::testFailSession() {
+  try {
+    Session s(sid, true);
+    CPPUNIT_FAIL("Session created but shouldn't!");
+  }
+  catch(SessionException &e) {
+  }
 
+  std::string fname("/tmp/sess_");
+  fname += sid;
+
+  unlink(fname.c_str());
 }
 
 /* eof */

@@ -41,11 +41,13 @@ class SessionTest : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(SessionTest);
   CPPUNIT_TEST(testWriteSession);
   CPPUNIT_TEST(testReadSession);
+  CPPUNIT_TEST(testFailSession);
   CPPUNIT_TEST_SUITE_END();
 
 public:
   void testWriteSession();
   void testReadSession();
+  void testFailSession();
 };
 
 #endif
