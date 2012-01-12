@@ -33,7 +33,7 @@
 
 namespace CForum {
   FileStorage::FileStorage() : sessionPath("/tmp"), prefix("sess_") { }
-  FileStorage::FileStorage(const FileStorage &fs) : sessionPath(fs.sessionPath), prefix(fs.prefix) { }
+  FileStorage::FileStorage(const FileStorage &fs) : Session::Storage::Storage(), sessionPath(fs.sessionPath), prefix(fs.prefix) { }
 
   bool FileStorage::create(const std::string &sid) {
     std::string fname = getFilename(sid);
