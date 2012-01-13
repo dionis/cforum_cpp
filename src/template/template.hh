@@ -156,7 +156,7 @@ namespace CForum {
     return evaluate(compile(str),vars);
   }
 
-  inline void setVariable(const UnicodeString &nam,v8::Handle<v8::Value> val) {
+  inline void Template::setVariable(const UnicodeString &nam,v8::Handle<v8::Value> val) {
     std::string name;
     nam.toUTF8String(name);
     setVariable(name.c_str(),val);
