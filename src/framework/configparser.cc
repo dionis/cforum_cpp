@@ -80,8 +80,59 @@ namespace CForum {
     return val;
   }
 
-  Configparser::~Configparser() {
+  std::string Configparser::getStrValue(const std::string &name) {
+    v8::Handle<v8::Value> val = getValue(name);
+    v8::String::Utf8Value utf8(val);
+
+    if(val.IsEmpty()) {
+      throw ConfigErrorException("Return value could not be converted to a string!", ConfigErrorException::StringConversionError);
+    }
+
+    return std::string(*utf8);
   }
+
+  v8::Handle<v8::Value> Configparser::getByPath(const std::string &name) {
+    std::istringstream iss(name);
+    std::vector<std::string> names;
+    std::vector<std::string>::iterator it,end;
+    v8::Handle<v8::Value> cfgval;
+    v8::Handle<v8::Object> obj;
+    v8::Handle<v8::Value> key;
+
+    std::string str;
+
+    if(name[0] == '/') {
+      str = name.substr(1);
+    }
+    else {
+      str = name;
+    }
+
+    if(str[str.length()-1] == '/') {
+      str = str.substr(0, str.length() - 1);
+    }
+
+    boost::split(names, str, boost::is_any_of("/"));
+
+    it  = names.begin();
+    end = names.end();
+
+    cfgval = getValue(*it);
+    for(++it; it != end; ++it) {
+      if(!cfgval->IsObject()) {
+        throw ConfigErrorException(std::string("Key ") + *it + " is not an object!", ConfigErrorException::NotAnObjectError);
+      }
+
+      key    = v8::String::New(it->c_str());
+      obj    = cfgval->ToObject();
+      cfgval = obj->Get(key);
+    }
+
+    return cfgval;
+  }
+
+
+  Configparser::~Configparser() {}
 
 }
 

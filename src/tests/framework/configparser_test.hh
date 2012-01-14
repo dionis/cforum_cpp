@@ -41,12 +41,16 @@ class ConfigParserTest : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(ConfigParserTest);
   CPPUNIT_TEST(testGetValue);
   CPPUNIT_TEST(testGetObject);
+  CPPUNIT_TEST(testGetString);
+  CPPUNIT_TEST(testGetComplex);
   CPPUNIT_TEST_SUITE_END();
 
 public:
   void setUp();
   void testGetValue();
   void testGetObject();
+  void testGetString();
+  void testGetComplex();
 
 private:
   CForum::Configparser configParser;

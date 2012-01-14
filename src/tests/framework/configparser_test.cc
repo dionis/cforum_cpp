@@ -60,6 +60,16 @@ void ConfigParserTest::testGetObject() {
   CPPUNIT_ASSERT(s->IsArray());
 }
 
+void ConfigParserTest::testGetString() {
+  std::string v = configParser.getStrValue("yabba");
+  CPPUNIT_ASSERT_EQUAL(std::string("May the force be with you"), v);
+}
 
+void ConfigParserTest::testGetComplex() {
+  v8::Handle<v8::Value> val = configParser.getByPath("/ano/xyz");
+  v8::String::Utf8Value sval(val);
+
+  CPPUNIT_ASSERT_EQUAL(std::string(*sval), std::string("zyx"));
+}
 
 /* eof */

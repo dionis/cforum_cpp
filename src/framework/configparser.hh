@@ -31,6 +31,12 @@
 #ifndef CF_CONFIGPARSER_H
 #define CF_CONFIGPARSER_H
 
+#include <vector>
+#include <string>
+
+#include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/split.hpp>
+
 #include <cstdlib>
 
 #include <sys/types.h>
@@ -53,6 +59,9 @@ namespace CForum {
     void parse();
 
     v8::Handle<v8::Value> getValue(const std::string &);
+    v8::Handle<v8::Value> getByPath(const std::string &);
+
+    std::string getStrValue(const std::string &);
 
   private:
     Configparser(const Configparser &);
