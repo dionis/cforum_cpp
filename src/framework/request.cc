@@ -31,8 +31,10 @@
 #include "framework/request.hh"
 
 namespace CForum {
-  Request::Request() : requestUri(), user() { }
-  Request::Request(const Request &rq) : requestUri(rq.requestUri), user(rq.user) { }
+  Request::Request() : requestUri(), user(), configParser() { }
+  Request::Request(const Request &rq) : requestUri(rq.requestUri), user(rq.user), configParser() {
+    configParser.parse();
+  }
 
 
   Request &Request::operator=(const Request &rq) {

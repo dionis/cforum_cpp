@@ -31,10 +31,10 @@
 #include "framework/configparser.hh"
 
 namespace CForum {
-  Configparser::Configparser() : _evaluator(), _script(NULL), _result(NULL) {
-  }
+  Configparser::Configparser() : _evaluator(), _script(NULL), _result(NULL) { }
+  Configparser::Configparser(const Configparser &) : _evaluator(), _script(NULL), _result(NULL) { }
 
-  UnicodeString Configparser::findFile() {
+  std::string Configparser::findFile() {
     static const char *locations[] = {
       "./cforum.js",
       "/etc/cforum.js",
@@ -47,13 +47,13 @@ namespace CForum {
     struct stat st;
 
     if(env_loc != NULL && stat(env_loc,&st) == 0) {
-      return UnicodeString(env_loc);
+      return std::string(env_loc);
     }
 
 
     for(i=0;locations[i] != NULL;++i) {
       if(stat(locations[i],&st) == 0) {
-        return UnicodeString(locations[i],"utf-8");
+        return std::string(locations[i]);
       }
     }
 
@@ -61,13 +61,10 @@ namespace CForum {
   }
 
   void Configparser::parse() {
-    std::string fname;
-
     _filename = findFile();
-    _filename.toUTF8String(fname);
 
     try {
-      _script = _evaluator.compileFile(fname);
+      _script = _evaluator.compileFile(_filename);
       _result = _evaluator.evaluateScript(_script);
     }
     catch(JSEvaluatorException &e) {
@@ -75,9 +72,12 @@ namespace CForum {
     }
   }
 
-  Configparser *Configparser::instance() {
-    static Configparser *instance = new Configparser();
-    return instance;
+  v8::Handle<v8::Value> Configparser::getValue(const std::string &name) {
+    v8::Local<v8::Object> obj = _result->ToObject();
+    v8::Handle<v8::String> str = v8::String::New(name.c_str(), name.length());
+    v8::Local<v8::Value> val = obj->Get(str);
+
+    return val;
   }
 
   Configparser::~Configparser() {

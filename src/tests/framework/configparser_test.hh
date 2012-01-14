@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief Configuration parser interface
- * \package configparser
+ * \brief config parser interface testing
+ * \package unittests
  *
- * This defines the configuration parser interface
+ * config parser interface testing
  */
 
 /*
@@ -28,48 +28,30 @@
  * THE SOFTWARE.
  */
 
-#ifndef CF_CONFIGPARSER_H
-#define CF_CONFIGPARSER_H
+#ifndef CONFIG_PARSER_TEST_H
+#define CONFIG_PARSER_TEST_H
+
+#include <cppunit/extensions/HelperMacros.h>
 
 #include <cstdlib>
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
+#include "framework/configparser.hh"
 
-#include <v8.h>
+class ConfigParserTest : public CppUnit::TestFixture {
+  CPPUNIT_TEST_SUITE(ConfigParserTest);
+  CPPUNIT_TEST(testGetValue);
+  CPPUNIT_TEST(testGetObject);
+  CPPUNIT_TEST_SUITE_END();
 
-#include "jsevaluator/js_evaluator.hh"
-#include "framework/config_error_exception.hh"
+public:
+  void setUp();
+  void testGetValue();
+  void testGetObject();
 
-namespace CForum {
-  class Configparser {
-  public:
-    Configparser();
+private:
+  CForum::Configparser configParser;
 
-    ~Configparser();
-
-    std::string findFile();
-    void parse();
-
-    v8::Handle<v8::Value> getValue(const std::string &);
-
-  private:
-    Configparser(const Configparser &);
-
-
-    std::string _filename;
-
-    JSEvaluator _evaluator;
-
-    v8::Handle<v8::Script> _script;
-    v8::Handle<v8::Value> _result;
-
-  };
-
-
-}
-
+};
 
 #endif
 

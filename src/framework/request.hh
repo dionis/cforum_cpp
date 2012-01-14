@@ -34,6 +34,7 @@
 #include <string>
 
 #include "cgi/cgi.hh"
+#include "framework/configparser.hh"
 #include "framework/uri.hh"
 #include "framework/user.hh"
 
@@ -57,6 +58,7 @@ namespace CForum {
   protected:
     URI requestUri;
     User user;
+    Configparser configParser;
 
   };
 

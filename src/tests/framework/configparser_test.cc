@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief Configuration parser interface
- * \package configparser
+ * \brief Config parser interface testing
+ * \package unittests
  *
- * This defines the configuration parser interface
+ * Config parser interface testing
  */
 
 /*
@@ -28,49 +28,38 @@
  * THE SOFTWARE.
  */
 
-#ifndef CF_CONFIGPARSER_H
-#define CF_CONFIGPARSER_H
+#include "configparser_test.hh"
 
-#include <cstdlib>
+CPPUNIT_TEST_SUITE_REGISTRATION(ConfigParserTest);
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-
-#include <v8.h>
-
-#include "jsevaluator/js_evaluator.hh"
-#include "framework/config_error_exception.hh"
-
-namespace CForum {
-  class Configparser {
-  public:
-    Configparser();
-
-    ~Configparser();
-
-    std::string findFile();
-    void parse();
-
-    v8::Handle<v8::Value> getValue(const std::string &);
-
-  private:
-    Configparser(const Configparser &);
+using namespace CForum;
 
 
-    std::string _filename;
+void ConfigParserTest::setUp() {
+  setenv("CF_CFORUM_JS", "../../../src/tests/framework/cforum.js", 1);
+  configParser.parse();
+}
 
-    JSEvaluator _evaluator;
+void ConfigParserTest::testGetValue() {
+  v8::Handle<v8::Value> v = configParser.getValue("yabba");
 
-    v8::Handle<v8::Script> _script;
-    v8::Handle<v8::Value> _result;
+  v8::String::Utf8Value utf8str(v);
 
-  };
+  CPPUNIT_ASSERT_EQUAL(std::string("May the force be with you"), std::string(*utf8str));
+}
 
+void ConfigParserTest::testGetObject() {
+  v8::Handle<v8::Value> v = configParser.getValue("ano");
 
+  CPPUNIT_ASSERT(v->IsObject());
+
+  v8::Handle<v8::Object> o = v->ToObject();
+
+  v8::Handle<v8::String> nam = v8::String::New("nymous");
+  v8::Handle<v8::Value> s = o->GetRealNamedProperty(nam);
+  CPPUNIT_ASSERT(s->IsArray());
 }
 
 
-#endif
 
 /* eof */

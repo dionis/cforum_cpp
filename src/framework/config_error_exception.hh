@@ -40,6 +40,9 @@ namespace CForum {
     ConfigErrorException(int);
     ConfigErrorException(const char *,int);
     ConfigErrorException(const std::string &,int);
+
+    static const int EmptyConfigError = 0x4f11aa6e;
+    static const int JSError          = 0x4f11c6b3;
   };
 }
 
