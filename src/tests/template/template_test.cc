@@ -40,7 +40,7 @@ void TemplateTest::testParser() {
 
   std::string str = tpl.evaluateString(std::string("<% extend('../../../src/tests/template/lala.html') %>\n<h1>'la\nla'</h1>\n<p>Ich, <% _e(_v('firstname','Christian Kruse')) %>, im vollbesitz meiner geistigen kräfte, bin ${mood}. Deshalb..."));
 
-  CPPUNIT_ASSERT_EQUAL(std::string("<head><title>Test</title></head><body>--\n<h1>'la\nla'</h1>\n<p>Ich, CK, im vollbesitz meiner geistigen kräfte, bin froh. Deshalb...--</body>"),str);
+  CPPUNIT_ASSERT_EQUAL(std::string("<head>\n  <title>Test</title>\n</head>\n<body>\n  --\n<h1>'la\nla'</h1>\n<p>Ich, CK, im vollbesitz meiner geistigen kräfte, bin froh. Deshalb...--\n</body>\n"),str);
 }
 
 
