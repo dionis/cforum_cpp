@@ -33,25 +33,17 @@
 namespace CForum {
   std::string Template::parseFile(const std::string &filename) {
     std::ifstream fd(filename.c_str(), std::ifstream::in);
-    std::string str;
+    std::stringstream sst;
 
     if(!fd) {
       throw TemplateParserException(std::string("Error opening file ") + filename, TemplateParserException::FileError);
     }
 
-    str.reserve(1024);
-
-    std::istream_iterator<std::string> begin(fd);
-    std::istream_iterator<std::string> end;
-
-    while(begin != end) {
-      str += *begin;
-      ++begin;
-    }
+    sst << fd.rdbuf();
 
     fd.close();
 
-    return parseString(str);
+    return parseString(sst.str());
   }
 
   std::string Template::parseString(const char *str,size_t len) {
