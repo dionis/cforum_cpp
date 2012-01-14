@@ -36,6 +36,7 @@
 #include <iostream>
 #include <fstream>
 #include <iterator>
+#include <sstream>
 
 #include "jsevaluator/js_evaluator_exception.hh"
 
@@ -43,6 +44,7 @@ namespace CForum {
   class JSEvaluator {
   public:
     JSEvaluator();
+
     v8::Handle<v8::Value> evaluateFile(const std::string &);
     v8::Handle<v8::Value> evaluateString(const std::string &);
 

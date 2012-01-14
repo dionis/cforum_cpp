@@ -33,9 +33,7 @@
 namespace CForum {
   JSEvaluator::JSEvaluator() : _handle(), _context(v8::Context::New()), _context_scope(_context) {}
 
-  JSEvaluator::JSEvaluator(const JSEvaluator &evaluator) : _handle(), _context(v8::Context::New()), _context_scope(_context) {
-    (void)evaluator; // For compiler warnings only
-  }
+  JSEvaluator::JSEvaluator(const JSEvaluator &) : _handle(), _context(v8::Context::New()), _context_scope(_context) {}
 
   v8::Handle<v8::Value> JSEvaluator::evaluateFile(const std::string &filename) {
     v8::Handle<v8::Script> script(compileFile(filename));
@@ -49,25 +47,17 @@ namespace CForum {
 
   v8::Handle<v8::Script> JSEvaluator::compileFile(const std::string &filename) {
     std::ifstream fd(filename.c_str(), std::ifstream::in);
-    std::string str;
+    std::stringstream sst;
 
     if(!fd) {
       throw JSEvaluatorException("File not found!",CForumException::FileNotFound);
     }
 
-    str.reserve(1024);
-
-    std::istream_iterator<std::string> begin(fd);
-    std::istream_iterator<std::string> end;
-
-    while(begin != end) {
-      str += *begin;
-      ++begin;
-    }
+    sst << fd.rdbuf();
 
     fd.close();
 
-    return compileString(str);
+    return compileString(sst.str());
   }
 
   v8::Handle<v8::Script> JSEvaluator::compileString(const std::string &source) {
@@ -79,7 +69,7 @@ namespace CForum {
 
   v8::Handle<v8::Value> JSEvaluator::evaluateScript(const v8::Handle<v8::Script> &script) {
     v8::TryCatch trycatch;
-    v8::Handle<v8::Value> result(script->Run());
+    v8::Handle<v8::Value> result = script->Run();
 
     if(result.IsEmpty()) {
       v8::Handle<v8::Value> exception = trycatch.Exception();
