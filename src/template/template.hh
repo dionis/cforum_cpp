@@ -46,7 +46,8 @@
 
 #include <cstring>
 
-#include "exceptions/cforum_exception.hh"
+#include "template/template_exception.hh"
+#include "template/template_parser_exception.hh"
 
 namespace CForum {
   class Template {

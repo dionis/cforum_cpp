@@ -36,7 +36,7 @@ namespace CForum {
     std::string str;
 
     if(!fd) {
-      throw CForumException(); // TODO: throw correct exception
+      throw TemplateParserException(std::string("Error opening file ") + filename, TemplateParserException::FileError);
     }
 
     str.reserve(1024);
