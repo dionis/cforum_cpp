@@ -44,6 +44,7 @@ namespace CForum {
   class JSEvaluator {
   public:
     JSEvaluator();
+    ~JSEvaluator();
 
     v8::Handle<v8::Value> evaluateFile(const std::string &);
     v8::Handle<v8::Value> evaluateString(const std::string &);
