@@ -15,6 +15,7 @@ add_library(cfframework SHARED
   route_exception.cc
   route_syntax_exception.cc
   controller.cc
+  configparser.cc
   framework_exception.cc
   not_found_exception.cc
   internal_error_exception.cc
@@ -24,8 +25,9 @@ add_library(cfframework SHARED
   session_value.cc
   session_storage.cc
   session_exception.cc
+  config_error_exception.cc
 )
 
-target_link_libraries(cfframework cfexceptions cfcgi ${Boost_LIBRARIES} ${ICU_LIBRARY} ${PCREPP_LIBRARIES})
+target_link_libraries(cfframework cfexceptions cfcgi cfjsevaluator ${Boost_LIBRARIES} ${ICU_LIBRARY} ${PCREPP_LIBRARIES})
 
 # eof

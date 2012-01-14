@@ -17,10 +17,6 @@ add_subdirectory(framework)
 
 add_subdirectory(tests)
 
-add_library(cfconfigparser SHARED configparser.cc)
-target_link_libraries(cfconfigparser cfjsevaluator ${ICU_LIBRARY})
-
-
 
 
 # eof

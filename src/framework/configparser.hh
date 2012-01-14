@@ -43,7 +43,7 @@
 #include <v8.h>
 
 #include "jsevaluator/js_evaluator.hh"
-#include "exceptions/config_error_exception.hh"
+#include "framework/config_error_exception.hh"
 
 namespace CForum {
   class Configparser {

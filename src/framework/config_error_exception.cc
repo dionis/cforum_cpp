@@ -28,13 +28,13 @@
  * THE SOFTWARE.
  */
 
-#include "exceptions/config_error_exception.hh"
+#include "framework/config_error_exception.hh"
 
 namespace CForum {
-  ConfigErrorException::ConfigErrorException() : CForumException() {}
-  ConfigErrorException::ConfigErrorException(int code) : CForumException(code) {}
-  ConfigErrorException::ConfigErrorException(const char *msg,int code) : CForumException(msg,code) {}
-  ConfigErrorException::ConfigErrorException(const std::string &msg,int code) : CForumException(msg,code) {}
+  ConfigErrorException::ConfigErrorException() : FrameworkException() {}
+  ConfigErrorException::ConfigErrorException(int code) : FrameworkException(code) {}
+  ConfigErrorException::ConfigErrorException(const char *msg,int code) : FrameworkException(msg,code) {}
+  ConfigErrorException::ConfigErrorException(const std::string &msg,int code) : FrameworkException(msg,code) {}
 }
 
 /* eof */
