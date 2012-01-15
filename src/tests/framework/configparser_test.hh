@@ -42,7 +42,7 @@ class ConfigParserTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(testGetValue);
   CPPUNIT_TEST(testGetObject);
   CPPUNIT_TEST(testGetString);
-  CPPUNIT_TEST(testGetComplex);
+  CPPUNIT_TEST(testGetByPath);
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -50,7 +50,7 @@ public:
   void testGetValue();
   void testGetObject();
   void testGetString();
-  void testGetComplex();
+  void testGetByPath();
 
 private:
   CForum::Configparser configParser;

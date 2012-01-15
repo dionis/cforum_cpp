@@ -65,11 +65,14 @@ void ConfigParserTest::testGetString() {
   CPPUNIT_ASSERT_EQUAL(std::string("May the force be with you"), v);
 }
 
-void ConfigParserTest::testGetComplex() {
+void ConfigParserTest::testGetByPath() {
   v8::Handle<v8::Value> val = configParser.getByPath("/ano/xyz");
   v8::String::Utf8Value sval(val);
-
   CPPUNIT_ASSERT_EQUAL(std::string(*sval), std::string("zyx"));
+
+  val = configParser.getByPath("/ano/nymous/0");
+  v8::String::Utf8Value sval1(val);
+  CPPUNIT_ASSERT_EQUAL(std::string(*sval1), std::string("Ano"));
 }
 
 /* eof */

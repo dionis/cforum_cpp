@@ -91,15 +91,38 @@ namespace CForum {
     return std::string(*utf8);
   }
 
+  inline int toInt(const std::string &str, bool *numeric) {
+    const char *ptr = str.c_str();
+    int num = 0;
+
+    *numeric = true;
+
+    for(; *ptr; ++ptr) {
+      if(isdigit(*ptr)) {
+        num = num * 10 + (*ptr - '0');
+      }
+      else {
+        *numeric = false;
+        return 0;
+      }
+    }
+
+    return num;
+  }
+
   v8::Handle<v8::Value> Configparser::getByPath(const std::string &name) {
     std::istringstream iss(name);
     std::vector<std::string> names;
     std::vector<std::string>::iterator it,end;
     v8::Handle<v8::Value> cfgval;
     v8::Handle<v8::Object> obj;
+    v8::Handle<v8::Array> ary;
     v8::Handle<v8::Value> key;
+    v8::Handle<v8::Number> nkey;
 
     std::string str;
+    int i;
+    bool numeric;
 
     if(name[0] == '/') {
       str = name.substr(1);
@@ -119,13 +142,27 @@ namespace CForum {
 
     cfgval = getValue(*it);
     for(++it; it != end; ++it) {
-      if(!cfgval->IsObject()) {
-        throw ConfigErrorException(std::string("Key ") + *it + " is not an object!", ConfigErrorException::NotAnObjectError);
+      i = toInt(*it, &numeric);
+
+      if(numeric) {
+        if(!cfgval->IsArray()) {
+          throw ConfigErrorException("Key  is not an array!", ConfigErrorException::NotAnObjectError);
+        }
+
+        obj    = cfgval->ToObject();
+        nkey   = v8::Number::New((double)i);
+        cfgval = obj->Get(nkey);
+      }
+      else {
+        if(!cfgval->IsObject()) {
+          throw ConfigErrorException("Key is not an object!", ConfigErrorException::NotAnObjectError);
+        }
+
+        key    = v8::String::New(it->c_str());
+        obj    = cfgval->ToObject();
+        cfgval = obj->Get(key);
       }
 
-      key    = v8::String::New(it->c_str());
-      obj    = cfgval->ToObject();
-      cfgval = obj->Get(key);
     }
 
     return cfgval;
