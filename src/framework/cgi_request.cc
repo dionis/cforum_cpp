@@ -39,7 +39,6 @@ namespace CForum {
 
     int port = cgi.serverPort();
 
-    /* TODO: check if SERVER_PROTOCOL contains http/https or if we have to do more */
     uri = (https.length() == 0 ? "http://" : "https://") + hostname;
     if((https.length() != 0 && port != 443) || port != 80) {
       uri += ":" + port;
