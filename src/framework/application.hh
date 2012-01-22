@@ -33,6 +33,9 @@
 
 #include <dlfcn.h>
 
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
+
 #include "framework/request.hh"
 #include "framework/controller.hh"
 
@@ -40,7 +43,7 @@
 
 namespace CForum {
   typedef struct {
-    Controller *controller;
+    boost::shared_ptr<Controller> controller;
     void *handle;
   } cf_module_t;
 
@@ -49,13 +52,13 @@ namespace CForum {
     Application();
     virtual ~Application();
 
-    Configparser *getConfigparser();
+    boost::shared_ptr<Configparser> getConfigparser();
 
     void loadModules();
-    void run(CGI *, Request *);
+    void run(boost::shared_ptr<CGI>, boost::shared_ptr<Request>);
 
   protected:
-    Configparser *configparser;
+    boost::shared_ptr<Configparser> configparser;
     void loadModule(const char *, const char *);
 
     std::vector<cf_module_t> modules;
@@ -66,16 +69,17 @@ namespace CForum {
   };
 
 
-  inline Configparser *Application::getConfigparser() {
+  inline boost::shared_ptr<Configparser> Application::getConfigparser() {
     return configparser;
   }
 
-  typedef Controller *(*cf_init_fun_t)(Application *);
+  typedef boost::shared_ptr<Controller> (*cf_init_fun_t)(Application *);
 
   template <typename to_t, typename from_t> to_t ugly_cast(from_t f) {
     union {
       from_t f; to_t t;
     } u;
+
     u.f = f;
     return u.t;
   }

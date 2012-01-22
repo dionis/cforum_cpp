@@ -37,19 +37,27 @@
 #include "framework/request.hh"
 
 namespace CForum {
+  class Application; // needed due to circular dependencies
+
   class Controller {
   public:
     Controller();
     virtual ~Controller();
 
-    virtual const std::string handleRequest(boost::shared_ptr<Request>, const std::map<std::string, std::string> &) = 0;
+    virtual void initController(Application *) = 0;
+    virtual void registerController(Application *) = 0;
+
+    virtual const std::string preRoute(boost::shared_ptr<Request>, const std::map<std::string, std::string> &);
+    virtual const std::string handleRequest(boost::shared_ptr<Request>, const std::map<std::string, std::string> &);
+    virtual const std::string postRoute(boost::shared_ptr<Request>, const std::map<std::string, std::string> &);
 
   protected:
-    Request *rq;
+    boost::shared_ptr<Request> request;
 
   };
 }
 
+#include "framework/application.hh"
 
 #endif
 

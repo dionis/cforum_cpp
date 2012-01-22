@@ -38,6 +38,9 @@
 
 class MyController : public CForum::Controller {
 public:
+  virtual void initController(CForum::Application *);
+  virtual void registerController(CForum::Application *);
+
   virtual const std::string handleRequest(boost::shared_ptr<CForum::Request>, const std::map<std::string, std::string> &);
 
   virtual ~MyController();
@@ -45,6 +48,9 @@ public:
 
 class MyControllerEmpty : public CForum::Controller {
 public:
+  virtual void initController(CForum::Application *);
+  virtual void registerController(CForum::Application *);
+
   virtual const std::string handleRequest(boost::shared_ptr<CForum::Request>, const std::map<std::string, std::string> &);
 
   virtual ~MyControllerEmpty();

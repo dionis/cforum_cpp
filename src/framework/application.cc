@@ -31,7 +31,7 @@
 #include "framework/application.hh"
 
 namespace CForum {
-  Application::Application() : configparser(new Configparser()), modules() {
+  Application::Application() : configparser(boost::make_shared<Configparser>()), modules() {
     configparser->parse();
   }
 
@@ -60,7 +60,7 @@ namespace CForum {
   void Application::loadModule(const char *path, const char *mod) {
     std::string file = std::string(path) + "/" + mod;
     void *mod_hndl = dlopen(file.c_str(), RTLD_LAZY);
-    Controller *cntrl;
+    boost::shared_ptr<Controller> cntrl;
     cf_module_t m;
     cf_init_fun_t fun;
 
@@ -81,16 +81,12 @@ namespace CForum {
     modules.push_back(m);
   }
 
-  void Application::run(CGI *cgi, Request *rq) {
+  void Application::run(boost::shared_ptr<CGI> cgi, boost::shared_ptr<Request> rq) {
     (void)cgi;
     (void)rq;
   }
 
-  Application::~Application() {
-    if(configparser) {
-      delete configparser;
-    }
-  }
+  Application::~Application() { }
 
 }
 

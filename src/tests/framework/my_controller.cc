@@ -30,19 +30,22 @@
 
 #include "my_controller.hh"
 
-const std::string MyController::handleRequest(boost::shared_ptr<CForum::Request> rq, const std::map<std::string, std::string> &vars) {
-  (void)rq;
-  (void)vars;
+void MyController::initController(CForum::Application *) { }
+void MyController::registerController(CForum::Application *) { }
+
+const std::string MyController::handleRequest(boost::shared_ptr<CForum::Request>, const std::map<std::string, std::string> &) {
   return "MyController::handleRequest";
 }
 
-const std::string MyControllerEmpty::handleRequest(boost::shared_ptr<CForum::Request> rq, const std::map<std::string, std::string> &vars) {
-  (void)rq;
-  (void)vars;
+MyController::~MyController() { }
+
+void MyControllerEmpty::initController(CForum::Application *) { }
+void MyControllerEmpty::registerController(CForum::Application *) { }
+
+const std::string MyControllerEmpty::handleRequest(boost::shared_ptr<CForum::Request>, const std::map<std::string, std::string> &) {
   return "";
 }
 
-MyController::~MyController() { }
 MyControllerEmpty::~MyControllerEmpty() { }
 
 /* eof */

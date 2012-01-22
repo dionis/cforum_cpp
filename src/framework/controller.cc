@@ -33,13 +33,21 @@
 #include "framework/controller.hh"
 
 namespace CForum {
-  Controller::Controller() : rq(NULL) { }
+  Controller::Controller() : request() { }
 
-  Controller::~Controller() {
-    if(rq) {
-      delete rq;
-    }
+  const std::string Controller::preRoute(boost::shared_ptr<Request>, const std::map<std::string, std::string> &) {
+    return std::string();
   }
+
+  const std::string Controller::handleRequest(boost::shared_ptr<Request>, const std::map<std::string, std::string> &) {
+    return std::string();
+  }
+
+  const std::string Controller::postRoute(boost::shared_ptr<Request>, const std::map<std::string, std::string> &) {
+    return std::string();
+  }
+
+  Controller::~Controller() { }
 
 }
 
