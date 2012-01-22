@@ -26,6 +26,8 @@ add_library(cfframework SHARED
   session_storage.cc
   session_exception.cc
   config_error_exception.cc
+  application.cc
+  module_exception.cc
 )
 
 target_link_libraries(cfframework cfexceptions cfcgi cfjsevaluator ${Boost_LIBRARIES} ${ICU_LIBRARY} ${PCREPP_LIBRARIES})
