@@ -34,7 +34,7 @@ namespace CForum {
   Template::Extender::Extender() : _filename(), _vars(), _empty(true) {
   }
 
-  Template::Extender::Extender(const std::string &fname,v8::Handle<v8::Object> vars) : _filename(fname), _vars(vars), _empty(false) {
+  Template::Extender::Extender(const std::string &fname, v8::Local<v8::Object> vars) : _filename(fname), _vars(vars), _empty(false) {
   }
 
   bool Template::Extender::isEmpty() {
@@ -45,7 +45,7 @@ namespace CForum {
     return _filename;
   }
 
-  v8::Handle<v8::Object> Template::Extender::getVars() {
+  v8::Local<v8::Object> Template::Extender::getVars() {
     return _vars;
   }
 

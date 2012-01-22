@@ -74,16 +74,16 @@ namespace CForum {
     }
   }
 
-  v8::Handle<v8::Value> Configparser::getValue(const std::string &name) {
+  v8::Local<v8::Value> Configparser::getValue(const std::string &name) {
     v8::Local<v8::Object> obj = _result->ToObject();
-    v8::Handle<v8::String> str = v8::String::New(name.c_str(), name.length());
+    v8::Local<v8::String> str = v8::String::New(name.c_str(), name.length());
     v8::Local<v8::Value> val = obj->Get(str);
 
     return val;
   }
 
   std::string Configparser::getStrValue(const std::string &name) {
-    v8::Handle<v8::Value> val = getValue(name);
+    v8::Local<v8::Value> val = getValue(name);
     v8::String::Utf8Value utf8(val);
 
     if(val.IsEmpty()) {
@@ -112,15 +112,15 @@ namespace CForum {
     return num;
   }
 
-  v8::Handle<v8::Value> Configparser::getByPath(const std::string &name) {
+  v8::Local<v8::Value> Configparser::getByPath(const std::string &name) {
     std::istringstream iss(name);
     std::vector<std::string> names;
     std::vector<std::string>::iterator it,end;
-    v8::Handle<v8::Value> cfgval;
-    v8::Handle<v8::Object> obj;
-    v8::Handle<v8::Array> ary;
-    v8::Handle<v8::Value> key;
-    v8::Handle<v8::Number> nkey;
+    v8::Local<v8::Value> cfgval;
+    v8::Local<v8::Object> obj;
+    v8::Local<v8::Array> ary;
+    v8::Local<v8::Value> key;
+    v8::Local<v8::Number> nkey;
 
     std::string str;
     int i;

@@ -35,12 +35,12 @@ namespace CForum {
 
   JSEvaluator::JSEvaluator(const JSEvaluator &) : _handle(), _context(v8::Context::New()), _context_scope(_context) {}
 
-  v8::Handle<v8::Value> JSEvaluator::evaluateFile(const std::string &filename) {
+  v8::Local<v8::Value> JSEvaluator::evaluateFile(const std::string &filename) {
     v8::Handle<v8::Script> script(compileFile(filename));
     return evaluateScript(script);
   }
 
-  v8::Handle<v8::Value> JSEvaluator::evaluateString(const std::string &source) {
+  v8::Local<v8::Value> JSEvaluator::evaluateString(const std::string &source) {
     v8::Handle<v8::Script> script(compileString(source));
     return evaluateScript(script);
   }
@@ -61,18 +61,18 @@ namespace CForum {
   }
 
   v8::Handle<v8::Script> JSEvaluator::compileString(const std::string &source) {
-    v8::Handle<v8::String> src = v8::String::New(source.c_str());
+    v8::Local<v8::String> src = v8::String::New(source.c_str());
     v8::Handle<v8::Script> script = v8::Script::Compile(src);
 
     return script;
   }
 
-  v8::Handle<v8::Value> JSEvaluator::evaluateScript(const v8::Handle<v8::Script> &script) {
+  v8::Local<v8::Value> JSEvaluator::evaluateScript(const v8::Handle<v8::Script> &script) {
     v8::TryCatch trycatch;
-    v8::Handle<v8::Value> result = script->Run();
+    v8::Local<v8::Value> result = script->Run();
 
     if(result.IsEmpty()) {
-      v8::Handle<v8::Value> exception = trycatch.Exception();
+      v8::Local<v8::Value> exception = trycatch.Exception();
       v8::String::AsciiValue exception_str(exception);
 
       throw JSEvaluatorException(*exception_str,JSEvaluatorException::JSException);

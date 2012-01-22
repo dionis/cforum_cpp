@@ -33,7 +33,7 @@
 namespace CForum {
   static v8::Handle<v8::Value> _pCallback(const v8::Arguments &args) {
     v8::Local<v8::Object> self = args.Holder();
-    v8::Handle<v8::Object> proto = v8::Handle<v8::Object>::Cast(self->GetPrototype());
+    v8::Local<v8::Object> proto = v8::Local<v8::Object>::Cast(self->GetPrototype());
 
     if(proto->InternalFieldCount() < 1) {
       return v8::ThrowException(v8::String::New("Oops! Global object not found."));
@@ -50,7 +50,7 @@ namespace CForum {
       return v8::ThrowException(v8::String::New("A variable name is needed as first argument!"));
     }
 
-    v8::Handle<v8::Value> val = tpl->getVariable(args[0]);
+    v8::Local<v8::Value> val = tpl->getVariable(args[0]);
     if(val->IsUndefined()) {
       if(args.Length() > 1) {
         val = args[1];
@@ -65,7 +65,7 @@ namespace CForum {
 
   static v8::Handle<v8::Value> _vCallback(const v8::Arguments &args) {
     v8::Local<v8::Object> self = args.Holder();
-    v8::Handle<v8::Object> proto = v8::Handle<v8::Object>::Cast(self->GetPrototype());
+    v8::Local<v8::Object> proto = v8::Local<v8::Object>::Cast(self->GetPrototype());
 
     if(proto->InternalFieldCount() < 1) {
       return v8::ThrowException(v8::String::New("Oops! Global object not found."));
@@ -82,10 +82,10 @@ namespace CForum {
       return v8::ThrowException(v8::String::New("A variable name is needed as first argument!"));
     }
 
-    v8::Handle<v8::Value> val = tpl->getVariable(args[0]);
+    v8::Local<v8::Value> val = tpl->getVariable(args[0]);
     if(val->IsUndefined()) {
       if(args.Length() > 1) {
-        v8::Handle<v8::String> str = args[1]->ToString();
+        v8::Local<v8::String> str = args[1]->ToString();
         return str;
       }
     }
@@ -95,7 +95,7 @@ namespace CForum {
 
   static v8::Handle<v8::Value> _eCallback(const v8::Arguments &args) {
     v8::Local<v8::Object> self = args.Holder();
-    v8::Handle<v8::Object> proto = v8::Handle<v8::Object>::Cast(self->GetPrototype());
+    v8::Local<v8::Object> proto = v8::Local<v8::Object>::Cast(self->GetPrototype());
 
     if(proto->InternalFieldCount() < 1) {
       return v8::ThrowException(v8::String::New("Oops! Global object not found."));
@@ -123,7 +123,7 @@ namespace CForum {
 
   static v8::Handle<v8::Value> extendCallback(const v8::Arguments &args) {
     v8::Local<v8::Object> self = args.Holder();
-    v8::Handle<v8::Object> proto = v8::Handle<v8::Object>::Cast(self->GetPrototype());
+    v8::Local<v8::Object> proto = v8::Local<v8::Object>::Cast(self->GetPrototype());
 
     if(proto->InternalFieldCount() < 1) {
       return v8::ThrowException(v8::String::New("Oops! Global object not found."));
@@ -143,7 +143,7 @@ namespace CForum {
     v8::String::Utf8Value part_name(args[0]);
     std::string fname = tpl->generateFileName(part_name);
 
-    v8::Handle<v8::Object> vars;
+    v8::Local<v8::Object> vars;
     if(args.Length() == 2 && !args[0].IsEmpty() && args[0]->IsObject()) {
       vars = args[1]->ToObject();
     }
@@ -155,7 +155,7 @@ namespace CForum {
 
   static v8::Handle<v8::Value> partialCallback(const v8::Arguments &args) {
     v8::Local<v8::Object> self = args.Holder();
-    v8::Handle<v8::Object> proto = v8::Handle<v8::Object>::Cast(self->GetPrototype());
+    v8::Local<v8::Object> proto = v8::Local<v8::Object>::Cast(self->GetPrototype());
 
     if(proto->InternalFieldCount() < 1) {
       return v8::ThrowException(v8::String::New("Oops! Global object not found."));
@@ -175,7 +175,7 @@ namespace CForum {
     v8::String::Utf8Value part_name(args[0]);
     std::string fname = tpl->generateFileName(part_name);
 
-    v8::Handle<v8::Object> vars;
+    v8::Local<v8::Object> vars;
     if(args.Length() == 2 && !args[0].IsEmpty() && args[0]->IsObject()) {
       vars = args[1]->ToObject();
     }
@@ -197,10 +197,10 @@ namespace CForum {
   }
 
   Template::Template() : _stream(NULL), _extends(), _handle_scope(), _global(), _context(v8::Context::New(NULL, _global.getGlobal())), _scope(_context), _vars(v8::Object::New()), _base_dir() {
-    v8::Handle<v8::Object>::Cast(_context->Global()->GetPrototype())->SetInternalField(0, v8::External::New(this));
+    v8::Local<v8::Object>::Cast(_context->Global()->GetPrototype())->SetInternalField(0, v8::External::New(this));
   }
 
-  void Template::setExtend(const std::string &fname,v8::Handle<v8::Object> vars) {
+  void Template::setExtend(const std::string &fname, v8::Local<v8::Object> vars) {
     _extends = Extender(fname,vars);
   }
 
@@ -216,13 +216,13 @@ namespace CForum {
     return ret;
   }
 
-  std::string Template::evaluate(const v8::Handle<v8::Script> &script,v8::Handle<v8::Object> vars) {
+  std::string Template::evaluate(const v8::Local<v8::Script> &script, v8::Local<v8::Object> vars) {
     std::ostringstream ostr;
     std::ostream *tmp;
     std::string str;
     v8::Local<v8::Value> key;
     v8::Local<v8::Array> keys;
-    v8::Handle<v8::Object> tmp_vars,e_vars;
+    v8::Local<v8::Object> tmp_vars,e_vars;
     std::string fname;
 
     if(vars.IsEmpty()) {
