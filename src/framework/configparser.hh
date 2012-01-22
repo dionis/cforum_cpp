@@ -56,7 +56,7 @@ namespace CForum {
     ~Configparser();
 
     std::string findFile();
-    void parse();
+    void parse(std::string = "");
 
     v8::Handle<v8::Value> getValue(const std::string &);
     v8::Handle<v8::Value> getByPath(const std::string &);

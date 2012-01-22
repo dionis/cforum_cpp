@@ -60,8 +60,10 @@ namespace CForum {
     throw ConfigErrorException("No configuration file could be found!",CForumException::FileNotFound);
   }
 
-  void Configparser::parse() {
-    _filename = findFile();
+  void Configparser::parse(std::string fname) {
+    if(fname == "") {
+      _filename = findFile();
+    }
 
     try {
       _script = _evaluator.compileFile(_filename);
