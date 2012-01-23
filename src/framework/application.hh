@@ -57,11 +57,14 @@ namespace CForum {
     void loadModules();
     void run(boost::shared_ptr<CGI>, boost::shared_ptr<Request>);
 
+    void registerHook(const std::string &, boost::shared_ptr<Controller>);
+
   protected:
     boost::shared_ptr<Configparser> configparser;
     void loadModule(const char *, const char *);
 
     std::vector<cf_module_t> modules;
+    std::map<std::string, std::vector<boost::shared_ptr<Controller> > > hooks;
 
   private:
     Application(const Application &);

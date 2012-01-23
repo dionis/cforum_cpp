@@ -31,7 +31,7 @@
 #include "framework/application.hh"
 
 namespace CForum {
-  Application::Application() : configparser(boost::make_shared<Configparser>()), modules() {
+  Application::Application() : configparser(boost::make_shared<Configparser>()), modules(), hooks() {
     configparser->parse();
   }
 
@@ -55,6 +55,16 @@ namespace CForum {
 
       loadModule(*path, *mod_utf8);
     }
+
+    std::vector<cf_module_t>::iterator it, end = modules.end();
+
+    for(it = modules.begin(); it != end; ++it) {
+      it->controller->registerController(this);
+    }
+  }
+
+  void Application::registerHook(const std::string &nam, boost::shared_ptr<Controller> cntrl) {
+    hooks[nam].push_back(cntrl);
   }
 
   void Application::loadModule(const char *path, const char *mod) {
@@ -68,12 +78,15 @@ namespace CForum {
       throw ModuleException(std::string("Could not open module ") + file, ModuleException::ModuleNotFoundError);
     }
 
-    fun = ugly_cast<cf_init_fun_t>(dlsym(mod_hndl, "init"));
-    if(fun == NULL) {
+    if((fun = ugly_cast<cf_init_fun_t>(dlsym(mod_hndl, "init"))) == NULL) {
       throw ModuleException(std::string("Could not find init function for module ") + file, ModuleException::InitFunNotFoundError);
     }
 
-    cntrl = fun(this);
+    if((cntrl = fun(this)) == NULL) {
+      throw ModuleException(std::string("init function returned NULL for module ") + file, ModuleException::InitFunReturnedNullError);
+    }
+
+    cntrl->initController(this);
 
     m.handle = mod_hndl;
     m.controller = cntrl;

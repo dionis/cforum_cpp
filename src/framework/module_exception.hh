@@ -41,8 +41,9 @@ namespace CForum {
     ModuleException(const char *, int);
     ModuleException(const std::string &, int);
 
-    const static int ModuleNotFoundError  = 0x4f1c2cd6;
-    const static int InitFunNotFoundError = 0x4f1c2d86;
+    const static int ModuleNotFoundError      = 0x4f1c2cd6;
+    const static int InitFunNotFoundError     = 0x4f1c2d86;
+    const static int InitFunReturnedNullError = 0x4f1db307;
 
   };
 
