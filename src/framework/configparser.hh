@@ -71,8 +71,8 @@ namespace CForum {
 
     JSEvaluator _evaluator;
 
-    v8::Handle<v8::Script> _script;
-    v8::Handle<v8::Value> _result;
+    v8::Local<v8::Script> _script;
+    v8::Local<v8::Value> _result;
 
   };
 

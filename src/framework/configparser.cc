@@ -31,8 +31,8 @@
 #include "framework/configparser.hh"
 
 namespace CForum {
-  Configparser::Configparser() : _evaluator(), _script(NULL), _result(NULL) { }
-  Configparser::Configparser(const Configparser &) : _evaluator(), _script(NULL), _result(NULL) { }
+  Configparser::Configparser() : _evaluator(), _script(), _result() { }
+  Configparser::Configparser(const Configparser &) : _evaluator(), _script(), _result() { }
 
   std::string Configparser::findFile() {
     static const char *locations[] = {
