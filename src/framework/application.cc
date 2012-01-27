@@ -67,6 +67,10 @@ namespace CForum {
     hooks[nam].push_back(cntrl);
   }
 
+  const std::vector<boost::shared_ptr<Controller> > &Application::getHook(const std::string &nam) {
+    return hooks[nam];
+  }
+
   void Application::loadModule(const char *path, const char *mod) {
     std::string file = std::string(path) + "/" + mod;
     void *mod_hndl = dlopen(file.c_str(), RTLD_LAZY);

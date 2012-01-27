@@ -57,6 +57,7 @@ namespace CForum {
     void loadModules();
     void run(boost::shared_ptr<CGI>, boost::shared_ptr<Request>);
 
+    const std::vector<boost::shared_ptr<Controller> > &getHook(const std::string &);
     void registerHook(const std::string &, boost::shared_ptr<Controller>);
 
   protected:
