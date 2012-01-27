@@ -41,7 +41,7 @@ void CouchDBTest::testInterface() {
   CForum::CouchDB::Document doc("{\"_id\": \"test\",\"lala\":\"lulu\"}");
 
   try {
-  srv.putDocument(doc);
+    srv.putDocument(doc);
   }
   catch(CForum::CouchDB::CouchErrorException &e) {
     printf("error: %s\n",e.getMessage().c_str());
