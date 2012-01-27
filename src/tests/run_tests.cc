@@ -32,6 +32,7 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/ui/text/TestRunner.h>
 
+#include <v8.h>
 
 int main(int argc, char* argv[]) {
   (void)argc;
@@ -48,6 +49,11 @@ int main(int argc, char* argv[]) {
   runner.setOutputter(new CppUnit::CompilerOutputter(&runner.result(), std::cerr));
   // Run the tests.
   bool wasSucessful = runner.run();
+
+  while(!v8::V8::IdleNotification()) {
+  }
+
+  v8::V8::Dispose();
 
   // Return error code 1 if the one of test failed.
   return wasSucessful ? 0 : 1;
