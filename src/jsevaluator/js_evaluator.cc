@@ -83,7 +83,6 @@ namespace CForum {
 
   JSEvaluator::~JSEvaluator() {
     _context.Dispose();
-    while(!v8::V8::IdleNotification()) {}
   }
 
 }
