@@ -49,10 +49,10 @@ namespace CForum {
     v8::Local<v8::Value> evaluateFile(const std::string &);
     v8::Local<v8::Value> evaluateString(const std::string &);
 
-    v8::Handle<v8::Script> compileString(const std::string &);
-    v8::Handle<v8::Script> compileFile(const std::string &);
+    v8::Local<v8::Script> compileString(const std::string &);
+    v8::Local<v8::Script> compileFile(const std::string &);
 
-    v8::Local<v8::Value> evaluateScript(const v8::Handle<v8::Script> &);
+    v8::Local<v8::Value> evaluateScript(const v8::Local<v8::Script> &);
 
   private:
     JSEvaluator(const JSEvaluator &);

@@ -36,16 +36,16 @@ namespace CForum {
   JSEvaluator::JSEvaluator(const JSEvaluator &) : _handle(), _context(v8::Context::New()), _context_scope(_context) {}
 
   v8::Local<v8::Value> JSEvaluator::evaluateFile(const std::string &filename) {
-    v8::Handle<v8::Script> script(compileFile(filename));
+    v8::Local<v8::Script> script(compileFile(filename));
     return evaluateScript(script);
   }
 
   v8::Local<v8::Value> JSEvaluator::evaluateString(const std::string &source) {
-    v8::Handle<v8::Script> script(compileString(source));
+    v8::Local<v8::Script> script(compileString(source));
     return evaluateScript(script);
   }
 
-  v8::Handle<v8::Script> JSEvaluator::compileFile(const std::string &filename) {
+  v8::Local<v8::Script> JSEvaluator::compileFile(const std::string &filename) {
     std::ifstream fd(filename.c_str(), std::ifstream::in);
     std::stringstream sst;
 
@@ -60,14 +60,14 @@ namespace CForum {
     return compileString(sst.str());
   }
 
-  v8::Handle<v8::Script> JSEvaluator::compileString(const std::string &source) {
+  v8::Local<v8::Script> JSEvaluator::compileString(const std::string &source) {
     v8::Local<v8::String> src = v8::String::New(source.c_str());
-    v8::Handle<v8::Script> script = v8::Script::Compile(src);
+    v8::Local<v8::Script> script = v8::Script::Compile(src);
 
     return script;
   }
 
-  v8::Local<v8::Value> JSEvaluator::evaluateScript(const v8::Handle<v8::Script> &script) {
+  v8::Local<v8::Value> JSEvaluator::evaluateScript(const v8::Local<v8::Script> &script) {
     v8::TryCatch trycatch;
     v8::Local<v8::Value> result = script->Run();
 
