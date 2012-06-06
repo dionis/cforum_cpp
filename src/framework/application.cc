@@ -30,14 +30,57 @@
 
 #include "framework/application.hh"
 
+void usage(const char *bin) {
+  fprintf(
+    stderr,
+    "Usage:\n"                                                       \
+    "%s [options]\n\n"                                               \
+    "where options are:\n"                                           \
+    "\t-c, --config-directory Path to the configuration directory\n" \
+    "\t-h, --help Show this help screen\n\n",
+    bin
+  );
+  exit(-1);
+}
+
 namespace CForum {
-  Application::Application() : configparser(boost::make_shared<Configparser>()), modules(), hooks() {
-    configparser->parse();
+  Application::Application() : configparser(boost::make_shared<Configparser>()), router(boost::make_shared<Router>()), modules(), hooks() {
+  }
+
+  Application::Application(int argc, char *argv[]) : configparser(boost::make_shared<Configparser>()), router(boost::make_shared<Router>()), modules(), hooks() {
+    scanArgs(argc, argv);
+    configparser->parse(configfile);
   }
 
   Application::Application(const Application &) { }
   Application &Application::operator=(const Application &) {
     return *this;
+  }
+
+  static const char *cmdline = "c:h";
+  static struct option cmdline_long[] = {
+    { "config", 1, NULL, 'c' },
+    { "help", 0, NULL, 'h' },
+    { NULL, 0, NULL, 0 }
+  };
+
+  void Application::scanArgs(int argc, char *argv[]) {
+    int c;
+
+    while((c = getopt_long(argc, argv, cmdline, cmdline_long, NULL)) > 0) {
+      switch(c) {
+        case 'c':
+          if(!optarg) {
+            usage(argv[0]);
+          }
+
+          configfile = optarg;
+          break;
+
+        default:
+          usage(argv[0]);
+      }
+    }
   }
 
   void Application::loadModules() {
@@ -98,8 +141,7 @@ namespace CForum {
     modules.push_back(m);
   }
 
-  void Application::run(boost::shared_ptr<CGI> cgi, boost::shared_ptr<Request> rq) {
-    (void)cgi;
+  void Application::run(boost::shared_ptr<Request> rq) {
     (void)rq;
   }
 

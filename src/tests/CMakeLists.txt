@@ -12,10 +12,10 @@ add_subdirectory(framework)
 
 add_executable(run_tests run_tests.cc)
 target_link_libraries(run_tests
-  cfjson_test
-  cfcgi_test
-  cfcouchdb_test
-  cftemplate_test
+#  cfjson_test
+#  cfcgi_test
+#  cfcouchdb_test
+#  cftemplate_test
   cfframework_test
 )
 

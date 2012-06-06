@@ -31,8 +31,8 @@
 #include "framework/configparser.hh"
 
 namespace CForum {
-  Configparser::Configparser() : _evaluator(), _script(), _result() { }
-  Configparser::Configparser(const Configparser &) : _evaluator(), _script(), _result() { }
+  Configparser::Configparser() : _evaluator(), _script(), _result(), _parsed(false) { }
+  Configparser::Configparser(const Configparser &) : _evaluator(), _script(), _result(), _parsed(false) { }
 
   std::string Configparser::findFile() {
     static const char *locations[] = {
@@ -68,6 +68,7 @@ namespace CForum {
     try {
       _script = _evaluator.compileFile(_filename);
       _result = _evaluator.evaluateScript(_script);
+      _parsed = true;
     }
     catch(JSEvaluatorException &e) {
       throw ConfigErrorException(e.getMessage(),e.getCode());

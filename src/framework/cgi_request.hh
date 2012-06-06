@@ -31,6 +31,10 @@
 #ifndef CGI_REQUEST_H
 #define CGI_REQUEST_H
 
+#include <iostream>
+#include <string>
+#include <sstream>
+
 #include "framework/request.hh"
 
 namespace CForum {

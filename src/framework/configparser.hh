@@ -63,6 +63,8 @@ namespace CForum {
 
     std::string getStrValue(const std::string &);
 
+    bool isParsed() const;
+
   private:
     Configparser(const Configparser &);
 
@@ -74,8 +76,14 @@ namespace CForum {
     v8::Local<v8::Script> _script;
     v8::Local<v8::Value> _result;
 
+    bool _parsed;
+
   };
 
+
+  inline bool Configparser::isParsed() const {
+    return _parsed;
+  }
 
 }
 

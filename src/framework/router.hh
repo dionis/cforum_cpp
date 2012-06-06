@@ -49,6 +49,8 @@
 #include "framework/internal_error_exception.hh"
 
 namespace CForum {
+  class Route; // needed due to circular dependencies
+
   class Router {
   public:
     Router();

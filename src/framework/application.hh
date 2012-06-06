@@ -36,12 +36,19 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 
+#include <unistd.h>
+#include <getopt.h>
+
 #include "framework/request.hh"
 #include "framework/controller.hh"
+
+#include "framework/router.hh"
 
 #include "framework/module_exception.hh"
 
 namespace CForum {
+  class Router; // needed due to circular dependencies
+
   typedef struct {
     boost::shared_ptr<Controller> controller;
     void *handle;
@@ -50,22 +57,29 @@ namespace CForum {
   class Application {
   public:
     Application();
+    Application(int, char *[]);
     virtual ~Application();
 
-    boost::shared_ptr<Configparser> getConfigparser();
+    virtual boost::shared_ptr<Configparser> getConfigparser();
 
-    void loadModules();
-    void run(boost::shared_ptr<CGI>, boost::shared_ptr<Request>);
+    virtual void loadModules();
 
-    const std::vector<boost::shared_ptr<Controller> > &getHook(const std::string &);
-    void registerHook(const std::string &, boost::shared_ptr<Controller>);
+    virtual void scanArgs(int, char *[]);
+    virtual void handleRequest() = 0;
+    virtual void run(boost::shared_ptr<Request>);
+
+    virtual const std::vector<boost::shared_ptr<Controller> > &getHook(const std::string &);
+    virtual void registerHook(const std::string &, boost::shared_ptr<Controller>);
 
   protected:
-    boost::shared_ptr<Configparser> configparser;
-    void loadModule(const char *, const char *);
+    virtual void loadModule(const char *, const char *);
 
+    boost::shared_ptr<Configparser> configparser;
+    boost::shared_ptr<Router> router;
     std::vector<cf_module_t> modules;
     std::map<std::string, std::vector<boost::shared_ptr<Controller> > > hooks;
+
+    std::string configfile;
 
   private:
     Application(const Application &);

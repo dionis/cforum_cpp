@@ -34,19 +34,20 @@ namespace CForum {
   CGIRequest::CGIRequest() : Request::Request(), cgi(CGI::fromCGIEnvironment()) {
     std::string path_info = cgi.pathInfo(),
       hostname = cgi.serverName(),
-      https = cgi.getCGIVariable("HTTPS"),
-      uri;
+      https = cgi.getCGIVariable("HTTPS");
+
+    std::stringstream uri_s;
 
     int port = cgi.serverPort();
 
-    uri = (https.length() == 0 ? "http://" : "https://") + hostname;
+    uri_s << (https.length() == 0 ? "http://" : "https://") << hostname;
     if((https.length() != 0 && port != 443) || port != 80) {
-      uri += ":" + port;
+      uri_s << ":" << port;
     }
 
-    uri += path_info.length() ? path_info : std::string("/");
+    uri_s << path_info.length() ? path_info : "/";
 
-    requestUri = URI(uri);
+    requestUri = URI(uri_s.str());
   }
 
   CGIRequest::CGIRequest(const CGIRequest &rq) : Request::Request(rq), cgi(rq.cgi) { }

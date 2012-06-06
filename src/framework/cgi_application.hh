@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief Request information, including CGI parameters
+ * \brief CGI application interface
  * \package framework
  *
- * Request information, including route, CGI parameters, etc, pp
+ * CGI application interface
  */
 
 /*
@@ -28,50 +28,30 @@
  * THE SOFTWARE.
  */
 
-#ifndef REQUEST_H
-#define REQUEST_H
+#ifndef CGI_APPLICATION_H
+#define CGI_APPLICATION_H
 
-#include <string>
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
+
+#include "framework/application.hh"
 
 #include "cgi/cgi.hh"
-#include "framework/configparser.hh"
-#include "framework/uri.hh"
-#include "framework/user.hh"
+#include "framework/cgi_request.hh"
 
 namespace CForum {
-  class Request {
+  class CGIApplication : public Application {
   public:
-    Request();
-    Request(const Request &);
+    CGIApplication();
+    CGIApplication(int, char *[]);
+    virtual ~CGIApplication();
 
-    virtual Request &operator=(const Request &);
-
-    virtual const URI &getUri() const;
-    virtual const CGI &getCGI() const = 0;
-
-    virtual void setUser(const User &);
-    virtual const User &getUser() const;
-
-
-    virtual ~Request() = 0;
+    virtual void handleRequest();
 
   protected:
-    URI requestUri;
-    User user;
+    boost::shared_ptr<CGIRequest> request;
 
   };
-
-  inline const URI &Request::getUri() const {
-    return requestUri;
-  }
-
-  inline void Request::setUser(const User &usr) {
-    user = usr;
-  }
-  inline const User &Request::getUser() const {
-    return user;
-  }
-
 }
 
 #endif

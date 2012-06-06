@@ -1,9 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief Request information, including CGI parameters
+ * \brief CGI application implementation
  * \package framework
  *
- * Request information, including route, CGI parameters, etc, pp
+ * CGI application implementation
  */
 
 /*
@@ -28,52 +28,19 @@
  * THE SOFTWARE.
  */
 
-#ifndef REQUEST_H
-#define REQUEST_H
-
-#include <string>
-
-#include "cgi/cgi.hh"
-#include "framework/configparser.hh"
-#include "framework/uri.hh"
-#include "framework/user.hh"
+#include "framework/cgi_application.hh"
 
 namespace CForum {
-  class Request {
-  public:
-    Request();
-    Request(const Request &);
+  CGIApplication::CGIApplication() : Application(), request(boost::make_shared<CGIRequest>()) { }
+  CGIApplication::CGIApplication(int argc, char *argv[]) : Application(argc, argv), request(boost::make_shared<CGIRequest>()) { }
 
-    virtual Request &operator=(const Request &);
-
-    virtual const URI &getUri() const;
-    virtual const CGI &getCGI() const = 0;
-
-    virtual void setUser(const User &);
-    virtual const User &getUser() const;
-
-
-    virtual ~Request() = 0;
-
-  protected:
-    URI requestUri;
-    User user;
-
-  };
-
-  inline const URI &Request::getUri() const {
-    return requestUri;
+  void CGIApplication::handleRequest() {
+    run(request);
   }
 
-  inline void Request::setUser(const User &usr) {
-    user = usr;
-  }
-  inline const User &Request::getUser() const {
-    return user;
-  }
+  CGIApplication::~CGIApplication() { }
 
 }
 
-#endif
 
 /* eof */

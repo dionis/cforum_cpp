@@ -28,6 +28,7 @@ add_library(cfframework SHARED
   config_error_exception.cc
   application.cc
   module_exception.cc
+  cgi_application.cc
 )
 
 target_link_libraries(cfframework cfexceptions cfcgi cfjsevaluator ${Boost_LIBRARIES} ${ICU_LIBRARY} ${PCREPP_LIBRARIES})
