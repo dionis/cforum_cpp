@@ -74,7 +74,7 @@ namespace CForum {
 
     v8::Local<v8::Value> user = configparser->getByPath("couchdb/user");
     v8::Local<v8::Value> pass = configparser->getByPath("couchdb/password");
-    if(!user->IsNull()) {
+    if(!user->IsNull() && !user->IsUndefined()) {
       v8::String::Utf8Value user_u(user), pass_u(pass);
       couch->setAuth(*user_u, *pass_u);
     }
