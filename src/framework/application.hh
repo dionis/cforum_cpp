@@ -66,6 +66,7 @@ namespace CForum {
     virtual boost::shared_ptr<Configparser> getConfigparser();
     virtual boost::shared_ptr<Router> getRouter();
     virtual boost::shared_ptr<NotificationCenter> getNotificationCenter();
+    virtual boost::shared_ptr<CouchDB::Server> getCouch();
 
     virtual void init();
     virtual void init(int argc, char *[]);
@@ -107,6 +108,10 @@ namespace CForum {
 
   inline boost::shared_ptr<NotificationCenter> Application::getNotificationCenter() {
     return notificationCenter;
+  }
+
+  inline boost::shared_ptr<CouchDB::Server> Application::getCouch() {
+    return couch;
   }
 
   typedef boost::shared_ptr<Controller> (*cf_init_fun_t)(Application *);
