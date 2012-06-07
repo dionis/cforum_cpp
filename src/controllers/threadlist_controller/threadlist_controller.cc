@@ -27,7 +27,7 @@
  * THE SOFTWARE.
  */
 
-#include "controllers/threadlist_controller.hh"
+#include "controllers/threadlist_controller/threadlist_controller.hh"
 
 namespace CForum {
   ThreadlistController::ThreadlistController() : Controller::Controller() {
