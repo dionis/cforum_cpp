@@ -83,7 +83,7 @@ namespace CForum {
     v8::Local<v8::String> str = v8::String::New(name.c_str(), name.length());
     v8::Local<v8::Value> val = obj->Get(str);
 
-    if(!may_be_null && val->IsNull()) {
+    if(!may_be_null && (val->IsNull() || val->IsUndefined())) {
       throw ConfigErrorException(std::string("Key ") + name + std::string(" does not exist or is null!"), ConfigErrorException::NotExistantOrNull);
     }
 
@@ -175,7 +175,7 @@ namespace CForum {
 
     }
 
-    if(!may_be_null && cfgval->IsNull()) {
+    if(!may_be_null && (cfgval->IsNull() || cfgval->IsUndefined())) {
       throw ConfigErrorException(std::string("Key ") + name + std::string(" does not exist or is null!"), ConfigErrorException::NotExistantOrNull);
     }
 
