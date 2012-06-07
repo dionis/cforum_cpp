@@ -7,7 +7,7 @@ config = {
   'couchdb': {
     'protocol': 'http',
     'host': 'localhost',
-    'port': 80,
+    'port': 5984,
     'database': 'selfhtml'
   }
 };
