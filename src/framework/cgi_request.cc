@@ -66,10 +66,6 @@ namespace CForum {
     return *this;
   }
 
-  const char *CGIRequest::getEnv(const char *name) const {
-    return getenv(name);
-  }
-
 
   bool endsWith(const std::string &str, const std::string &substr) {
     size_t i = str.rfind(substr);

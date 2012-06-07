@@ -48,7 +48,6 @@ namespace CForum {
 
     virtual const URI &getUri() const;
     virtual const CGI &getCGI() const = 0;
-    virtual const char *getEnv(const char *) const = 0;
 
     virtual void setUser(const User &);
     virtual const User &getUser() const;

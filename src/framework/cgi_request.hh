@@ -47,7 +47,6 @@ namespace CForum {
     virtual CGIRequest &operator=(const CGIRequest &);
 
     virtual const CGI &getCGI() const;
-    virtual const char *getEnv(const char *) const;
 
     virtual void output(const std::string &);
 
