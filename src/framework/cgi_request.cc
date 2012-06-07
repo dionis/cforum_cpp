@@ -40,6 +40,10 @@ namespace CForum {
 
     int port = cgi.serverPort();
 
+    if(hostname == "") {
+      hostname = "localhost";
+    }
+
     uri_s << (https.length() == 0 ? "http://" : "https://") << hostname;
     if((https.length() != 0 && port != 443) || port != 80) {
       uri_s << ":" << port;
