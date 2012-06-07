@@ -1,4 +1,4 @@
-#!/usr/local/bin/ruby -wKu
+#!/usr/bin/ruby -wKu
 # -*- coding: utf-8 -*-
 
 require 'couchrest'
