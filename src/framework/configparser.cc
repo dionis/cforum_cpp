@@ -75,10 +75,14 @@ namespace CForum {
     }
   }
 
-  v8::Local<v8::Value> Configparser::getValue(const std::string &name) {
+  v8::Local<v8::Value> Configparser::getValue(const std::string &name, bool may_be_null) {
     v8::Local<v8::Object> obj = _result->ToObject();
     v8::Local<v8::String> str = v8::String::New(name.c_str(), name.length());
     v8::Local<v8::Value> val = obj->Get(str);
+
+    if(!may_be_null && val->IsNull()) {
+      throw ConfigErrorException(std::string("Key ") + name + std::string(" does not exist or is null!"), ConfigErrorException::NotExistantOrNull);
+    }
 
     return val;
   }
@@ -113,7 +117,7 @@ namespace CForum {
     return num;
   }
 
-  v8::Local<v8::Value> Configparser::getByPath(const std::string &name) {
+  v8::Local<v8::Value> Configparser::getByPath(const std::string &name, bool may_be_null) {
     std::istringstream iss(name);
     std::vector<std::string> names;
     std::vector<std::string>::iterator it,end;
@@ -166,6 +170,10 @@ namespace CForum {
         cfgval = obj->Get(key);
       }
 
+    }
+
+    if(!may_be_null && cfgval->IsNull()) {
+      throw ConfigErrorException(std::string("Key ") + name + std::string(" does not exist or is null!"), ConfigErrorException::NotExistantOrNull);
     }
 
     return cfgval;

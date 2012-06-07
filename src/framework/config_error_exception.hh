@@ -45,6 +45,7 @@ namespace CForum {
     static const int JSError               = 0x4f11c6b3;
     static const int StringConversionError = 0x4f11ddd8;
     static const int NotAnObjectError      = 0x4f11e9a9;
+    static const int NotExistantOrNull     = 0x4fd0d47c;
   };
 }
 
