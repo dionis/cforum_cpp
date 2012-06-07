@@ -40,19 +40,19 @@ int main(int argc, char *argv[]) {
   sa_t sa;
   socklen_t len = sizeof(sa);
 
-  /* if we can't get the peer name on stdout (fd 0) and the error is
+  /* if we can get the peer name on stdout (fd 0) or the error is not
    * „not a connection“ (ENOTCON), then we are in FastCGI mode. Shamelessly
    * stolen from PHP ;-)
    */
   errno = 0;
   if(getpeername(0, (struct sockaddr *)&sa, &len) != 0 && errno == ENOTCONN) {
+    // fastcgi
+  }
+  else {
     // not fastcgi
     CForum::CGIApplication app;
     app.init(argc, argv);
     app.handleRequest();
-  }
-  else {
-    // fastcgi
   }
 
   return EXIT_SUCCESS;
