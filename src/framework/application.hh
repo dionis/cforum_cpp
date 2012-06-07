@@ -42,6 +42,7 @@
 #include "framework/request.hh"
 #include "framework/controller.hh"
 #include "framework/notification_center.hh"
+#include "couchdb/server.hh"
 
 #include "framework/router.hh"
 
@@ -82,6 +83,8 @@ namespace CForum {
     boost::shared_ptr<Configparser> configparser;
     boost::shared_ptr<Router> router;
     boost::shared_ptr<NotificationCenter> notificationCenter;
+    boost::shared_ptr<CouchDB::Server> couch;
+
     std::vector<cf_module_t> modules;
     std::map<std::string, std::vector<boost::shared_ptr<Controller> > > hooks;
 

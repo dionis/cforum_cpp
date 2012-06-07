@@ -31,6 +31,6 @@ add_library(cfframework SHARED
   cgi_application.cc
 )
 
-target_link_libraries(cfframework cfexceptions cfcgi cfjsevaluator ${Boost_LIBRARIES} ${ICU_LIBRARY} ${PCREPP_LIBRARIES})
+target_link_libraries(cfframework cfexceptions cfcgi cfjsevaluator cfjson cfcouchdb ${Boost_LIBRARIES} ${ICU_LIBRARY} ${PCREPP_LIBRARIES})
 
 # eof

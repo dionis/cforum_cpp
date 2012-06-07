@@ -46,7 +46,7 @@ void usage(const char *bin) {
 namespace CForum {
   const char *Application::NOTIFY_PRE_RUN = "notify: just about to run";
 
-  Application::Application() : configparser(boost::make_shared<Configparser>()), router(boost::make_shared<Router>()), notificationCenter(boost::make_shared<NotificationCenter>()), modules(), hooks() {
+  Application::Application() : configparser(boost::make_shared<Configparser>()), router(boost::make_shared<Router>()), notificationCenter(boost::make_shared<NotificationCenter>()), couch(), modules(), hooks() {
   }
 
   Application::Application(const Application &) { }
@@ -61,6 +61,23 @@ namespace CForum {
 
     configparser->parse(configfile);
     loadModules();
+
+    v8::Local<v8::String>  protocol = configparser->getByPath("couchdb/protocol")->ToString();
+    v8::Local<v8::String>  host     = configparser->getByPath("couchdb/host")->ToString();
+    v8::Local<v8::Integer> port     = configparser->getByPath("couchdb/port")->ToInteger();
+    v8::Local<v8::String>  database = configparser->getByPath("couchdb/database")->ToString();
+
+    v8::String::Utf8Value protocol_u(protocol), host_u(host), database_u(database);
+    int port_i = port->Int32Value();
+
+    couch = boost::make_shared<CouchDB::Server>(*protocol_u, *host_u, *database_u, port_i);
+
+    v8::Local<v8::Value> user = configparser->getByPath("couchdb/user");
+    v8::Local<v8::Value> pass = configparser->getByPath("couchdb/password");
+    if(!user->IsNull()) {
+      v8::String::Utf8Value user_u(user), pass_u(pass);
+      couch->setAuth(*user_u, *pass_u);
+    }
   }
 
   void Application::init(int argc, char *argv[]) {
