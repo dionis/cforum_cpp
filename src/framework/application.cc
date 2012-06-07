@@ -62,10 +62,10 @@ namespace CForum {
     configparser->parse(configfile);
     loadModules();
 
-    v8::Local<v8::String>  protocol = configparser->getByPath("couchdb/protocol")->ToString();
-    v8::Local<v8::String>  host     = configparser->getByPath("couchdb/host")->ToString();
-    v8::Local<v8::Integer> port     = configparser->getByPath("couchdb/port")->ToInteger();
-    v8::Local<v8::String>  database = configparser->getByPath("couchdb/database")->ToString();
+    v8::Local<v8::String>  protocol = configparser->getByPath("couchdb/protocol", false)->ToString();
+    v8::Local<v8::String>  host     = configparser->getByPath("couchdb/host", false)->ToString();
+    v8::Local<v8::Integer> port     = configparser->getByPath("couchdb/port", false)->ToInteger();
+    v8::Local<v8::String>  database = configparser->getByPath("couchdb/database", false)->ToString();
 
     v8::String::Utf8Value protocol_u(protocol), host_u(host), database_u(database);
     int port_i = port->Int32Value();
@@ -112,9 +112,9 @@ namespace CForum {
   }
 
   void Application::loadModules() {
-    v8::Local<v8::Object> mods = configparser->getByPath("system/modules")->ToObject();
-    v8::Local<v8::String> v8path = configparser->getByPath("system/modpath")->ToString();
-    v8::Local<v8::Array> keys = mods->GetPropertyNames();
+    v8::Local<v8::Object> mods   = configparser->getByPath("system/modules", false)->ToObject();
+    v8::Local<v8::String> v8path = configparser->getByPath("system/modpath", false)->ToString();
+    v8::Local<v8::Array>  keys   = mods->GetPropertyNames();
     v8::Local<v8::Number> num;
     v8::Local<v8::String> mod;
     v8::String::Utf8Value path(v8path);
