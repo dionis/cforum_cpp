@@ -1,6 +1,6 @@
 config = {
   'system': {
-    'modules': [],
+    'modules': ['libcf_threadlist_controller.so'],
     'modpath': '/usr/lib/cforum/'
   },
 
