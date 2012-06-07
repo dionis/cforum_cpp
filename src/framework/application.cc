@@ -119,7 +119,7 @@ namespace CForum {
     v8::Local<v8::String> mod;
     v8::String::Utf8Value path(v8path);
 
-    for(int i = 0, len = keys->Length(); i <= len; ++i) {
+    for(int i = 0, len = keys->Length(); i < len; ++i) {
       num = v8::Number::New(i);
       mod = mods->Get(num)->ToString();
       v8::String::Utf8Value mod_utf8(mod);
