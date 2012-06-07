@@ -32,7 +32,6 @@
 
 namespace CForum {
   CGIApplication::CGIApplication() : Application(), request(boost::make_shared<CGIRequest>()) { }
-  CGIApplication::CGIApplication(int argc, char *argv[]) : Application(argc, argv), request(boost::make_shared<CGIRequest>()) { }
 
   void CGIApplication::handleRequest() {
     run(request);

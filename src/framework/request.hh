@@ -48,10 +48,15 @@ namespace CForum {
 
     virtual const URI &getUri() const;
     virtual const CGI &getCGI() const = 0;
+    virtual const char *getEnv(const char *) const = 0;
 
     virtual void setUser(const User &);
     virtual const User &getUser() const;
 
+    virtual void setHeader(const std::string &, const std::string &);
+    virtual std::unordered_map<std::string, std::string> const &getHeaders();
+
+    virtual void output(const std::string &) = 0;
 
     virtual ~Request() = 0;
 
@@ -59,7 +64,13 @@ namespace CForum {
     URI requestUri;
     User user;
 
+    std::unordered_map<std::string, std::string> headers;
+
   };
+
+  inline std::unordered_map<std::string, std::string> const &Request::getHeaders() {
+    return headers;
+  }
 
   inline const URI &Request::getUri() const {
     return requestUri;

@@ -41,6 +41,7 @@
 
 #include "framework/request.hh"
 #include "framework/controller.hh"
+#include "framework/notification_center.hh"
 
 #include "framework/router.hh"
 
@@ -56,16 +57,20 @@ namespace CForum {
 
   class Application {
   public:
+    static const char *NOTIFY_PRE_RUN;
+
     Application();
-    Application(int, char *[]);
     virtual ~Application();
 
     virtual boost::shared_ptr<Configparser> getConfigparser();
+    virtual boost::shared_ptr<Router> getRouter();
+    virtual boost::shared_ptr<NotificationCenter> getNotificationCenter();
 
+    virtual void init();
+    virtual void init(int argc, char *[]);
+    virtual void scanArgs(int, char *[]);
     virtual void loadModules();
 
-    virtual void scanArgs(int, char *[]);
-    virtual void handleRequest() = 0;
     virtual void run(boost::shared_ptr<Request>);
 
     virtual const std::vector<boost::shared_ptr<Controller> > &getHook(const std::string &);
@@ -76,6 +81,7 @@ namespace CForum {
 
     boost::shared_ptr<Configparser> configparser;
     boost::shared_ptr<Router> router;
+    boost::shared_ptr<NotificationCenter> notificationCenter;
     std::vector<cf_module_t> modules;
     std::map<std::string, std::vector<boost::shared_ptr<Controller> > > hooks;
 
@@ -89,6 +95,14 @@ namespace CForum {
 
   inline boost::shared_ptr<Configparser> Application::getConfigparser() {
     return configparser;
+  }
+
+  inline boost::shared_ptr<Router> Application::getRouter() {
+    return router;
+  }
+
+  inline boost::shared_ptr<NotificationCenter> Application::getNotificationCenter() {
+    return notificationCenter;
   }
 
   typedef boost::shared_ptr<Controller> (*cf_init_fun_t)(Application *);

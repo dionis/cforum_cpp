@@ -43,7 +43,6 @@ namespace CForum {
   class CGIApplication : public Application {
   public:
     CGIApplication();
-    CGIApplication(int, char *[]);
     virtual ~CGIApplication();
 
     virtual void handleRequest();

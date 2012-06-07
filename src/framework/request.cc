@@ -44,6 +44,10 @@ namespace CForum {
     return *this;
   }
 
+  void Request::setHeader(const std::string &name, const std::string &value) {
+    headers[name] = value;
+  }
+
   Request::~Request() { }
 }
 

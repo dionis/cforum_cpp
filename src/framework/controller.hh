@@ -47,9 +47,9 @@ namespace CForum {
     virtual void initController(Application *) = 0;
     virtual void registerController(Application *) = 0;
 
-    virtual const std::string preRoute(boost::shared_ptr<Request>, const std::map<std::string, std::string> &);
+    virtual void preRoute(boost::shared_ptr<Request>);
     virtual const std::string handleRequest(boost::shared_ptr<Request>, const std::map<std::string, std::string> &);
-    virtual const std::string postRoute(boost::shared_ptr<Request>, const std::map<std::string, std::string> &);
+    virtual void postRoute(boost::shared_ptr<Request>);
 
   protected:
     boost::shared_ptr<Request> request;

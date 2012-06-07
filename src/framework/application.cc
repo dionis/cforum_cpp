@@ -44,17 +44,28 @@ void usage(const char *bin) {
 }
 
 namespace CForum {
-  Application::Application() : configparser(boost::make_shared<Configparser>()), router(boost::make_shared<Router>()), modules(), hooks() {
-  }
+  const char *Application::NOTIFY_PRE_RUN = "notify: just about to run";
 
-  Application::Application(int argc, char *argv[]) : configparser(boost::make_shared<Configparser>()), router(boost::make_shared<Router>()), modules(), hooks() {
-    scanArgs(argc, argv);
-    configparser->parse(configfile);
+  Application::Application() : configparser(boost::make_shared<Configparser>()), router(boost::make_shared<Router>()), notificationCenter(boost::make_shared<NotificationCenter>()), modules(), hooks() {
   }
 
   Application::Application(const Application &) { }
   Application &Application::operator=(const Application &) {
     return *this;
+  }
+
+  void Application::init() {
+    if(configfile.length() == 0) {
+      configfile = configparser->findFile();
+    }
+
+    configparser->parse(configfile);
+    loadModules();
+  }
+
+  void Application::init(int argc, char *argv[]) {
+    scanArgs(argc, argv);
+    init();
   }
 
   static const char *cmdline = "c:h";
@@ -142,7 +153,19 @@ namespace CForum {
   }
 
   void Application::run(boost::shared_ptr<Request> rq) {
-    (void)rq;
+    std::vector<cf_module_t>::iterator it, end = modules.end();
+
+    for(it = modules.begin(); it != end; ++it) {
+      it->controller->preRoute(rq);
+    }
+
+    std::string retval = router->dispatch(rq);
+
+    for(it = modules.begin(); it != end; ++it) {
+      it->controller->postRoute(rq);
+    }
+
+    rq->output(retval);
   }
 
   Application::~Application() { }

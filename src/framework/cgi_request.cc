@@ -62,6 +62,31 @@ namespace CForum {
     return *this;
   }
 
+  const char *CGIRequest::getEnv(const char *name) const {
+    return getenv(name);
+  }
+
+
+  bool endsWith(const std::string &str, const std::string &substr) {
+    size_t i = str.rfind(substr);
+    return (i != std::string::npos) && (i == (str.length() - substr.length()));
+  }
+  void CGIRequest::output(const std::string &body) {
+    std::unordered_map<std::string, std::string>::iterator it, end = headers.end();
+
+    for(it = headers.begin(); it != end; ++it) {
+      std::cout << it->first << ": " << it->second;
+
+      if(!endsWith(it->second, "\012")) {
+        std::cout << "\015\012";
+      }
+    }
+
+    std::cout << "\015\012";
+
+    std::cout << body;
+  }
+
   CGIRequest::~CGIRequest() { }
 
 }

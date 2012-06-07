@@ -35,17 +35,13 @@
 namespace CForum {
   Controller::Controller() : request() { }
 
-  const std::string Controller::preRoute(boost::shared_ptr<Request>, const std::map<std::string, std::string> &) {
-    return std::string();
-  }
+  void Controller::preRoute(boost::shared_ptr<Request>) {}
 
   const std::string Controller::handleRequest(boost::shared_ptr<Request>, const std::map<std::string, std::string> &) {
     return std::string();
   }
 
-  const std::string Controller::postRoute(boost::shared_ptr<Request>, const std::map<std::string, std::string> &) {
-    return std::string();
-  }
+  void Controller::postRoute(boost::shared_ptr<Request>) {}
 
   Controller::~Controller() { }
 
