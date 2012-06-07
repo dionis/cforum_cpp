@@ -45,11 +45,11 @@ namespace CForum {
     }
 
     uri_s << (https.length() == 0 ? "http://" : "https://") << hostname;
-    if((https.length() != 0 && port != 443) || port != 80) {
+    if(port != 0 && ((https.length() != 0 && port != 443) || port != 80)) {
       uri_s << ":" << port;
     }
 
-    uri_s << path_info.length() ? path_info : "/";
+    uri_s << (path_info.length() ? path_info : "/");
 
     requestUri = URI(uri_s.str());
   }
