@@ -72,6 +72,7 @@ namespace CForum {
     virtual void scanArgs(int, char *[]);
     virtual void loadModules();
 
+    virtual void handleRequest() = 0;
     virtual void run(boost::shared_ptr<Request>);
 
     virtual const std::vector<boost::shared_ptr<Controller> > &getHook(const std::string &);
