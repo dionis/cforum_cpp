@@ -64,6 +64,9 @@ namespace CForum {
     if(fname == "") {
       _filename = findFile();
     }
+    else {
+      _filename = fname;
+    }
 
     try {
       _script = _evaluator.compileFile(_filename);
