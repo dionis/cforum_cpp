@@ -17,6 +17,13 @@ add_subdirectory(framework)
 
 add_subdirectory(tests)
 
-
+add_executable(cforum cforum.cc)
+target_link_libraries(cforum
+  cfjson
+  cfcgi
+  cfcouchdb
+  cftemplate
+  cfframework
+)
 
 # eof
