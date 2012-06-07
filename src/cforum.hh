@@ -39,11 +39,15 @@
 #include <netinet/in.h>
 #include <errno.h>
 
+#include <iostream>
+
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 
 #include "framework/application.hh"
 #include "framework/cgi_application.hh"
+
+#include "exceptions/cforum_exception.hh"
 
 #endif
 

@@ -50,9 +50,14 @@ int main(int argc, char *argv[]) {
   }
   else {
     // not fastcgi
-    CForum::CGIApplication app;
-    app.init(argc, argv);
-    app.handleRequest();
+    try {
+      CForum::CGIApplication app;
+      app.init(argc, argv);
+      app.handleRequest();
+    }
+    catch(CForum::CForumException &e) {
+      std::cerr << "ERROR: " << e.getMessage() << " (" << std::hex << e.getCode() << std::dec << ")" << std::endl;
+    }
   }
 
   return EXIT_SUCCESS;
