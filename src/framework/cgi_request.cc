@@ -73,13 +73,25 @@ namespace CForum {
   }
   void CGIRequest::output(const std::string &body) {
     std::unordered_map<std::string, std::string>::iterator it, end = headers.end();
+    bool had_ct = false;
 
     for(it = headers.begin(); it != end; ++it) {
+      std::string nam = it->first;
+      std::transform(nam.begin(), nam.end(), nam.begin(), tolower);
+
+      if(nam == "content-type") {
+        had_ct = true;
+      }
+
       std::cout << it->first << ": " << it->second;
 
       if(!endsWith(it->second, "\012")) {
         std::cout << "\015\012";
       }
+    }
+
+    if(!had_ct) {
+      std::cout << "Content-Type: text/html; charset=utf-8\015\012";
     }
 
     std::cout << "\015\012";
