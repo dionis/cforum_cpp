@@ -70,7 +70,7 @@ namespace CForum {
     v8::String::Utf8Value protocol_u(protocol), host_u(host), database_u(database);
     int port_i = port->Int32Value();
 
-    couch = boost::make_shared<CouchDB::Server>(*protocol_u, *host_u, *database_u, port_i);
+    couch = boost::make_shared<CouchDB::Server>(*database_u, *host_u, *protocol_u, port_i);
 
     v8::Local<v8::Value> user = configparser->getByPath("couchdb/user");
     v8::Local<v8::Value> pass = configparser->getByPath("couchdb/password");
