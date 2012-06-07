@@ -1,0 +1,15 @@
+config = {
+  'system': {
+    'modules': [],
+    'modpath': '/usr/lib/cforum/'
+  },
+
+  'couchdb': {
+    'protocol': 'http',
+    'host': 'localhost',
+    'port': 80,
+    'database': 'selfhtml'
+  }
+};
+
+config;
