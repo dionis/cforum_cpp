@@ -341,6 +341,39 @@ namespace CForum {
       return Document(rsp.getContent());
     }
 
+    Document Server::getView(const std::string &layout, const std::string &view) {
+      std::string url = genURI("") + "/_design/" + layout + "/_view/" + view;
+
+      CURLcode cd;
+      Server::Response rsp;
+
+      connect();
+
+      curl_easy_setopt(_curl, CURLOPT_HTTPGET, 1);
+      curl_easy_setopt(_curl, CURLOPT_URL, url.c_str());
+      curl_easy_setopt(_curl, CURLOPT_INFILESIZE, 0);
+      curl_easy_setopt(_curl, CURLOPT_HEADERDATA, &rsp);
+      curl_easy_setopt(_curl, CURLOPT_WRITEDATA, &rsp);
+
+      if((cd = curl_easy_perform(_curl)) != CURLE_OK) {
+        throw CouchErrorException("Error performing HTTP request to CouchDB server!", CouchErrorException::HttpStatusError, curl_easy_strerror(cd), cd);
+      }
+
+      if(rsp.getStatus() != 200) {
+        char buff[50];
+        snprintf(buff, 50, "%d", rsp.getStatus());
+
+        std::string str("Expected HTTP status 201, got ");
+        str += buff;
+        str += " ";
+        str += rsp.getMessage();
+
+        throw CouchErrorException(str, CouchErrorException::HttpError);
+      }
+
+      return Document(rsp.getContent());
+    }
+
     void Server::deleteDocument(const Document &doc) {
       std::string str;
       std::string url;
@@ -365,14 +398,14 @@ namespace CForum {
 
       if(rsp.getStatus() != 200) {
         char buff[50];
-        snprintf(buff,50,"%d",rsp.getStatus());
+        snprintf(buff, 50, "%d", rsp.getStatus());
 
         std::string str("Expected HTTP status 201, got ");
         str += buff;
         str += " ";
         str += rsp.getMessage();
 
-        throw CouchErrorException(str,CouchErrorException::HttpError);
+        throw CouchErrorException(str, CouchErrorException::HttpError);
       }
     }
 

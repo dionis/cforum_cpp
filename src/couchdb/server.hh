@@ -71,6 +71,10 @@ namespace CForum {
       Document getDocument(const UnicodeString &);
       Document getDocument(const char *);
 
+      Document getView(const std::string &, const std::string &);
+      Document getView(const UnicodeString &, const UnicodeString &);
+      Document getView(const char *, const char *);
+
       void deleteDocument(const Document &);
       void deleteDocument(const std::string &);
 
@@ -197,6 +201,18 @@ namespace CForum {
 
     inline Document Server::getDocument(const char *key) {
       return getDocument(std::string(key));
+    }
+
+    inline Document Server::getView(const UnicodeString &layout, const UnicodeString &view) {
+      std::string str, str1;
+      layout.toUTF8String(str);
+      view.toUTF8String(str1);
+
+      return getView(str, str1);
+    }
+
+    inline Document Server::getView(const char *layout, const char *view) {
+      return getView(std::string(layout), std::string(view));
     }
 
   }
