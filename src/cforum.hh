@@ -1,9 +1,8 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief Application interface
- * \package framework
+ * \brief CForum wrapper binary
  *
- * Application interface
+ * CForum wrapper binary, just initializing and dispatching to the right controllers
  */
 
 /*
