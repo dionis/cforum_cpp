@@ -142,7 +142,9 @@ namespace CForum {
     const char **var;
 
     if(!rqmeth) {
-      throw CGIParserException("Invalid CGI environment: REQUEST_METHOD missing",CGIParserException::InvalidCGIEnvironment);
+      //throw CGIParserException("Invalid CGI environment: REQUEST_METHOD missing",CGIParserException::InvalidCGIEnvironment);
+      // do NOT throw an exception so we can test better in shell
+      rqmeth = "GET";
     }
 
     if(data != NULL && *data) {
