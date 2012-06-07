@@ -153,8 +153,8 @@ namespace CForum {
       throw ModuleException(std::string("Could not open module ") + file, ModuleException::ModuleNotFoundError);
     }
 
-    if((fun = ugly_cast<cf_init_fun_t>(dlsym(mod_hndl, "init"))) == NULL) {
-      throw ModuleException(std::string("Could not find init function for module ") + file, ModuleException::InitFunNotFoundError);
+    if((fun = ugly_cast<cf_init_fun_t>(dlsym(mod_hndl, "cf_init"))) == NULL) {
+      throw ModuleException(std::string("Could not find init function for module ") + file + " (" + dlerror() + ")", ModuleException::InitFunNotFoundError);
     }
 
     if((cntrl = fun(this)) == NULL) {
