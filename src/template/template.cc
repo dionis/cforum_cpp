@@ -229,16 +229,16 @@ namespace CForum {
       vars = _vars->Clone();
     }
     else {
-      vars = v8::Object::New();
       keys = _vars->GetPropertyNames();
 
-      for(uint32_t i=0;i<keys->Length();++i) {
+      for(uint32_t i = 0; i < keys->Length(); ++i) {
         key = keys->Get(i);
-        vars->Set(key,_vars->Get(key));
+        vars->Set(key, _vars->Get(key));
       }
     }
 
     tmp_vars = _vars;
+    _vars = vars;
 
     tmp = _stream;
     _stream = &ostr;
