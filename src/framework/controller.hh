@@ -44,7 +44,7 @@ namespace CForum {
     Controller();
     virtual ~Controller();
 
-    virtual void initController(Application *) = 0;
+    virtual void initController(Application *);
     virtual void registerController(Application *) = 0;
 
     virtual void preRoute(boost::shared_ptr<Request>);
@@ -53,8 +53,13 @@ namespace CForum {
 
   protected:
     boost::shared_ptr<Request> request;
+    Application *app;
 
   };
+
+  inline void Controller::initController(Application *app) {
+    this->app = app;
+  }
 }
 
 #include "framework/application.hh"
