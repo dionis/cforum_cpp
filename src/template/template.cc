@@ -144,7 +144,7 @@ namespace CForum {
     std::string fname = tpl->generateFileName(part_name);
 
     v8::Local<v8::Object> vars;
-    if(args.Length() == 2 && !args[0].IsEmpty() && args[0]->IsObject()) {
+    if(args.Length() == 2 && !args[1].IsEmpty() && args[1]->IsObject()) {
       vars = args[1]->ToObject();
     }
 
@@ -169,18 +169,18 @@ namespace CForum {
     }
 
     if(args.Length() < 1 || args[0].IsEmpty() || !args[0]->IsString()) {
-      return v8::ThrowException(v8::String::New("A variable name is needed as first argument!"));
+      return v8::ThrowException(v8::String::New("A template name is needed as first argument!"));
     }
 
     v8::String::Utf8Value part_name(args[0]);
     std::string fname = tpl->generateFileName(part_name);
 
     v8::Local<v8::Object> vars;
-    if(args.Length() == 2 && !args[0].IsEmpty() && args[0]->IsObject()) {
+    if(args.Length() == 2 && !args[1].IsEmpty() && args[1]->IsObject()) {
       vars = args[1]->ToObject();
     }
 
-    *tpl->getStream() << tpl->evaluateFile(fname,vars);
+    *tpl->getStream() << tpl->evaluateFile(fname, vars);
 
     return v8::Undefined();
   }
