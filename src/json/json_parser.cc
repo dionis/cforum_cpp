@@ -99,12 +99,12 @@ namespace CForum {
       char buff[10];
       size_t i = 0;
 
-      while(ptr < end && isdigit(*ptr) && i < 4) {
-        buff[i++] = *ptr;
+      while(ptr < end && isxdigit(*ptr) && i < 4) {
+        buff[i++] = *ptr++;
       }
 
       buff[i] = 0;
-      *cont = ptr;
+      *cont = ptr - 1;
 
       return strtol(buff, NULL, 16);
     }
@@ -149,7 +149,7 @@ namespace CForum {
               tok.data += (UChar)'\b';
             }
             else if(isNext(ptr, end, 'u')) { /* unicode escape sequence */
-              tok.data = parseUChar(ptr + 2, end, &ptr);
+              tok.data += parseUChar(ptr + 2, end, &ptr);
             }
             else { /* everything else */
               tok.data += *ptr;
