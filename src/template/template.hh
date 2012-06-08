@@ -31,6 +31,8 @@
 #ifndef TEMPLATE_H
 #define TEMPLATE_H
 
+#include <boost/shared_ptr.hpp>
+
 #include <iostream>
 #include <fstream>
 #include <iterator>
@@ -48,6 +50,8 @@
 
 #include "template/template_exception.hh"
 #include "template/template_parser_exception.hh"
+
+#include "json/json_parser.hh"
 
 namespace CForum {
   class Template {
@@ -85,6 +89,8 @@ namespace CForum {
     void setExtend(const std::string &, v8::Local<v8::Object>);
 
     std::string generateFileName(const v8::String::Utf8Value &);
+
+    v8::Local<v8::Value> jsonToV8(boost::shared_ptr<JSON::Element>);
 
     ~Template();
 

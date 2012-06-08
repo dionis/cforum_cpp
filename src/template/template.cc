@@ -279,6 +279,53 @@ namespace CForum {
     _context.Dispose();
   }
 
+
+  v8::Local<v8::Value> Template::jsonToV8(boost::shared_ptr<JSON::Element> elem) {
+    if(boost::dynamic_pointer_cast<JSON::String>(elem)) {
+      std::string v;
+      boost::dynamic_pointer_cast<JSON::String>(elem)->getValue().toUTF8String(v);
+      return v8::String::New(v.c_str());
+    }
+    else if(boost::dynamic_pointer_cast<JSON::Number>(elem)) {
+      boost::shared_ptr<JSON::Number> val = boost::dynamic_pointer_cast<JSON::Number>(elem);
+      if(val->getNumberType() == JSON::JSONNumberTypeInt) {
+        return v8::Integer::New(val->getIValue());
+      }
+
+      return v8::Number::New(val->getDValue());
+    }
+    else if(boost::dynamic_pointer_cast<JSON::Boolean>(elem)) {
+      return v8::Local<v8::Boolean>::New(v8::Boolean::New(boost::dynamic_pointer_cast<JSON::Boolean>(elem)->getValue()));
+    }
+    else if(boost::dynamic_pointer_cast<JSON::Array>(elem)) {
+      JSON::Array::ArrayType_t ary = boost::dynamic_pointer_cast<JSON::Array>(elem)->getValue();
+      JSON::Array::ArrayType_t::iterator it, end = ary.end();
+      v8::Local<v8::Array> v8ary = v8::Array::New();
+      uint32_t i;
+
+      for(i = 0, it = ary.begin(); it != end; ++it, ++i) {
+        v8ary->Set(i, jsonToV8(*it));
+      }
+
+      return v8ary;
+    }
+    else if(boost::dynamic_pointer_cast<JSON::Object>(elem)) {
+      JSON::Object::ObjectType_t obj = boost::dynamic_pointer_cast<JSON::Object>(elem)->getValue();
+      JSON::Object::ObjectType_t::iterator it, end = obj.end();
+      v8::Local<v8::Object> v8obj = v8::Object::New();
+
+      for(it = obj.begin(); it != end; ++it) {
+        std::string key;
+        it->first.toUTF8String(key);
+        v8obj->Set(v8::String::New(key.c_str()), jsonToV8(it->second));
+      }
+
+      return v8obj;
+    }
+
+    return v8::Local<v8::Primitive>::New(v8::Undefined());
+  }
+
 }
 
 
