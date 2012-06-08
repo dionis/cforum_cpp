@@ -33,14 +33,22 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 
+#include <sstream>
+#include <iostream>
+#include <string>
+
 #include "framework/controller.hh"
+#include "framework/route.hh"
+
+#include "template/template.hh"
+
+#include "json/json_parser.hh"
 
 namespace CForum {
   class ThreadlistController : public Controller {
   public:
     ThreadlistController();
 
-    virtual void initController(Application *);
     virtual void registerController(Application *);
     virtual const std::string handleRequest(boost::shared_ptr<Request>, const std::map<std::string, std::string> &);
 
@@ -48,6 +56,7 @@ namespace CForum {
 
   private:
     ThreadlistController(const ThreadlistController &);
+
   };
 }
 

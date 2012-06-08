@@ -29,21 +29,36 @@
 
 #include "controllers/threadlist_controller/threadlist_controller.hh"
 
+static boost::shared_ptr<CForum::ThreadlistController> myself;
+
 namespace CForum {
-  ThreadlistController::ThreadlistController() : Controller::Controller() {
+  ThreadlistController::ThreadlistController() : Controller::Controller() { }
+
+  ThreadlistController::ThreadlistController(const ThreadlistController &) { }
+
+  void ThreadlistController::registerController(Application *app) {
+    boost::shared_ptr<Route> route = boost::make_shared<Route>(myself);
+
+    route->addPattern("^/?$");
+    app->getRouter()->registerRoute("threadlist-route", route);
   }
 
-  ThreadlistController::ThreadlistController(const ThreadlistController &) {
-  }
+  const std::string ThreadlistController::handleRequest(boost::shared_ptr<Request> rq, const std::map<std::string, std::string> &vars) {
+    CouchDB::Document response = app->getCouch()->getView("cforum", "threadlist?limit=20&include_docs=true");
+    std::ostringstream ostr;
 
-  void ThreadlistController::initController(Application *) {
-  }
+    boost::shared_ptr<JSON::Array> rows = boost::dynamic_pointer_cast<JSON::Array>(response.getValue("rows"));
+    JSON::Array::ArrayType_t ary = rows->getValue();
+    boost::shared_ptr<Template> tpl = rq->getTemplate();
 
-  void ThreadlistController::registerController(Application *) {
-  }
+    /*JSON::Array::ArrayType_t::iterator it, end = ary.end();
 
-  const std::string ThreadlistController::handleRequest(boost::shared_ptr<Request>, const std::map<std::string, std::string> &) {
-    return std::string();
+    for(it = ary.begin(); it != end; ++it) {
+      ostr << boost::dynamic_pointer_cast<JSON::Object>(*it)->toJSON();
+      }*/
+
+    view = "threadlist.html";
+    return Controller::handleRequest(rq, vars);
   }
 
   ThreadlistController::~ThreadlistController() {
@@ -53,7 +68,8 @@ namespace CForum {
 
 extern "C" {
   boost::shared_ptr<CForum::Controller> cf_init(CForum::Application *) {
-    return boost::make_shared<CForum::ThreadlistController>();
+    myself = boost::make_shared<CForum::ThreadlistController>();
+    return myself;
   }
 }
 
