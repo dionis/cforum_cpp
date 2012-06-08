@@ -33,11 +33,20 @@
 #include "framework/controller.hh"
 
 namespace CForum {
-  Controller::Controller() : request() { }
+  Controller::Controller() : request(), view() { }
 
   void Controller::preRoute(boost::shared_ptr<Request>) {}
 
-  const std::string Controller::handleRequest(boost::shared_ptr<Request>, const std::map<std::string, std::string> &) {
+  std::string Controller::generateFilename(const std::string &view) {
+    v8::String::Utf8Value path(app->getConfigparser()->getByPath("system/views", false)->ToString());
+    return std::string(*path) + "/" + view;
+  }
+
+  const std::string Controller::handleRequest(boost::shared_ptr<Request> rq, const std::map<std::string, std::string> &) {
+    if(view != "") {
+      return rq->getTemplate()->evaluateFile(generateFilename(view));
+    }
+
     return std::string();
   }
 

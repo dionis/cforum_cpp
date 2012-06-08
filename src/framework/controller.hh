@@ -52,7 +52,10 @@ namespace CForum {
     virtual void postRoute(boost::shared_ptr<Request>);
 
   protected:
+    virtual std::string generateFilename(const std::string &);
+
     boost::shared_ptr<Request> request;
+    std::string view;
     Application *app;
 
   };
