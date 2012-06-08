@@ -150,7 +150,7 @@ namespace CForum {
     cf_init_fun_t fun;
 
     if(mod_hndl == NULL) {
-      throw ModuleException(std::string("Could not open module ") + file, ModuleException::ModuleNotFoundError);
+      throw ModuleException(std::string("Could not open module ") + file + ": " + dlerror(), ModuleException::ModuleNotFoundError);
     }
 
     if((fun = ugly_cast<cf_init_fun_t>(dlsym(mod_hndl, "cf_init"))) == NULL) {
