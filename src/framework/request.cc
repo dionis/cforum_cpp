@@ -31,8 +31,8 @@
 #include "framework/request.hh"
 
 namespace CForum {
-  Request::Request() : requestUri(), user() { }
-  Request::Request(const Request &rq) : requestUri(rq.requestUri), user(rq.user) { }
+  Request::Request() : requestUri(), user(), tpl(boost::make_shared<Template>()) { }
+  Request::Request(const Request &rq) : requestUri(rq.requestUri), user(rq.user), tpl(rq.tpl) { }
 
 
   Request &Request::operator=(const Request &rq) {

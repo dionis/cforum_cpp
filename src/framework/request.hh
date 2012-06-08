@@ -31,12 +31,16 @@
 #ifndef REQUEST_H
 #define REQUEST_H
 
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
+
 #include <string>
 
 #include "cgi/cgi.hh"
 #include "framework/configparser.hh"
 #include "framework/uri.hh"
 #include "framework/user.hh"
+#include "template/template.hh"
 
 namespace CForum {
   class Request {
@@ -48,6 +52,8 @@ namespace CForum {
 
     virtual const URI &getUri() const;
     virtual const CGI &getCGI() const = 0;
+
+    virtual boost::shared_ptr<Template> getTemplate();
 
     virtual void setUser(const User &);
     virtual const User &getUser() const;
@@ -62,6 +68,7 @@ namespace CForum {
   protected:
     URI requestUri;
     User user;
+    boost::shared_ptr<Template> tpl;
 
     std::unordered_map<std::string, std::string> headers;
 
@@ -80,6 +87,10 @@ namespace CForum {
   }
   inline const User &Request::getUser() const {
     return user;
+  }
+
+  inline boost::shared_ptr<Template> Request::getTemplate() {
+    return tpl;
   }
 
 }
