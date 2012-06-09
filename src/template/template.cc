@@ -200,6 +200,10 @@ namespace CForum {
     v8::Local<v8::Object>::Cast(_context->Global()->GetPrototype())->SetInternalField(0, v8::External::New(this));
   }
 
+  Template::Template(v8::ExtensionConfiguration *ext) : _stream(NULL), _extends(), _handle_scope(), _global(), _context(v8::Context::New(ext, _global.getGlobal())), _scope(_context), _vars(v8::Object::New()), _base_dir() {
+    v8::Local<v8::Object>::Cast(_context->Global()->GetPrototype())->SetInternalField(0, v8::External::New(this));
+  }
+
   void Template::setExtend(const std::string &fname, v8::Local<v8::Object> vars) {
     _extends = Extender(fname,vars);
   }

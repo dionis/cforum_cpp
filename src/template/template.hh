@@ -57,6 +57,7 @@ namespace CForum {
   class Template {
   public:
     Template();
+    Template(v8::ExtensionConfiguration *);
 
     std::string parseFile(const std::string &);
 
