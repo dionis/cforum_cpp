@@ -31,9 +31,34 @@
 #include "framework/request.hh"
 
 namespace CForum {
-  Request::Request() : requestUri(), user(), tpl(boost::make_shared<Template>()) { }
+  Request::Request() : requestUri(), user(), tpl() { }
   Request::Request(const Request &rq) : requestUri(rq.requestUri), user(rq.user), tpl(rq.tpl) { }
 
+  void Request::initTemplate(boost::shared_ptr<Configparser> configparser) {
+    v8::Local<v8::Value> views_js = configparser->getByPath("system/views-js");
+    if(!views_js->IsNull() && !views_js->IsUndefined()) {
+      v8::String::Utf8Value views_js_u(views_js->ToString());
+
+      std::ifstream fd(*views_js_u, std::ifstream::in);
+      std::stringstream sst;
+
+      if(!fd) { /* TODO: throw exception */
+        perror("fopen");
+        exit(-1);
+      }
+      sst << fd.rdbuf();
+      fd.close();
+
+      v8::RegisterExtension(new v8::Extension("viewsjs", strdup(sst.str().c_str())));
+      const char *extension_names[] = { "viewsjs" };
+      v8::ExtensionConfiguration *extensions = new v8::ExtensionConfiguration(1, extension_names);
+
+      tpl = boost::make_shared<Template>(extensions);
+    }
+    else {
+      tpl = boost::make_shared<Template>();
+    }
+  }
 
   Request &Request::operator=(const Request &rq) {
     if(this != &rq) {

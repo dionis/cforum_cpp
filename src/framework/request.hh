@@ -31,6 +31,8 @@
 #ifndef REQUEST_H
 #define REQUEST_H
 
+#include <v8.h>
+
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 
@@ -62,6 +64,8 @@ namespace CForum {
     virtual std::unordered_map<std::string, std::string> const &getHeaders();
 
     virtual void output(const std::string &) = 0;
+
+    virtual void initTemplate(boost::shared_ptr<Configparser>);
 
     virtual ~Request() = 0;
 
