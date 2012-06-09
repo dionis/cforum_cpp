@@ -116,7 +116,7 @@ end
 
 def thread_id(thread)
   dt = thread['messages'][0]['date']
-  base_id = dt.strftime("/%Y/%m/%d/")
+  base_id = dt.strftime("/%Y/") + dt.strftime("%b").downcase + dt.strftime("/%d/")
   subj = to_uri(thread['messages'][0]['subject'])
   num = 0
 
