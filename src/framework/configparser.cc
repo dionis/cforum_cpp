@@ -156,7 +156,7 @@ namespace CForum {
 
       if(numeric) {
         if(!cfgval->IsArray()) {
-          throw ConfigErrorException("Key  is not an array!", ConfigErrorException::NotAnObjectError);
+          throw ConfigErrorException("Key \"" + *it + "\" in path <" + name + "> is not an array!", ConfigErrorException::NotAnObjectError);
         }
 
         obj    = cfgval->ToObject();
@@ -165,7 +165,7 @@ namespace CForum {
       }
       else {
         if(!cfgval->IsObject()) {
-          throw ConfigErrorException("Key is not an object!", ConfigErrorException::NotAnObjectError);
+          throw ConfigErrorException("Key \"" + *it + "\" in path <" + name + "> is not an object!", ConfigErrorException::NotAnObjectError);
         }
 
         key    = v8::String::New(it->c_str());
