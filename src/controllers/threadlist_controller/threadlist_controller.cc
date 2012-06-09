@@ -44,20 +44,14 @@ namespace CForum {
   }
 
   const std::string ThreadlistController::handleRequest(boost::shared_ptr<Request> rq, const std::map<std::string, std::string> &vars) {
-    CouchDB::Document response = app->getCouch()->getView("cforum", "threadlist?limit=20&include_docs=true");
+    CouchDB::Document response = app->getCouch()->getView("cforum", "threadlist?limit=20&include_docs=true&descending=true");
     std::ostringstream ostr;
 
-    boost::shared_ptr<JSON::Array> rows = boost::dynamic_pointer_cast<JSON::Array>(response.getValue("rows"));
-    JSON::Array::ArrayType_t ary = rows->getValue();
     boost::shared_ptr<Template> tpl = rq->getTemplate();
 
-    /*JSON::Array::ArrayType_t::iterator it, end = ary.end();
+    tpl->setVariable("threadlist", tpl->jsonToV8(response.getValue("rows")));
 
-    for(it = ary.begin(); it != end; ++it) {
-      ostr << boost::dynamic_pointer_cast<JSON::Object>(*it)->toJSON();
-      }*/
-
-    view = "threadlist.html";
+    view = "threadlist/threadlist.html";
     return Controller::handleRequest(rq, vars);
   }
 

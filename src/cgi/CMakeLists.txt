@@ -1,5 +1,5 @@
 #############################################################################
-# CMakeLists.txt for the Classic Forum couchdb interface library
+# CMakeLists.txt for the Classic Forum cgi interface library
 #############################################################################
 
 include_directories (BEFORE "${CMAKE_CURRENT_SOURCE_DIR}/.." "${CMAKE_CURRENT_SOURCE_DIR}")

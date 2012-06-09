@@ -9,7 +9,7 @@
       "map": "function(doc) { emit(doc.messages[0].date.substr(0,7)); }"
     },
     "threadlist": {
-      "map": "function(doc) { if(!doc.archived) emit(doc); }"
+      "map": "function(doc) { if(!doc.archived) emit(doc.messages[0].date); }"
     }
   }
 }

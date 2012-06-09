@@ -10,7 +10,6 @@ include_directories(BEFORE "${CMAKE_CURRENT_BINARY_DIR}" "${CMAKE_CURRENT_SOURCE
 add_subdirectory(json)
 add_subdirectory(exceptions)
 add_subdirectory(jsevaluator)
-add_subdirectory(couchdb)
 add_subdirectory(cgi)
 add_subdirectory(template)
 add_subdirectory(framework)
@@ -22,7 +21,6 @@ add_executable(cforum cforum.cc)
 target_link_libraries(cforum
   cfjson
   cfcgi
-  cfcouchdb
   cftemplate
   cfframework
 )

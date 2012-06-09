@@ -42,7 +42,6 @@
 #include "framework/request.hh"
 #include "framework/controller.hh"
 #include "framework/notification_center.hh"
-#include "couchdb/server.hh"
 
 #include "framework/router.hh"
 
@@ -66,7 +65,6 @@ namespace CForum {
     virtual boost::shared_ptr<Configparser> getConfigparser();
     virtual boost::shared_ptr<Router> getRouter();
     virtual boost::shared_ptr<NotificationCenter> getNotificationCenter();
-    virtual boost::shared_ptr<CouchDB::Server> getCouch();
 
     virtual void init();
     virtual void init(int argc, char *[]);
@@ -85,7 +83,6 @@ namespace CForum {
     boost::shared_ptr<Configparser> configparser;
     boost::shared_ptr<Router> router;
     boost::shared_ptr<NotificationCenter> notificationCenter;
-    boost::shared_ptr<CouchDB::Server> couch;
 
     std::vector<cf_module_t> modules;
     std::map<std::string, std::vector<boost::shared_ptr<Controller> > > hooks;
@@ -108,10 +105,6 @@ namespace CForum {
 
   inline boost::shared_ptr<NotificationCenter> Application::getNotificationCenter() {
     return notificationCenter;
-  }
-
-  inline boost::shared_ptr<CouchDB::Server> Application::getCouch() {
-    return couch;
   }
 
   typedef boost::shared_ptr<Controller> (*cf_init_fun_t)(Application *);

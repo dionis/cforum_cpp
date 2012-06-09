@@ -1,5 +1,5 @@
 #############################################################################
-# CMakeLists.txt for the Classic Forum couchdb interface library
+# CMakeLists.txt for the Classic Forum framework library
 #############################################################################
 
 include_directories (BEFORE "${CMAKE_CURRENT_SOURCE_DIR}/.." "${CMAKE_CURRENT_SOURCE_DIR}")
@@ -29,8 +29,9 @@ add_library(cfframework SHARED
   application.cc
   module_exception.cc
   cgi_application.cc
+  model.cc
 )
 
-target_link_libraries(cfframework cfexceptions cfcgi cfjsevaluator cfjson cfcouchdb cftemplate ${Boost_LIBRARIES} ${ICU_LIBRARY} ${PCREPP_LIBRARIES})
+target_link_libraries(cfframework cfexceptions cfcgi cfjsevaluator cfjson cftemplate ${Boost_LIBRARIES} ${ICU_LIBRARY} ${PCREPP_LIBRARIES})
 
 # eof
