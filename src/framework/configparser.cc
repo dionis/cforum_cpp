@@ -156,7 +156,12 @@ namespace CForum {
 
       if(numeric) {
         if(!cfgval->IsArray()) {
-          throw ConfigErrorException("Key \"" + *it + "\" in path <" + name + "> is not an array!", ConfigErrorException::NotAnObjectError);
+          if(may_be_null) {
+            return v8::Local<v8::Value>::New(v8::Undefined());
+          }
+          else {
+            throw ConfigErrorException("Key \"" + *it + "\" in path <" + name + "> is not an array!", ConfigErrorException::NotAnObjectError);
+          }
         }
 
         obj    = cfgval->ToObject();
@@ -165,7 +170,12 @@ namespace CForum {
       }
       else {
         if(!cfgval->IsObject()) {
-          throw ConfigErrorException("Key \"" + *it + "\" in path <" + name + "> is not an object!", ConfigErrorException::NotAnObjectError);
+          if(may_be_null) {
+            return v8::Local<v8::Value>::New(v8::Undefined());
+          }
+          else {
+            throw ConfigErrorException("Key \"" + *it + "\" in path <" + name + "> is not an object!", ConfigErrorException::NotAnObjectError);
+          }
         }
 
         key    = v8::String::New(it->c_str());
