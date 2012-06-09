@@ -1,12 +1,46 @@
+<!DOCTYPE html>
+<html lang="de">
+ <head>
+  <meta charset="utf-8">
 
-<head>
- <title>SELFHTML-Forum lala</title>
-</head>
+  <title>SELFHTML Forum</title>
 
-<body>
+  <meta name="description" content="Forum als Ergänzung zu der Dokumentation SELFHTML" />
+  <meta name="keywords" content="SELFHTML Forum, SELFHTML, Forum, SELFForum" />
+
+
+  <meta name="DC.Publisher" content="SELFHTML Forum">
+  <meta name="DC.Identifier" content="">
+  <meta name="DC.Language" content="de">
+  <meta name="DC.Rights" content="">
+  <meta name="SELF.Pagetype" content="portal">
+
+  <link rel="shortcut icon" href="http://src.selfhtml.org/favicon.ico" type="image/x-icon" title="SELFHTML Icon">
+
+  <link rel="help" href="/hilfe/" title="Forums-Hilfe" />
+  <link rel="search" href="http://suche.de.selfhtml.org/" title="SELFHTML Suche" />
+  <link rel="bookmark" href="http://de.selfhtml.org/" title="SELFHTML" />
+  <link rel="bookmark" href="/archiv/" title="Forums-Archiv" />
+  <link rel="bookmark" href="http://aktuell.de.selfhtml.org/artikel/" title="Artikel" />
+  <link rel="bookmark" href="http://aktuell.de.selfhtml.org/links/" title="Linkverzeichnis" />
+  <link rel="bookmark" href="http://aktuell.de.selfhtml.org/weblog/" title="Weblog" />
+
+  <link rel="stylesheet" type="text/css" href="forum.css" title="SELFHTML Forum Stylesheet" />
+ </head>
+
+
+
+ <body>
+  <div id="top"><a href="http://www.selfhtml.org/">www.selfhtml.org</a></div>
+
+  <ol  id="root" class="threadlist">
   <% if(threadlist = _v("threadlist")) {
     for(var i = 0; i < threadlist.length; ++i) {
       partial("threadlist/thread.html", {thread: threadlist[i]});
     }
   } %>
-</body>
+  </ol>
+ </body>
+
+</html>
+

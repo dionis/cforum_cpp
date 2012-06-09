@@ -10,6 +10,7 @@ add_subdirectory(views)
 install(
   FILES
     cforum.js.example
+    views.js
   DESTINATION
     "${CMAKE_INSTALL_SYSCONFDIR}/cforum"
 )

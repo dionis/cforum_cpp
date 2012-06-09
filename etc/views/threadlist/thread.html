@@ -2,7 +2,7 @@
 
 function outputMessage(id, message) {
 %>
-<li><a href=""><% _e(message.subject); %></a>
+<li><span class="posting"><span class="subject"><%if(message.category != "") { %><strong class="category"><span class="tn braces">(</span><% out(message.category); %><span class="tn braces">)</span></strong><% } %> <a href="<% out(id + '/' + message.id); %>" class="title"><strong><% out(message.subject); %></strong></a></span> <span class="tn by">von</span> <span class='author'><% out(message.author.name); %></span><span class="tn">,</span> <span class="date"><% out(moment(message.date).format("DD.MM.YYYY, HH:mm")); %></span></span>
 <%
   if(message.messages.length > 0) { %>
     <ul>
@@ -17,9 +17,7 @@ function outputMessage(id, message) {
 thread = _v("thread");
 
 if(thread) {
-  _e("<ol>");
-  outputMessage(thread._id, thread.messages[0]);
-  _e("</ol>");
+  outputMessage(thread.id, thread.messages[0]);
 }
 
 %>

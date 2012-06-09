@@ -1,7 +1,8 @@
 config = {
   'system': {
     'modules': ['libcf_threadlist_controller.so'],
-    'modpath': '/usr/lib/cforum/'
+    'modpath': '/usr/lib/cforum/',
+    'views-js': '/etc/cforum/views.js'
   },
 
   'mongodb': {
