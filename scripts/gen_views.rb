@@ -1,4 +1,4 @@
-#!/usr/bin/ruby -wKu
+#!/usr/bin/env ruby
 # -*- coding: utf-8 -*-
 
 require 'mongo'
