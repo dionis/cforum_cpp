@@ -44,7 +44,7 @@
 
 #include "template/template.hh"
 
-#include "json/json_parser.hh"
+#include "models/thread.hh"
 
 namespace CForum {
   class ThreadlistController : public Controller {

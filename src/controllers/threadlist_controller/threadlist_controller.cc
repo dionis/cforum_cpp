@@ -33,7 +33,6 @@ static boost::shared_ptr<CForum::ThreadlistController> myself;
 
 namespace CForum {
   ThreadlistController::ThreadlistController() : Controller::Controller() { }
-
   ThreadlistController::ThreadlistController(const ThreadlistController &) { }
 
   void ThreadlistController::registerController(Application *app) {
@@ -45,11 +44,19 @@ namespace CForum {
 
   const std::string ThreadlistController::handleRequest(boost::shared_ptr<Request> rq, const std::map<std::string, std::string> &vars) {
     std::auto_ptr<mongo::DBClientCursor> cursor = app->getMongo()->query("threads", QUERY("archived" << false).sort("messages.0.date"));
-    std::ostringstream ostr;
-
+    mongo::BSONObj obj;
+    v8::Local<v8::Array> ary = v8::Array::New();
     boost::shared_ptr<Template> tpl = rq->getTemplate();
+    uint32_t i = 0;
+    boost::shared_ptr<Models::Thread> t;
 
-    //tpl->setVariable("threadlist", );
+    while(cursor->more()) {
+      obj = cursor->next();
+      t = Models::Thread::fromBSON(obj);
+      ary->Set(i++, t->toV8());
+    }
+
+    tpl->setVariable("threadlist", ary);
 
     view = "threadlist/threadlist.html";
     return Controller::handleRequest(rq, vars);

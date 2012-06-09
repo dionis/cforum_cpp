@@ -1,0 +1,25 @@
+<%
+
+function outputMessage(id, message) {
+%>
+<li><a href=""><% _e(message.subject); %></a>
+<%
+  if(message.messages.length > 0) { %>
+    <ul>
+<%    for(var i = 0; i < message.messages.length; ++i) {
+      outputMessage(id, message.messages[i]);
+    } %>
+    </ul>
+<%  }
+%>  </li>
+<% }
+
+thread = _v("thread");
+
+if(thread) {
+  _e("<ol>");
+  outputMessage(thread._id, thread.messages[0]);
+  _e("</ol>");
+}
+
+%>

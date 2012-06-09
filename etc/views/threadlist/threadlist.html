@@ -7,7 +7,7 @@
   <% if(_v("threadlist")) {
     threadlist = _v("threadlist");
     for(var i = 0; i < threadlist.length; ++i) {
-      partial("threadlist/thread.html", {thread: threadlist[i].doc});
+      partial("threadlist/thread.html", {thread: threadlist[i]});
     }
   } %>
 </body>
