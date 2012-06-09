@@ -36,11 +36,23 @@ namespace CForum {
     Message::User::User(const User &usr) : name(usr.name), username(usr.username), ip(usr.ip), homepage(usr.homepage) { }
 
     Message::User::User(const mongo::BSONObj &author) : name(), email(), username(), ip(), homepage() {
-      name     = author.getField("name").String();
-      email    = author.getField("email").String();
-      username = author.getField("username").String();
-      ip       = author.getField("ip").String();
-      homepage = author.getField("homepage").String();
+      name = author.getField("name").String();
+
+      if(author.hasField("email")) {
+        email = author.getField("email").String();
+      }
+
+      if(author.hasField("username")) {
+        username = author.getField("username").String();
+      }
+
+      if(author.hasField("ip")) {
+        ip = author.getField("ip").String();
+      }
+
+      if(author.hasField("homepage")) {
+        homepage = author.getField("homepage").String();
+      }
     }
 
     Message::User &Message::User::operator=(const User &usr) {
@@ -93,7 +105,6 @@ namespace CForum {
       boost::shared_ptr<Message> msg = boost::make_shared<Message>();
 
       const mongo::BSONObj author = o.getField("author").Obj();
-      const std::vector<mongo::BSONElement> flags = o.getField("flags").Array();
       const std::vector<mongo::BSONElement> msgs = o.getField("messages").Array();
 
       msg->subject = o.getField("subject").String();
@@ -102,15 +113,25 @@ namespace CForum {
       msg->date    = (time_t)o.getField("date").Date();
       msg->show    = true;
 
-      msg->flags   = std::vector<Message::Flag>();
-      std::vector<mongo::BSONElement>::const_iterator it, end = flags.end();
-      for(it = flags.begin(); it != end; ++it) {
-        msg->flags.push_back(Message::Flag(it->Obj()));
+      if(o.hasField("flags")) {
+        mongo::BSONObj flags = o.getField("flags").Obj();
+        std::set<std::string> fields;
+
+        flags.getFieldNames(fields);
+
+        std::set<std::string>::const_iterator it, end = fields.end();
+
+        for(it = fields.begin(); it != end; ++it) {
+          Flag f;
+          f.name = *it;
+          f.value = flags.getField(*it).String();
+
+          msg->flags.push_back(f);
+        }
       }
 
-      msg->messages = std::vector<boost::shared_ptr<Message> >();
       if(msgs.size() > 0) {
-        end = msgs.end();
+        std::vector<mongo::BSONElement>::const_iterator it, end = msgs.end();
         for(it = msgs.begin(); it != end; ++it) {
           msg->messages.push_back(Message::fromBSON(it->Obj()));
         }

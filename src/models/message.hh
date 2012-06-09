@@ -30,6 +30,9 @@
 #ifndef MODELS_MESSAGE_H
 #define MODELS_MESSAGE_H
 
+#include <set>
+#include <string>
+
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 
