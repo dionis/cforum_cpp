@@ -67,6 +67,29 @@ namespace CForum {
       return *this;
     }
 
+    v8::Local<v8::Object> Message::User::toV8() {
+      v8::Local<v8::Object> u = v8::Object::New();
+      u->Set(v8::String::New("name"), v8::String::New(name.c_str()));
+
+      if(email != "") {
+        u->Set(v8::String::New("email"), v8::String::New(email.c_str()));
+      }
+
+      if(username != "") {
+        u->Set(v8::String::New("username"), v8::String::New(username.c_str()));
+      }
+
+      if(ip != "") {
+        u->Set(v8::String::New("ip"), v8::String::New(ip.c_str()));
+      }
+
+      if(homepage != "") {
+        u->Set(v8::String::New("homepage"), v8::String::New(homepage.c_str()));
+      }
+
+      return u;
+    }
+
 
     Message::Flag::Flag() : name(), value() { }
     Message::Flag::Flag(const Flag &flag) : name(flag.name), value(flag.value) { }
@@ -146,6 +169,33 @@ namespace CForum {
 
     boost::shared_ptr<mongo::BSONObj> Message::toBSON() {
       return boost::shared_ptr<mongo::BSONObj>();
+    }
+
+    v8::Local<v8::Object> Message::toV8() {
+      v8::Local<v8::Object> msg = v8::Object::New();
+
+      msg->Set(v8::String::New("subject"), v8::String::New(subject.c_str()));
+      msg->Set(v8::String::New("content"), v8::String::New(content.c_str()));
+      msg->Set(v8::String::New("user"), user.toV8());
+      msg->Set(v8::String::New("date"), v8::Date::New((uint64_t)date * 1000));
+      msg->Set(v8::String::New("show"), v8::Boolean::New(show));
+
+      v8::Local<v8::Object> v8flags = v8::Object::New();
+      std::vector<Message::Flag>::iterator it, end = flags.end();
+      for(it = flags.begin(); it != end; ++it) {
+        v8flags->Set(v8::String::New(it->name.c_str()), v8::String::New(it->value.c_str()));
+      }
+      msg->Set(v8::String::New("flags"), v8flags);
+
+      v8::Local<v8::Array> v8msgs = v8::Array::New(messages.size());
+      std::vector<boost::shared_ptr<Message> >::iterator mit, mend = messages.end();
+      uint32_t i;
+      for(i = 0, mit = messages.begin(); mit != mend; ++mit, ++i) {
+        v8msgs->Set(i, (*mit)->toV8());
+      }
+      msg->Set(v8::String::New("messages"), v8msgs);
+
+      return msg;
     }
   }
 }

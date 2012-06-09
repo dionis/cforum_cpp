@@ -55,6 +55,7 @@ namespace CForum {
 
       virtual boost::shared_ptr<JSON::Element> toJSON();
       virtual boost::shared_ptr<mongo::BSONObj> toBSON();
+      virtual v8::Local<v8::Object> toV8();
 
       std::string id, tid;
       std::vector<boost::shared_ptr<Message> > messages;

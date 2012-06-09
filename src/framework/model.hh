@@ -30,6 +30,8 @@
 #ifndef MODEL_H
 #define MODEL_H
 
+#include <v8.h>
+
 #include <boost/shared_ptr.hpp>
 
 #include "framework/mongodb.hh"
@@ -48,6 +50,7 @@ namespace CForum {
 
       virtual boost::shared_ptr<JSON::Element> toJSON() = 0;
       virtual boost::shared_ptr<mongo::BSONObj> toBSON() = 0;
+      virtual v8::Local<v8::Object> toV8() = 0;
     };
   }
 }

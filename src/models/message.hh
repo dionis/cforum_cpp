@@ -51,6 +51,8 @@ namespace CForum {
 
         User &operator=(const User &);
 
+        v8::Local<v8::Object> toV8();
+
         std::string name, email, username, ip, homepage;
       };
 
@@ -75,6 +77,7 @@ namespace CForum {
 
       virtual boost::shared_ptr<JSON::Element> toJSON();
       virtual boost::shared_ptr<mongo::BSONObj> toBSON();
+      virtual v8::Local<v8::Object> toV8();
 
       std::string subject, content;
 

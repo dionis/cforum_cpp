@@ -74,6 +74,25 @@ namespace CForum {
     boost::shared_ptr<mongo::BSONObj> Thread::toBSON() {
       return boost::shared_ptr<mongo::BSONObj>();
     }
+
+    v8::Local<v8::Object> Thread::toV8() {
+      v8::Local<v8::Object> t = v8::Object::New();
+
+      t->Set(v8::String::New("id"), v8::String::New(id.c_str()));
+      t->Set(v8::String::New("tid"), v8::String::New(tid.c_str()));
+      t->Set(v8::String::New("archived"), v8::Boolean::New(archived));
+
+      v8::Local<v8::Array> ary = v8::Array::New();
+      std::vector<boost::shared_ptr<Message> >::iterator it, end = messages.end();
+      uint32_t i;
+      for(i = 0, it = messages.begin(); it != end; ++it, ++i) {
+        ary->Set(i, (*it)->toV8());
+      }
+
+      t->Set(v8::String::New("messages"), ary);
+
+      return t;
+    }
   }
 }
 
