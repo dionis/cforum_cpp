@@ -43,13 +43,13 @@ namespace CForum {
   namespace Models {
     class Message : public Model {
     public:
-      class User {
+      class Author {
       public:
-        User();
-        User(const User &);
-        User(const mongo::BSONObj &);
+        Author();
+        Author(const Author &);
+        Author(const mongo::BSONObj &);
 
-        User &operator=(const User &);
+        Author &operator=(const Author &);
 
         v8::Local<v8::Object> toV8();
 
@@ -81,7 +81,7 @@ namespace CForum {
 
       std::string id, category, subject, content;
 
-      Message::User user;
+      Message::Author author;
 
       time_t date;
       bool show;

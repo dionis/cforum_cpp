@@ -32,10 +32,10 @@
 namespace CForum {
   namespace Models {
 
-    Message::User::User() : name(), email(), username(), ip(), homepage() { }
-    Message::User::User(const User &usr) : name(usr.name), username(usr.username), ip(usr.ip), homepage(usr.homepage) { }
+    Message::Author::Author() : name(), email(), username(), ip(), homepage() { }
+    Message::Author::Author(const Author &usr) : name(usr.name), username(usr.username), ip(usr.ip), homepage(usr.homepage) { }
 
-    Message::User::User(const mongo::BSONObj &author) : name(), email(), username(), ip(), homepage() {
+    Message::Author::Author(const mongo::BSONObj &author) : name(), email(), username(), ip(), homepage() {
       name = author.getField("name").String();
 
       if(author.hasField("email")) {
@@ -55,7 +55,7 @@ namespace CForum {
       }
     }
 
-    Message::User &Message::User::operator=(const User &usr) {
+    Message::Author &Message::Author::operator=(const Author &usr) {
       if(this != &usr) {
         name     = usr.name;
         email    = usr.email;
@@ -67,7 +67,7 @@ namespace CForum {
       return *this;
     }
 
-    v8::Local<v8::Object> Message::User::toV8() {
+    v8::Local<v8::Object> Message::Author::toV8() {
       v8::Local<v8::Object> u = v8::Object::New();
       u->Set(v8::String::New("name"), v8::String::New(name.c_str()));
 
@@ -102,8 +102,8 @@ namespace CForum {
       return *this;
     }
 
-    Message::Message() : Model::Model(), id(), category(), subject(), content(), user(), date(0), show(true), flags(), messages() { }
-    Message::Message(const Message &msg) : Model::Model(msg), id(msg.id), category(msg.subject), subject(msg.subject), content(msg.content), user(msg.user), date(msg.date), show(msg.show), flags(msg.flags), messages(msg.messages) { }
+    Message::Message() : Model::Model(), id(), category(), subject(), content(), author(), date(0), show(true), flags(), messages() { }
+    Message::Message(const Message &msg) : Model::Model(msg), id(msg.id), category(msg.subject), subject(msg.subject), content(msg.content), author(msg.author), date(msg.date), show(msg.show), flags(msg.flags), messages(msg.messages) { }
 
     Message &Message::operator=(const Message &msg) {
       if(this != &msg) {
@@ -111,7 +111,7 @@ namespace CForum {
         category = msg.category;
         subject  = msg.subject;
         content  = msg.content;
-        user     = msg.user;
+        author   = msg.author;
         date     = msg.date;
         show     = msg.show;
         flags    = msg.flags;
@@ -135,7 +135,7 @@ namespace CForum {
       msg->id      = o.getField("id").String();
       msg->subject = o.getField("subject").String();
       msg->content = o.getField("content").String();
-      msg->user    = Message::User(author);
+      msg->author  = Message::Author(author);
       msg->date    = (time_t)(o.getField("date").Date() / 1000);
       msg->show    = true;
 
@@ -185,7 +185,7 @@ namespace CForum {
       msg->Set(v8::String::New("category"), v8::String::New(category.c_str()));
       msg->Set(v8::String::New("subject"), v8::String::New(subject.c_str()));
       msg->Set(v8::String::New("content"), v8::String::New(content.c_str()));
-      msg->Set(v8::String::New("user"), user.toV8());
+      msg->Set(v8::String::New("author"), author.toV8());
       msg->Set(v8::String::New("date"), v8::Date::New((uint64_t)date * 1000));
       msg->Set(v8::String::New("show"), v8::Boolean::New(show));
 
