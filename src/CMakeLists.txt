@@ -14,6 +14,7 @@ add_subdirectory(cgi)
 add_subdirectory(template)
 add_subdirectory(framework)
 add_subdirectory(controllers)
+add_subdirectory(models)
 
 add_subdirectory(tests)
 
