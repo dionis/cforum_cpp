@@ -80,7 +80,7 @@ namespace CForum {
     }
 
     if(!ret) {
-      throw FrameworkException("Error connecting to MongoDB: " + err, FrameworkException::MongoConnectionError);
+      throw FrameworkErrorException("Error connecting to MongoDB: " + err, FrameworkErrorException::MongoConnectionError);
     }
 
     mongodb->setDbName(*database_u);
@@ -92,7 +92,7 @@ namespace CForum {
       ret = mongodb->auth(*database_u, *user_u, *pass_u, err);
 
       if(!ret) {
-        throw FrameworkException("Error authenticating to MongoDB: " + err, FrameworkException::MongoConnectionError);
+        throw FrameworkErrorException("Error authenticating to MongoDB: " + err, FrameworkErrorException::MongoConnectionError);
       }
     }
   }

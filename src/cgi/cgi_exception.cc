@@ -32,10 +32,10 @@
 #include "cgi/cgi_exception.hh"
 
 namespace CForum {
-  CGIException::CGIException() : CForumException() { }
-  CGIException::CGIException(int code) : CForumException(code) { }
-  CGIException::CGIException(const char *msg, int code) : CForumException(msg,code) { }
-  CGIException::CGIException(const std::string &msg, int code) : CForumException(msg,code) { }
+  CGIException::CGIException() : CForumErrorException() { }
+  CGIException::CGIException(int code) : CForumErrorException(code) { }
+  CGIException::CGIException(const char *msg, int code) : CForumErrorException(msg,code) { }
+  CGIException::CGIException(const std::string &msg, int code) : CForumErrorException(msg,code) { }
 }
 
 /* eof */

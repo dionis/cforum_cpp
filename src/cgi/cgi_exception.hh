@@ -31,10 +31,10 @@
 #ifndef CGI_EXCEPTION_H
 #define CGI_EXCEPTION_H
 
-#include "exceptions/cforum_exception.hh"
+#include "exceptions/cforum_error_exception.hh"
 
 namespace CForum {
-  class CGIException : public CForumException {
+  class CGIException : public CForumErrorException {
   public:
     CGIException();
     CGIException(int);

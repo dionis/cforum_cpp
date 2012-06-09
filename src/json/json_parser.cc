@@ -39,7 +39,7 @@ namespace CForum {
       std::stringstream sst;
 
       if(!fd) {
-        throw JSONException("File not found!",CForumException::FileNotFound);
+        throw JSONException("File not found!",CForumErrorException::FileNotFound);
       }
 
       sst << fd.rdbuf();

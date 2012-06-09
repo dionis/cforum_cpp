@@ -31,10 +31,10 @@
 #ifndef NOT_FOUND_EXCEPTION_H
 #define NOT_FOUND_EXCEPTION_H
 
-#include "framework/framework_exception.hh"
+#include "framework/framework_error_exception.hh"
 
 namespace CForum {
-  class NotFoundException : public FrameworkException {
+  class NotFoundException : public FrameworkErrorException {
   public:
     NotFoundException();
     NotFoundException(int);
@@ -42,6 +42,7 @@ namespace CForum {
     NotFoundException(const std::string &, int);
 
     static const int NoRouteMatchedError = 0x4efb11e9;
+    static const int ThreadNotFoundError = 0x4fd3925a;
 
   };
 

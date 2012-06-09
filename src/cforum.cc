@@ -54,8 +54,13 @@ int main(int argc, char *argv[]) {
       app.init(argc, argv);
       app.handleRequest();
     }
+    catch(CForum::NotFoundException &e) {
+      std::cout << "Status: 404 Not Found\015\012Content-Type: text/plain; charset=utf-8\015\012\015\012";
+      std::cout << "ERROR: " << e.getMessage() << " (" << std::hex << e.getCode() << std::dec << ")" << std::endl;
+    }
     catch(CForum::CForumException &e) {
-      std::cerr << "ERROR: " << e.getMessage() << " (" << std::hex << e.getCode() << std::dec << ")" << std::endl;
+      std::cout << "Status: 500 Internal Server Error\015\012Content-Type: text/plain; charset=utf-8\015\012\015\012";
+      std::cout << "ERROR: " << e.getMessage() << " (" << std::hex << e.getCode() << std::dec << ")" << std::endl;
     }
   }
 

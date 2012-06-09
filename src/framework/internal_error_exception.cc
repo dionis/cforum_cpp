@@ -32,10 +32,10 @@
 #include "framework/internal_error_exception.hh"
 
 namespace CForum {
-  InternalErrorException::InternalErrorException() : FrameworkException() { }
-  InternalErrorException::InternalErrorException(int code) : FrameworkException(code) { }
-  InternalErrorException::InternalErrorException(const char *msg, int code) : FrameworkException(msg, code) { }
-  InternalErrorException::InternalErrorException(const std::string &msg, int code) : FrameworkException(msg, code) { }
+  InternalErrorException::InternalErrorException() : FrameworkErrorException() { }
+  InternalErrorException::InternalErrorException(int code) : FrameworkErrorException(code) { }
+  InternalErrorException::InternalErrorException(const char *msg, int code) : FrameworkErrorException(msg, code) { }
+  InternalErrorException::InternalErrorException(const std::string &msg, int code) : FrameworkErrorException(msg, code) { }
 }
 
 /* eof */

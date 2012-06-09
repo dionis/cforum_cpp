@@ -32,10 +32,10 @@
 #include "framework/not_found_exception.hh"
 
 namespace CForum {
-  NotFoundException::NotFoundException() : FrameworkException() { }
-  NotFoundException::NotFoundException(int code) : FrameworkException(code) { }
-  NotFoundException::NotFoundException(const char *msg, int code) : FrameworkException(msg, code) { }
-  NotFoundException::NotFoundException(const std::string &msg, int code) : FrameworkException(msg, code) { }
+  NotFoundException::NotFoundException() : FrameworkErrorException() { }
+  NotFoundException::NotFoundException(int code) : FrameworkErrorException(code) { }
+  NotFoundException::NotFoundException(const char *msg, int code) : FrameworkErrorException(msg, code) { }
+  NotFoundException::NotFoundException(const std::string &msg, int code) : FrameworkErrorException(msg, code) { }
 }
 
 /* eof */

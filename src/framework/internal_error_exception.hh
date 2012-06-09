@@ -31,10 +31,10 @@
 #ifndef INTERNAL_ERROR_EXCEPTION_H
 #define INTERNAL_ERROR_EXCEPTION_H
 
-#include "framework/framework_exception.hh"
+#include "framework/framework_error_exception.hh"
 
 namespace CForum {
-  class InternalErrorException : public FrameworkException {
+  class InternalErrorException : public FrameworkErrorException {
   public:
     InternalErrorException();
     InternalErrorException(int);

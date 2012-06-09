@@ -31,12 +31,12 @@
 #ifndef JSON_EXCEPTION_H
 #define JSON_EXCEPTION_H
 
-#include "exceptions/cforum_exception.hh"
+#include "exceptions/cforum_error_exception.hh"
 
 namespace CForum {
   namespace JSON {
 
-    class JSONException : public CForumException {
+    class JSONException : public CForumErrorException {
     public:
       JSONException();
       JSONException(int);

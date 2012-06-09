@@ -42,6 +42,35 @@ namespace CForum {
     app->getRouter()->registerRoute("threadlist-route", route);
   }
 
+  void ThreadlistController::preRoute(boost::shared_ptr<Request> rq) {
+    CGI c = rq->getCGI();
+
+    std::string t, m;
+    c.getFirstValue("t").toUTF8String(t);
+    c.getFirstValue("m").toUTF8String(m);
+
+    if(!t.empty()) {
+      std::auto_ptr<mongo::DBClientCursor> cursor = app->getMongo()->query("threads", QUERY("tid" << "t" + t));
+      std::string base = *v8::String::Utf8Value(app->getConfigparser()->getByPath("system/urls/base", false)->ToString()), url;
+
+      if(!cursor->more()) {
+        throw NotFoundException("Thread with tid t" + t + " could not be found!", NotFoundException::ThreadNotFoundError);
+      }
+
+      boost::shared_ptr<Models::Thread> t = Models::Thread::fromBSON(cursor->next());
+
+      if(!m.empty()) {
+        url = base + t->id + "/" + m;
+      }
+      else {
+        url = base + t->id;
+      }
+
+      rq->setHeader("Location", url);
+    }
+
+  }
+
   const std::string ThreadlistController::handleRequest(boost::shared_ptr<Request> rq, const std::map<std::string, std::string> &vars) {
     std::auto_ptr<mongo::DBClientCursor> cursor = app->getMongo()->query("threads", QUERY("archived" << false).sort("messages.0.date"));
     mongo::BSONObj obj;

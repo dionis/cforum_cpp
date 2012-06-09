@@ -17,6 +17,10 @@ add_library(cfframework SHARED
   controller.cc
   configparser.cc
   framework_exception.cc
+  framework_error_exception.cc
+  redirect_exception.cc
+  temporary_redirect_exception.cc
+  permanent_redirect_exception.cc
   not_found_exception.cc
   internal_error_exception.cc
   notification_center.cc
@@ -47,6 +51,7 @@ install(
     application.hh
     config_error_exception.hh
     framework_exception.hh
+    framework_error_exception.hh
     module_exception.hh
     notification_center.hh
     route.hh

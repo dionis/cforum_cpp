@@ -50,7 +50,7 @@ namespace CForum {
     std::stringstream sst;
 
     if(!fd) {
-      throw JSEvaluatorException("File <" + filename + "> not found!", CForumException::FileNotFound);
+      throw JSEvaluatorException("File <" + filename + "> not found!", CForumErrorException::FileNotFound);
     }
 
     sst << fd.rdbuf();

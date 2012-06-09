@@ -31,10 +31,10 @@
 #include "jsevaluator/js_evaluator_exception.hh"
 
 namespace CForum {
-  JSEvaluatorException::JSEvaluatorException() : CForumException() {}
-  JSEvaluatorException::JSEvaluatorException(int code) : CForumException(code) {}
-  JSEvaluatorException::JSEvaluatorException(const char *msg,int code) : CForumException(msg,code) {}
-  JSEvaluatorException::JSEvaluatorException(const std::string &msg,int code) : CForumException(msg,code) {}
+  JSEvaluatorException::JSEvaluatorException() : CForumErrorException() {}
+  JSEvaluatorException::JSEvaluatorException(int code) : CForumErrorException(code) {}
+  JSEvaluatorException::JSEvaluatorException(const char *msg,int code) : CForumErrorException(msg,code) {}
+  JSEvaluatorException::JSEvaluatorException(const std::string &msg,int code) : CForumErrorException(msg,code) {}
 }
 
 /* eof */

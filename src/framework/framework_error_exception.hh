@@ -1,8 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief CForum threadlist controller
+ * \brief Framework exception, all framework errors throw a child exception
+ * \package framework
  *
- * CForum threadlist controller, responds to /
+ * Framework exception, all framework errors throw a child exception
  */
 
 /*
@@ -27,44 +28,24 @@
  * THE SOFTWARE.
  */
 
-#ifndef THREADLIST_CONTROLLER_H
-#define THREADLIST_CONTROLLER_H
+#ifndef FRAMEWORK_ERROR_EXCEPTION_H
+#define FRAMEWORK_ERROR_EXCEPTION_H
 
-#include <mongo/client/dbclient.h>
-
-#include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
-
-#include <sstream>
-#include <iostream>
-#include <string>
-
-#include "framework/controller.hh"
-#include "framework/route.hh"
-
-#include "template/template.hh"
-
-#include "models/thread.hh"
+#include "exceptions/cforum_error_exception.hh"
 
 namespace CForum {
-  class ThreadlistController : public Controller {
+  class FrameworkErrorException : public CForumErrorException {
   public:
-    ThreadlistController();
+    FrameworkErrorException();
+    FrameworkErrorException(int);
+    FrameworkErrorException(const char *, int);
+    FrameworkErrorException(const std::string &, int);
 
-    virtual void registerController(Application *);
-
-    virtual void preRoute(boost::shared_ptr<Request>);
-    virtual const std::string handleRequest(boost::shared_ptr<Request>, const std::map<std::string, std::string> &);
-
-    virtual ~ThreadlistController();
-
-  private:
-    ThreadlistController(const ThreadlistController &);
-
+    static const int MongoConnectionError = 0x4fd30e9c;
   };
+
 }
 
-
-# endif
+#endif
 
 /* eof */

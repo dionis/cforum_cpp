@@ -33,10 +33,10 @@
 
 namespace CForum {
   namespace JSON {
-    JSONException::JSONException() : CForumException() {}
-    JSONException::JSONException(int code) : CForumException(code) {}
-    JSONException::JSONException(const char *msg,int code) : CForumException(msg,code) {}
-    JSONException::JSONException(const std::string &msg,int code) : CForumException(msg,code) {}
+    JSONException::JSONException() : CForumErrorException() {}
+    JSONException::JSONException(int code) : CForumErrorException(code) {}
+    JSONException::JSONException(const char *msg,int code) : CForumErrorException(msg,code) {}
+    JSONException::JSONException(const std::string &msg,int code) : CForumErrorException(msg,code) {}
   }
 }
 

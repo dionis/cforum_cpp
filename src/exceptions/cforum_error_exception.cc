@@ -1,8 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief CForum threadlist controller
+ * \brief Error exception interface implementation
+ * \package Exceptions
  *
- * CForum threadlist controller, responds to /
+ * This implements the basic CForum error exception interface
  */
 
 /*
@@ -27,44 +28,16 @@
  * THE SOFTWARE.
  */
 
-#ifndef THREADLIST_CONTROLLER_H
-#define THREADLIST_CONTROLLER_H
-
-#include <mongo/client/dbclient.h>
-
-#include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
-
-#include <sstream>
-#include <iostream>
-#include <string>
-
-#include "framework/controller.hh"
-#include "framework/route.hh"
-
-#include "template/template.hh"
-
-#include "models/thread.hh"
+#include "exceptions/cforum_error_exception.hh"
 
 namespace CForum {
-  class ThreadlistController : public Controller {
-  public:
-    ThreadlistController();
+  CForumErrorException::CForumErrorException() : CForumException::CForumException() { }
+  CForumErrorException::CForumErrorException(int code) : CForumException::CForumException(code) { }
+  CForumErrorException::CForumErrorException(const char *msg,int code) : CForumException::CForumException(msg, code) { }
+  CForumErrorException::CForumErrorException(const std::string &msg,int code) : CForumException::CForumException(msg, code) { }
 
-    virtual void registerController(Application *);
+  CForumErrorException::~CForumErrorException() throw() {}
 
-    virtual void preRoute(boost::shared_ptr<Request>);
-    virtual const std::string handleRequest(boost::shared_ptr<Request>, const std::map<std::string, std::string> &);
-
-    virtual ~ThreadlistController();
-
-  private:
-    ThreadlistController(const ThreadlistController &);
-
-  };
 }
-
-
-# endif
 
 /* eof */

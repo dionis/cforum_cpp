@@ -1,8 +1,9 @@
 /**
  * \author Christian Kruse <cjk@wwwtech.de>
- * \brief CForum threadlist controller
+ * \brief Framework exception, all framework errors throw a child exception
+ * \package framework
  *
- * CForum threadlist controller, responds to /
+ * Framework exception, all framework errors throw a child exception
  */
 
 /*
@@ -27,44 +28,15 @@
  * THE SOFTWARE.
  */
 
-#ifndef THREADLIST_CONTROLLER_H
-#define THREADLIST_CONTROLLER_H
 
-#include <mongo/client/dbclient.h>
-
-#include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
-
-#include <sstream>
-#include <iostream>
-#include <string>
-
-#include "framework/controller.hh"
-#include "framework/route.hh"
-
-#include "template/template.hh"
-
-#include "models/thread.hh"
+#include "framework/temporary_redirect_exception.hh"
 
 namespace CForum {
-  class ThreadlistController : public Controller {
-  public:
-    ThreadlistController();
-
-    virtual void registerController(Application *);
-
-    virtual void preRoute(boost::shared_ptr<Request>);
-    virtual const std::string handleRequest(boost::shared_ptr<Request>, const std::map<std::string, std::string> &);
-
-    virtual ~ThreadlistController();
-
-  private:
-    ThreadlistController(const ThreadlistController &);
-
-  };
+  TemporaryRedirectException::TemporaryRedirectException(const std::string &uri, int stat) : RedirectException(uri, stat) { }
+  TemporaryRedirectException::TemporaryRedirectException(int code, const std::string &uri, int stat) : RedirectException(code, uri, stat) { }
+  TemporaryRedirectException::TemporaryRedirectException(const char *msg, int code, const std::string &uri, int stat) : RedirectException(msg, code, uri, stat) { }
+  TemporaryRedirectException::TemporaryRedirectException(const std::string &msg, int code, const std::string &uri, int stat) : RedirectException(msg, code, uri, stat) { }
 }
 
-
-# endif
 
 /* eof */

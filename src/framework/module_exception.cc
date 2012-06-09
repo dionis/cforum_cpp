@@ -32,10 +32,10 @@
 #include "framework/module_exception.hh"
 
 namespace CForum {
-  ModuleException::ModuleException() : FrameworkException() { }
-  ModuleException::ModuleException(int code) : FrameworkException(code) { }
-  ModuleException::ModuleException(const char *msg, int code) : FrameworkException(msg, code) { }
-  ModuleException::ModuleException(const std::string &msg, int code) : FrameworkException(msg, code) { }
+  ModuleException::ModuleException() : FrameworkErrorException() { }
+  ModuleException::ModuleException(int code) : FrameworkErrorException(code) { }
+  ModuleException::ModuleException(const char *msg, int code) : FrameworkErrorException(msg, code) { }
+  ModuleException::ModuleException(const std::string &msg, int code) : FrameworkErrorException(msg, code) { }
 }
 
 /* eof */

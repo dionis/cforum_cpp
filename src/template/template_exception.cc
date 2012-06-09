@@ -32,10 +32,10 @@
 #include "template/template_exception.hh"
 
 namespace CForum {
-  TemplateException::TemplateException() : CForumException() {}
-  TemplateException::TemplateException(int code) : CForumException(code) {}
-  TemplateException::TemplateException(const char *msg,int code) : CForumException(msg,code) {}
-  TemplateException::TemplateException(const std::string &msg,int code) : CForumException(msg,code) {}
+  TemplateException::TemplateException() : CForumErrorException() {}
+  TemplateException::TemplateException(int code) : CForumErrorException(code) {}
+  TemplateException::TemplateException(const char *msg,int code) : CForumErrorException(msg,code) {}
+  TemplateException::TemplateException(const std::string &msg,int code) : CForumErrorException(msg,code) {}
 }
 
 /* eof */

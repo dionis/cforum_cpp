@@ -32,10 +32,10 @@
 #include "framework/route_exception.hh"
 
 namespace CForum {
-  RouteException::RouteException() : FrameworkException() { }
-  RouteException::RouteException(int code) : FrameworkException(code) { }
-  RouteException::RouteException(const char *msg, int code) : FrameworkException(msg, code) { }
-  RouteException::RouteException(const std::string &msg, int code) : FrameworkException(msg, code) { }
+  RouteException::RouteException() : FrameworkErrorException() { }
+  RouteException::RouteException(int code) : FrameworkErrorException(code) { }
+  RouteException::RouteException(const char *msg, int code) : FrameworkErrorException(msg, code) { }
+  RouteException::RouteException(const std::string &msg, int code) : FrameworkErrorException(msg, code) { }
 }
 
 /* eof */

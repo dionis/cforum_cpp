@@ -31,10 +31,10 @@
 #ifndef TEMPLATE_EXCEPTION_H
 #define TEMPLATE_EXCEPTION_H
 
-#include "exceptions/cforum_exception.hh"
+#include "exceptions/cforum_error_exception.hh"
 
 namespace CForum {
-  class TemplateException : public CForumException {
+  class TemplateException : public CForumErrorException {
   public:
     TemplateException();
     TemplateException(int);

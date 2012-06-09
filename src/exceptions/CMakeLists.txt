@@ -7,6 +7,7 @@ include_directories (BEFORE "${CMAKE_CURRENT_SOURCE_DIR}/.." "${CMAKE_CURRENT_SO
 # libcfexceptions
 add_library(cfexceptions SHARED
   cforum_exception.cc
+  cforum_error_exception.cc
 )
 
 install(
@@ -19,6 +20,7 @@ install(
 install(
   FILES
     cforum_exception.hh
+    cforum_error_exception.hh
   DESTINATION
     "${CMAKE_INSTALL_PREFIX}/include/cforum/exceptions"
 )

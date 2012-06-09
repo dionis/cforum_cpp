@@ -31,10 +31,10 @@
 #ifndef MODULE_EXCEPTION_H
 #define MODULE_EXCEPTION_H
 
-#include "framework/framework_exception.hh"
+#include "framework/framework_error_exception.hh"
 
 namespace CForum {
-  class ModuleException : public FrameworkException {
+  class ModuleException : public FrameworkErrorException {
   public:
     ModuleException();
     ModuleException(int);

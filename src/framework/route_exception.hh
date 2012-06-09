@@ -31,10 +31,10 @@
 #ifndef ROUTE_EXCEPTION_H
 #define ROUTE_EXCEPTION_H
 
-#include "framework/framework_exception.hh"
+#include "framework/framework_error_exception.hh"
 
 namespace CForum {
-  class RouteException : public FrameworkException {
+  class RouteException : public FrameworkErrorException {
   public:
     RouteException();
     RouteException(int);

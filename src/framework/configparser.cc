@@ -57,7 +57,7 @@ namespace CForum {
       }
     }
 
-    throw ConfigErrorException("No configuration file could be found!",CForumException::FileNotFound);
+    throw ConfigErrorException("No configuration file could be found!",CForumErrorException::FileNotFound);
   }
 
   void Configparser::parse(std::string fname) {

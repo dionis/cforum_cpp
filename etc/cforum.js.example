@@ -1,5 +1,8 @@
 config = {
   'system': {
+    'urls': {
+      'base': 'http://localhost/cforum/htdocs'
+    },
     'modules': ['libcf_threadlist_controller.so'],
     'modpath': '/usr/lib/cforum/',
     'views-js': '/etc/cforum/views.js'

@@ -31,10 +31,10 @@
 #ifndef JSEVALUATOR_EXCEPTION_H
 #define JSEVALUATOR_EXCEPTION_H
 
-#include "exceptions/cforum_exception.hh"
+#include "exceptions/cforum_error_exception.hh"
 
 namespace CForum {
-  class JSEvaluatorException : public CForumException {
+  class JSEvaluatorException : public CForumErrorException {
   public:
     JSEvaluatorException();
     JSEvaluatorException(int);

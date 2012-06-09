@@ -31,10 +31,10 @@
 #ifndef CONFIGERROR_EXCEPTION_H
 #define CONFIGERROR_EXCEPTION_H
 
-#include "framework/framework_exception.hh"
+#include "framework/framework_error_exception.hh"
 
 namespace CForum {
-  class ConfigErrorException : public FrameworkException {
+  class ConfigErrorException : public FrameworkErrorException {
   public:
     ConfigErrorException();
     ConfigErrorException(int);
