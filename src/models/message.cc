@@ -102,11 +102,13 @@ namespace CForum {
       return *this;
     }
 
-    Message::Message() : Model::Model(), subject(), content(), user(), date(0), show(true), flags(), messages() { }
-    Message::Message(const Message &msg) : Model::Model(msg), subject(msg.subject), content(msg.content), user(msg.user), date(msg.date), show(msg.show), flags(msg.flags), messages(msg.messages) { }
+    Message::Message() : Model::Model(), id(), category(), subject(), content(), user(), date(0), show(true), flags(), messages() { }
+    Message::Message(const Message &msg) : Model::Model(msg), id(msg.id), category(msg.subject), subject(msg.subject), content(msg.content), user(msg.user), date(msg.date), show(msg.show), flags(msg.flags), messages(msg.messages) { }
 
     Message &Message::operator=(const Message &msg) {
       if(this != &msg) {
+        id       = msg.id;
+        category = msg.category;
         subject  = msg.subject;
         content  = msg.content;
         user     = msg.user;
@@ -130,11 +132,16 @@ namespace CForum {
       const mongo::BSONObj author = o.getField("author").Obj();
       const std::vector<mongo::BSONElement> msgs = o.getField("messages").Array();
 
+      msg->id      = o.getField("id").String();
       msg->subject = o.getField("subject").String();
       msg->content = o.getField("content").String();
       msg->user    = Message::User(author);
       msg->date    = (time_t)o.getField("date").Date();
       msg->show    = true;
+
+      if(o.hasField("category")) {
+        msg->category = o.getField("category").String();
+      }
 
       if(o.hasField("flags")) {
         mongo::BSONObj flags = o.getField("flags").Obj();
@@ -174,6 +181,8 @@ namespace CForum {
     v8::Local<v8::Object> Message::toV8() {
       v8::Local<v8::Object> msg = v8::Object::New();
 
+      msg->Set(v8::String::New("id"), v8::String::New(id.c_str()));
+      msg->Set(v8::String::New("category"), v8::String::New(category.c_str()));
       msg->Set(v8::String::New("subject"), v8::String::New(subject.c_str()));
       msg->Set(v8::String::New("content"), v8::String::New(content.c_str()));
       msg->Set(v8::String::New("user"), user.toV8());

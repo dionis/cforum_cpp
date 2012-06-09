@@ -79,7 +79,7 @@ namespace CForum {
       virtual boost::shared_ptr<mongo::BSONObj> toBSON();
       virtual v8::Local<v8::Object> toV8();
 
-      std::string subject, content;
+      std::string id, category, subject, content;
 
       Message::User user;
 
