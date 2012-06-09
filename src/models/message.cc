@@ -136,7 +136,7 @@ namespace CForum {
       msg->subject = o.getField("subject").String();
       msg->content = o.getField("content").String();
       msg->user    = Message::User(author);
-      msg->date    = (time_t)o.getField("date").Date();
+      msg->date    = (time_t)(o.getField("date").Date() / 1000);
       msg->show    = true;
 
       if(o.hasField("category")) {
