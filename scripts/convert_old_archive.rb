@@ -33,9 +33,9 @@ def handle_messages(cont, x_msg)
     'subject' => x_msg.find_first('./Header/Subject').content.force_encoding('utf-8'),
     'date' => Time.at(x_msg.find_first('./Header/Date')['longSec'].force_encoding('utf-8').to_i),
     'flags' => {
-      'votingGood' => x_msg['votingGood'].to_i,
-      'votingBad' => x_msg['votingBad'].to_i,
-      'invisible' => x_msg['invisible'] == '1'
+      'votingGood' => x_msg['votingGood'].to_s,
+      'votingBad' => x_msg['votingBad'].to_s,
+      'invisible' => x_msg['invisible'] == '1' ? 'yes' : 'no'
     },
     'content' => convert_content(x_msg.find_first('./MessageContent').content.force_encoding('utf-8')),
     'messages' => []
