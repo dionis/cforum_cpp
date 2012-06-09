@@ -187,10 +187,11 @@ namespace CForum {
   }
 
   void Application::run(boost::shared_ptr<Request> rq) {
-    v8::String::Utf8Value path(configparser->getByPath("system/views", false)->ToString());
-    rq->getTemplate()->setBaseDir(*path);
-
     std::vector<cf_module_t>::iterator it, end = modules.end();
+
+    v8::String::Utf8Value path(configparser->getByPath("system/views", false)->ToString());
+    rq->initTemplate(configparser);
+    rq->getTemplate()->setBaseDir(*path);
 
     for(it = modules.begin(); it != end; ++it) {
       it->controller->preRoute(rq);
