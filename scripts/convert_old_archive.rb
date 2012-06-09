@@ -26,7 +26,7 @@ end
 
 def handle_messages(cont, x_msg)
   msg = {
-    'id' => x_msg['id'],
+    'id' => x_msg['id'].gsub(/^m/, ''),
     'author' => {
       'name' => x_msg.find_first('./Header/Author/Name').content.force_encoding('utf-8')
     },
