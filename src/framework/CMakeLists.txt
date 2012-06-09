@@ -29,6 +29,7 @@ add_library(cfframework SHARED
   application.cc
   module_exception.cc
   cgi_application.cc
+  mongodb.cc
   model.cc
 )
 

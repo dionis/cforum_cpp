@@ -46,7 +46,7 @@ void usage(const char *bin) {
 namespace CForum {
   const char *Application::NOTIFY_PRE_RUN = "notify: just about to run";
 
-  Application::Application() : mongodb(boost::make_shared<mongo::DBClientConnection>()), configparser(boost::make_shared<Configparser>()), router(boost::make_shared<Router>()), notificationCenter(boost::make_shared<NotificationCenter>()), modules(), hooks() {
+  Application::Application() : mongodb(boost::make_shared<DBClientConnection>()), configparser(boost::make_shared<Configparser>()), router(boost::make_shared<Router>()), notificationCenter(boost::make_shared<NotificationCenter>()), modules(), hooks() {
   }
 
   Application::Application(const Application &) { }
@@ -82,6 +82,8 @@ namespace CForum {
     if(!ret) {
       throw FrameworkException("Error connecting to MongoDB: " + err, FrameworkException::MongoConnectionError);
     }
+
+    mongodb->setDbName(*database_u);
 
     v8::Local<v8::Value> user = configparser->getByPath("mongodb/user");
     v8::Local<v8::Value> pass = configparser->getByPath("mongodb/password");

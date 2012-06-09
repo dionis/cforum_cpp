@@ -36,10 +36,10 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 
-#include <mongo/client/dbclient.h>
-
 #include <unistd.h>
 #include <getopt.h>
+
+#include "framework/mongodb.hh"
 
 #include "framework/request.hh"
 #include "framework/controller.hh"
@@ -67,7 +67,7 @@ namespace CForum {
     virtual boost::shared_ptr<Configparser> getConfigparser();
     virtual boost::shared_ptr<Router> getRouter();
     virtual boost::shared_ptr<NotificationCenter> getNotificationCenter();
-    virtual boost::shared_ptr<mongo::DBClientConnection> getMongo();
+    virtual boost::shared_ptr<DBClientConnection> getMongo();
 
     virtual void init();
     virtual void init(int argc, char *[]);
@@ -83,7 +83,7 @@ namespace CForum {
   protected:
     virtual void loadModule(const char *, const char *);
 
-    boost::shared_ptr<mongo::DBClientConnection> mongodb;
+    boost::shared_ptr<DBClientConnection> mongodb;
 
     boost::shared_ptr<Configparser> configparser;
     boost::shared_ptr<Router> router;
@@ -112,7 +112,7 @@ namespace CForum {
     return notificationCenter;
   }
 
-  inline boost::shared_ptr<mongo::DBClientConnection> Application::getMongo() {
+  inline boost::shared_ptr<DBClientConnection> Application::getMongo() {
     return mongodb;
   }
 
