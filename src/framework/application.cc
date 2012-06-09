@@ -46,7 +46,7 @@ void usage(const char *bin) {
 namespace CForum {
   const char *Application::NOTIFY_PRE_RUN = "notify: just about to run";
 
-  Application::Application() : configparser(boost::make_shared<Configparser>()), router(boost::make_shared<Router>()), notificationCenter(boost::make_shared<NotificationCenter>()), modules(), hooks() {
+  Application::Application() : mongodb(boost::make_shared<mongo::DBClientConnection>()), configparser(boost::make_shared<Configparser>()), router(boost::make_shared<Router>()), notificationCenter(boost::make_shared<NotificationCenter>()), modules(), hooks() {
   }
 
   Application::Application(const Application &) { }
@@ -62,7 +62,37 @@ namespace CForum {
     configparser->parse(configfile);
     loadModules();
 
+    v8::Local<v8::String>  host     = configparser->getByPath("mongodb/host", false)->ToString();
+    v8::Local<v8::Integer> port     = configparser->getByPath("mongodb/port")->ToInteger();
+    v8::Local<v8::String>  database = configparser->getByPath("mongodb/database", false)->ToString();
 
+    v8::String::Utf8Value host_u(host), database_u(database);
+
+    std::string err;
+    bool ret;
+    int port_i = port->Int32Value();
+
+    if(!port->IsNull() && !port->IsUndefined() && port_i != 0) {
+      ret = mongodb->connect(mongo::HostAndPort(*host_u, port_i), err);
+    }
+    else {
+      ret = mongodb->connect(*host_u, err);
+    }
+
+    if(!ret) {
+      throw FrameworkException("Error connecting to MongoDB: " + err, FrameworkException::MongoConnectionError);
+    }
+
+    v8::Local<v8::Value> user = configparser->getByPath("mongodb/user");
+    v8::Local<v8::Value> pass = configparser->getByPath("mongodb/password");
+    if(!user->IsNull() && !user->IsUndefined()) {
+      v8::String::Utf8Value user_u(user), pass_u(pass);
+      ret = mongodb->auth(*database_u, *user_u, *pass_u, err);
+
+      if(!ret) {
+        throw FrameworkException("Error authenticating to MongoDB: " + err, FrameworkException::MongoConnectionError);
+      }
+    }
   }
 
   void Application::init(int argc, char *argv[]) {

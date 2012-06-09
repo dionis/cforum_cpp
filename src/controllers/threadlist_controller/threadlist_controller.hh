@@ -30,6 +30,8 @@
 #ifndef THREADLIST_CONTROLLER_H
 #define THREADLIST_CONTROLLER_H
 
+#include <mongo/client/dbclient.h>
+
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 

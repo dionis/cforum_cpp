@@ -4,10 +4,8 @@ config = {
     'modpath': '/usr/lib/cforum/'
   },
 
-  'couchdb': {
-    'protocol': 'http',
+  'mongodb': {
     'host': 'localhost',
-    'port': 5984,
     'database': 'selfhtml'
   }
 };

@@ -44,12 +44,12 @@ namespace CForum {
   }
 
   const std::string ThreadlistController::handleRequest(boost::shared_ptr<Request> rq, const std::map<std::string, std::string> &vars) {
-    CouchDB::Document response = app->getCouch()->getView("cforum", "threadlist?limit=20&include_docs=true&descending=true");
+    std::auto_ptr<mongo::DBClientCursor> cursor = app->getMongo()->query("threads", QUERY("archived" << false).sort("messages.0.date"));
     std::ostringstream ostr;
 
     boost::shared_ptr<Template> tpl = rq->getTemplate();
 
-    tpl->setVariable("threadlist", tpl->jsonToV8(response.getValue("rows")));
+    //tpl->setVariable("threadlist", );
 
     view = "threadlist/threadlist.html";
     return Controller::handleRequest(rq, vars);

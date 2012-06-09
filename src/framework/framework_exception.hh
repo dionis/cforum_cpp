@@ -40,6 +40,8 @@ namespace CForum {
     FrameworkException(int);
     FrameworkException(const char *, int);
     FrameworkException(const std::string &, int);
+
+    static const int MongoConnectionError = 0x4fd30e9c;
   };
 
 }
