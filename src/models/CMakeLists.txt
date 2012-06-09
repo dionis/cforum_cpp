@@ -11,4 +11,19 @@ add_library(cfmodels SHARED
 
 target_link_libraries(cfmodels cfframework ${Boost_LIBRARIES} ${ICU_LIBRARY} ${PCREPP_LIBRARIES})
 
+install(
+  TARGETS
+    cfmodels
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
+
+install(
+  FILES
+    thread.hh
+    message.hh
+  DESTINATION
+    "${CMAKE_INSTALL_PREFIX}/include/cforum/models"
+)
+
 # eof

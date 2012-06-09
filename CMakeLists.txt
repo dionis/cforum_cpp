@@ -117,6 +117,7 @@ find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 include_directories("${IDN_INCLUDE_DIR}" "${ICU_INCLUDE}" "${Boost_INCLUDE_DIRS}" "${PCREPP_INCLUDE_DIR}")
 
 add_subdirectory(src)
+add_subdirectory(etc)
 
 # Copy FindCForum.cmake macro (other programs may use it)
 install(

@@ -35,4 +35,41 @@ add_library(cfframework SHARED
 
 target_link_libraries(cfframework cfexceptions cfcgi cfjsevaluator cfjson cftemplate -lmongoclient ${Boost_LIBRARIES} ${ICU_LIBRARY} ${PCREPP_LIBRARIES})
 
+install(
+  TARGETS
+    cfframework
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
+
+install(
+  FILES
+    application.hh
+    config_error_exception.hh
+    framework_exception.hh
+    module_exception.hh
+    notification_center.hh
+    route.hh
+    session_exception.hh
+    uri_exception.hh
+    cgi_application.hh
+    configparser.hh
+    internal_error_exception.hh
+    mongodb.hh
+    request.hh
+    router.hh
+    session_file_storage.hh
+    uri.hh
+    cgi_request.hh
+    controller.hh
+    model.hh
+    not_found_exception.hh
+    route_exception.hh
+    route_syntax_exception.hh
+    session.hh
+    user.hh
+  DESTINATION
+    "${CMAKE_INSTALL_PREFIX}/include/cforum/framework"
+)
+
 # eof

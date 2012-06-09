@@ -20,4 +20,28 @@ add_library(cfjson SHARED
 
 target_link_libraries(cfjson cfexceptions ${ICU_LIBRARY})
 
+install(
+  TARGETS
+    cfjson
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
+
+install(
+  FILES
+    json_array.hh
+    json_boolean.hh
+    json_element.hh
+    json_exception.hh
+    json_null.hh
+    json_number.hh
+    json_object.hh
+    json_parser.hh
+    json_string.hh
+    json_syntax_exception.hh
+  DESTINATION
+    "${CMAKE_INSTALL_PREFIX}/include/cforum/json"
+)
+
+
 # eof

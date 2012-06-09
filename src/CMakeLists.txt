@@ -26,4 +26,19 @@ target_link_libraries(cforum
   cfframework
 )
 
+install(
+  TARGETS
+    cforum
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
+
+install(
+  FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/config.hh"
+    cforum.hh
+  DESTINATION
+    "${CMAKE_INSTALL_PREFIX}/include/cforum"
+)
+
 # eof

@@ -15,4 +15,20 @@ add_library(cftemplate SHARED
 
 target_link_libraries(cftemplate cfexceptions ${V8_LIBRARY} ${ICU_LIBRARY})
 
+install(
+  TARGETS
+    cftemplate
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
+
+install(
+  FILES
+    template_exception.hh
+    template.hh
+    template_parser_exception.hh
+  DESTINATION
+    "${CMAKE_INSTALL_PREFIX}/include/cforum/template"
+)
+
 # eof
