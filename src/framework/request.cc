@@ -35,24 +35,39 @@ namespace CForum {
   Request::Request(const Request &rq) : requestUri(rq.requestUri), user(rq.user), tpl(rq.tpl) { }
 
   void Request::initTemplate(boost::shared_ptr<Configparser> configparser) {
-    v8::Local<v8::Value> views_js = configparser->getByPath("system/views-js");
-    if(!views_js->IsNull() && !views_js->IsUndefined()) {
-      v8::String::Utf8Value views_js_u(views_js->ToString());
+    v8::Local<v8::Value> exts = configparser->getByPath("system/views-js");
+    v8::Local<v8::Object> extensions;
+    v8::Local<v8::Array> keys;
+    v8::Local<v8::String> file, name;
+    uint32_t i, len;
 
-      std::ifstream fd(*views_js_u, std::ifstream::in);
-      std::stringstream sst;
+    if(!exts->IsNull() && !exts->IsUndefined()) {
+      extensions = exts->ToObject();
+      keys = extensions->GetPropertyNames();
+      char **extension_names = new char *[keys->Length()];
 
-      if(!fd) { /* TODO: throw exception */
-        perror("fopen");
-        exit(-1);
+      for(len = keys->Length(), i = 0; i < len; ++i) {
+        name = keys->Get(i)->ToString();
+        file = extensions->Get(name)->ToString();
+        v8::String::Utf8Value name_c(name);
+        v8::String::Utf8Value file_c(file);
+
+        std::ifstream fd(*file_c, std::ifstream::in);
+        std::stringstream sst;
+
+        if(!fd) {
+          throw InternalErrorException(std::string("File ") + *file_c + " could not be found!", CForumErrorException::FileNotFound);
+        }
+
+        sst << fd.rdbuf();
+        fd.close();
+
+        char *nam = strdup(*name_c);
+        v8::RegisterExtension(new v8::Extension(nam, strdup(sst.str().c_str())));
+        extension_names[i] = nam;
       }
-      sst << fd.rdbuf();
-      fd.close();
 
-      v8::RegisterExtension(new v8::Extension("viewsjs", strdup(sst.str().c_str())));
-      const char *extension_names[] = { "viewsjs" };
-      v8::ExtensionConfiguration *extensions = new v8::ExtensionConfiguration(1, extension_names);
-
+      v8::ExtensionConfiguration *extensions = new v8::ExtensionConfiguration((int)len, const_cast<const char **>(extension_names));
       tpl = boost::make_shared<Template>(extensions);
     }
     else {

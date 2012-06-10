@@ -43,6 +43,7 @@
 #include "framework/uri.hh"
 #include "framework/user.hh"
 #include "template/template.hh"
+#include "framework/internal_error_exception.hh"
 
 namespace CForum {
   class Request {

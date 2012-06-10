@@ -5,7 +5,10 @@ config = {
     },
     'modules': ['libcf_threadlist_controller.so'],
     'modpath': '/usr/lib/cforum/',
-    'views-js': '/etc/cforum/views.js'
+    'views-js': {
+      'internal': '/etc/cforum/views.js',
+      'moment': '/etc/cforum/moment.js'
+    }
   },
 
   'mongodb': {
