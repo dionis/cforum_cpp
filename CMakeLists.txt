@@ -111,10 +111,19 @@ find_package(CPPUNIT REQUIRED)
 find_package(CURL REQUIRED)
 find_package(PCREPP REQUIRED)
 
+find_path(MongoDB_INCLUDE_DIR mongo/client/dbclient.h
+  /usr/include/
+  /usr/local/include/
+  /usr/include/mongo/
+  /usr/local/include/mongo/
+  /opt/mongo/include/
+)
+
 set(BOOST_LIBS serialization filesystem system)
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 
-include_directories("${IDN_INCLUDE_DIR}" "${ICU_INCLUDE}" "${Boost_INCLUDE_DIRS}" "${PCREPP_INCLUDE_DIR}")
+include_directories("${IDN_INCLUDE_DIR}" "${ICU_INCLUDE}"
+    "${Boost_INCLUDE_DIRS}" "${PCREPP_INCLUDE_DIR}" "${MongoDB_INCLUDE_DIR}")
 
 add_subdirectory(src)
 add_subdirectory(etc)
