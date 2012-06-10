@@ -43,6 +43,7 @@ namespace CForum {
 
     static const int NoRouteMatchedError = 0x4efb11e9;
     static const int ThreadNotFoundError = 0x4fd3925a;
+    static const int MessageNotFoundError = 0x4fd46582;
 
   };
 
