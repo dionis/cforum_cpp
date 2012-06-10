@@ -118,6 +118,14 @@ find_path(MongoDB_INCLUDE_DIR mongo/client/dbclient.h
   /usr/local/include/mongo/
   /opt/mongo/include/
 )
+find_library(MongoDB_LIBRARIES NAMES mongoclient
+  PATHS
+    /usr/lib
+    /usr/lib/mongo
+    /usr/local/lib
+    /usr/local/lib/mongo
+    /opt/mongo/lib
+)
 
 set(BOOST_LIBS serialization filesystem system)
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)

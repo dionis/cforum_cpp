@@ -37,7 +37,7 @@ add_library(cfframework SHARED
   model.cc
 )
 
-target_link_libraries(cfframework cfexceptions cfcgi cfjsevaluator cfjson cftemplate -lmongoclient ${Boost_LIBRARIES} ${ICU_LIBRARY} ${PCREPP_LIBRARIES})
+target_link_libraries(cfframework cfexceptions cfcgi cfjsevaluator cfjson cftemplate ${MongoDB_LIBRARIES} ${Boost_LIBRARIES} ${ICU_LIBRARY} ${PCREPP_LIBRARIES})
 
 install(
   TARGETS
