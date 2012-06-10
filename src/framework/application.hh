@@ -49,6 +49,10 @@
 
 #include "framework/module_exception.hh"
 
+#include "models/thread.hh"
+#include "models/message.hh"
+
+
 namespace CForum {
   class Router; // needed due to circular dependencies
 
@@ -79,6 +83,9 @@ namespace CForum {
 
     virtual const std::vector<boost::shared_ptr<Controller> > &getHook(const std::string &);
     virtual void registerHook(const std::string &, boost::shared_ptr<Controller>);
+
+    virtual std::string absURL(const Models::Thread &, const std::string & = "", const std::string & = "");
+    virtual std::string absURL(const Models::Thread &, const Models::Message &, const std::string & = "", const std::string & = "");
 
   protected:
     virtual void loadModule(const char *, const char *);

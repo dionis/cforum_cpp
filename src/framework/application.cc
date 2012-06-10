@@ -206,6 +206,34 @@ namespace CForum {
     rq->output(retval);
   }
 
+
+  std::string Application::absURL(const Models::Thread &t, const std::string &method, const std::string &query) {
+    std::string url = *v8::String::Utf8Value(configparser->getByPath("system/urls/base", false)->ToString());
+    url += t.id;
+    if(!method.empty()) {
+      url += ";" + method;
+    }
+    if(!query.empty()) {
+      url += "?" + query;
+    }
+
+    return url;
+  }
+
+  std::string Application::absURL(const Models::Thread &t, const Models::Message &m, const std::string &method, const std::string &query) {
+    std::string url = *v8::String::Utf8Value(configparser->getByPath("system/urls/base", false)->ToString());
+    url += t.id + "/" + m.id;
+
+    if(!method.empty()) {
+      url += ";" + method;
+    }
+    if(!query.empty()) {
+      url += "?" + query;
+    }
+
+    return url;
+  }
+
   Application::~Application() { }
 
 }
