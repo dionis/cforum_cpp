@@ -43,10 +43,21 @@ namespace CForum {
 
     virtual ~RedirectException() throw();
 
+    virtual int getStatus();
+    virtual const std::string &getUrl();
+
   protected:
     int status;
     std::string url;
   };
+
+  inline int RedirectException::getStatus() {
+    return status;
+  }
+
+  inline const std::string &RedirectException::getUrl() {
+    return url;
+  }
 
 }
 
