@@ -50,6 +50,9 @@ namespace CForum {
 
       virtual ~Thread();
 
+      virtual boost::shared_ptr<Message> getMessage(const std::string &);
+      virtual boost::shared_ptr<Message> getMessage(const std::string &, boost::shared_ptr<Message>);
+
       static boost::shared_ptr<Thread> fromJSON(const JSON::Object &);
       static boost::shared_ptr<Thread> fromBSON(const mongo::BSONObj &);
 

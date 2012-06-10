@@ -93,6 +93,33 @@ namespace CForum {
 
       return t;
     }
+
+    boost::shared_ptr<Message> Thread::getMessage(const std::string &id) {
+      if(messages.empty()) {
+        return boost::shared_ptr<Message>();
+      }
+
+      return getMessage(id, messages[0]);
+    }
+
+    boost::shared_ptr<Message> Thread::getMessage(const std::string &id, boost::shared_ptr<Message> root) {
+      if(root->id == id) {
+        return root;
+      }
+
+      if(!root->messages.empty()) {
+        boost::shared_ptr<Message> retval;
+        std::vector<boost::shared_ptr<Message> >::iterator it, end = root->messages.end();
+
+        for(it = root->messages.begin(); it != end; ++it) {
+          if(retval = getMessage(id, *it)) {
+            return retval;
+          }
+        }
+      }
+
+      return boost::shared_ptr<Message>();
+    }
   }
 }
 
