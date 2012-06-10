@@ -47,6 +47,7 @@
 #include "framework/cgi_application.hh"
 
 #include "exceptions/cforum_exception.hh"
+#include "framework/redirect_exception.hh"
 
 #endif
 

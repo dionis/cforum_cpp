@@ -58,6 +58,10 @@ int main(int argc, char *argv[]) {
       std::cout << "Status: 404 Not Found\015\012Content-Type: text/plain; charset=utf-8\015\012\015\012";
       std::cout << "ERROR: " << e.getMessage() << " (" << std::hex << e.getCode() << std::dec << ")" << std::endl;
     }
+    catch(CForum::RedirectException &e) {
+      std::cout << "Status: " << e.getStatus() << "\015\012Location: " << e.getUrl() << "\015\012Content-Type: text/plain; charset=utf-8\015\012\015\012";
+      std::cout << "You've been redirected to " << e.getUrl() << std::endl;
+    }
     catch(CForum::CForumException &e) {
       std::cout << "Status: 500 Internal Server Error\015\012Content-Type: text/plain; charset=utf-8\015\012\015\012";
       std::cout << "ERROR: " << e.getMessage() << " (" << std::hex << e.getCode() << std::dec << ")" << std::endl;
