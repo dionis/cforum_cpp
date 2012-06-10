@@ -51,22 +51,28 @@ namespace CForum {
 
     if(!t.empty()) {
       std::auto_ptr<mongo::DBClientCursor> cursor = app->getMongo()->query("threads", QUERY("tid" << "t" + t));
-      std::string base = *v8::String::Utf8Value(app->getConfigparser()->getByPath("system/urls/base", false)->ToString()), url;
 
       if(!cursor->more()) {
         throw NotFoundException("Thread with tid t" + t + " could not be found!", NotFoundException::ThreadNotFoundError);
       }
 
       boost::shared_ptr<Models::Thread> t = Models::Thread::fromBSON(cursor->next());
+      boost::shared_ptr<Models::Message> msg;
+      std::string url;
 
       if(!m.empty()) {
-        url = base + t->id + "/" + m;
+        if(msg = t->getMessage(m)) {
+          url = app->absURL(*t, *msg);
+        }
+        else {
+          throw NotFoundException("Message with tid m" + m + " could not be found!", NotFoundException::MessageNotFoundError);
+        }
       }
       else {
-        url = base + t->id;
+        url = app->absURL(*t);
       }
 
-      rq->setHeader("Location", url);
+      throw PermanentRedirectException(url);
     }
 
   }

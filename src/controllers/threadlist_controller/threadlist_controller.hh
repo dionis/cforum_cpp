@@ -41,6 +41,7 @@
 
 #include "framework/controller.hh"
 #include "framework/route.hh"
+#include "framework/permanent_redirect_exception.hh"
 
 #include "template/template.hh"
 
