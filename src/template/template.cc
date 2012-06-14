@@ -204,6 +204,11 @@ namespace CForum {
     v8::Local<v8::Object>::Cast(_context->Global()->GetPrototype())->SetInternalField(0, v8::External::New(this));
   }
 
+  void Template::setGlobal(const char *nam, v8::Handle<v8::Value> val) {
+    _context->Global()->Set(v8::String::New(nam), val);
+  }
+
+
   void Template::setExtend(const std::string &fname, v8::Local<v8::Object> vars) {
     _extends = Extender(fname,vars);
   }

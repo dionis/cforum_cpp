@@ -31,6 +31,81 @@
 #include "framework/request.hh"
 
 namespace CForum {
+  static v8::Handle<v8::Value> _getCfg(const v8::Arguments &args) {
+    v8::Local<v8::Object> self = args.Holder();
+
+    if(self->InternalFieldCount() < 1) {
+      return v8::ThrowException(v8::String::New("Oops! Config object is NULL."));
+    }
+
+    v8::Local<v8::External> wrap = v8::Local<v8::External>::Cast(self->GetInternalField(0));
+    Configparser *cfg = reinterpret_cast<Configparser *>(wrap->Value());
+
+    if(cfg == NULL) {
+      return v8::ThrowException(v8::String::New("Oops! Configparser object is NULL."));
+    }
+
+    if(args.Length() < 1 || args[0].IsEmpty() || !args[0]->IsString()) {
+      return v8::ThrowException(v8::String::New("A config value path is needed as first argument!"));
+    }
+
+    bool may_be_null = true;
+    if(args.Length() >= 2 && !args[1].IsEmpty() && args[1]->IsBooleanObject()) {
+      may_be_null = args[1]->ToBoolean()->BooleanValue();
+    }
+
+    v8::String::Utf8Value nam(args[0]->ToString());
+    v8::Local<v8::Value> ret;
+
+    try {
+      return cfg->getValue(*nam, may_be_null);
+    }
+    catch(ConfigErrorException &e) {
+      return v8::ThrowException(v8::String::New("Config value is null!"));
+    }
+
+    return v8::Undefined();
+  }
+
+  static v8::Handle<v8::Value> _getByPathCfg(const v8::Arguments &args) {
+    v8::Local<v8::Object> self = args.Holder();
+
+    if(self->InternalFieldCount() < 1) {
+      return v8::ThrowException(v8::String::New("Oops! Config object is NULL."));
+    }
+
+    v8::Local<v8::External> wrap = v8::Local<v8::External>::Cast(self->GetInternalField(0));
+    Configparser *cfg = reinterpret_cast<Configparser *>(wrap->Value());
+
+    if(cfg == NULL) {
+      return v8::ThrowException(v8::String::New("Oops! Configparser object is NULL."));
+    }
+
+    if(args.Length() < 1 || args[0].IsEmpty() || !args[0]->IsString()) {
+      return v8::ThrowException(v8::String::New("A config value path is needed as first argument!"));
+    }
+
+    bool may_be_null = true;
+    if(args.Length() >= 2 && !args[1].IsEmpty() && args[1]->IsBooleanObject()) {
+      may_be_null = args[1]->ToBoolean()->BooleanValue();
+    }
+
+    v8::String::Utf8Value nam(args[0]->ToString());
+
+    v8::Local<v8::Value> ret;
+
+    try {
+      return cfg->getByPath(*nam, may_be_null);
+    }
+    catch(ConfigErrorException &e) {
+      return v8::ThrowException(v8::String::New("Config value is null!"));
+    }
+
+    return v8::Undefined();
+  }
+
+
+
   Request::Request() : requestUri(), user(), tpl() { }
   Request::Request(const Request &rq) : requestUri(rq.requestUri), user(rq.user), tpl(rq.tpl) { }
 
@@ -73,6 +148,16 @@ namespace CForum {
     else {
       tpl = boost::make_shared<Template>();
     }
+
+
+    v8::Handle<v8::ObjectTemplate> cfgparser_templ = v8::ObjectTemplate::New();
+    cfgparser_templ->SetInternalFieldCount(1);
+    cfgparser_templ->Set(v8::String::New("get"), v8::FunctionTemplate::New(_getCfg));
+    cfgparser_templ->Set(v8::String::New("getByPath"), v8::FunctionTemplate::New(_getByPathCfg));
+
+    v8::Local<v8::Object> obj = cfgparser_templ->NewInstance();
+    obj->SetInternalField(0, v8::External::New(configparser.get()));
+    tpl->setGlobal("configparser", obj);
   }
 
   Request &Request::operator=(const Request &rq) {

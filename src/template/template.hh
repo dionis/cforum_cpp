@@ -93,6 +93,8 @@ namespace CForum {
 
     v8::Local<v8::Value> jsonToV8(boost::shared_ptr<JSON::Element>);
 
+    void setGlobal(const char *, v8::Handle<v8::Value>);
+
     ~Template();
 
   private:
