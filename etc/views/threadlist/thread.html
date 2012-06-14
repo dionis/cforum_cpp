@@ -1,13 +1,13 @@
 <%
 
-function outputMessage(id, message) {
+function outputMessage(thread, message) {
 %>
-<li><span class="posting"><span class="subject"><%if(message.category != "") { %><strong class="category"><span class="tn braces">(</span><% out(message.category); %><span class="tn braces">)</span></strong><% } %> <a href="<% out(id + '/' + message.id); %>" class="title"><strong><% out(message.subject); %></strong></a></span> <span class="tn by">von</span> <span class='author'><% out(message.author.name); %></span><span class="tn">,</span> <span class="date"><% out(moment(message.date).format("DD.MM.YYYY, HH:mm")); %></span></span>
+<li><span class="posting"><span class="subject"><%if(message.category != "") { %><strong class="category"><span class="tn braces">(</span><% out(message.category); %><span class="tn braces">)</span></strong><% } %> <a href="<% out(absURL(thread, message)); %>" class="title"><strong><% out(message.subject); %></strong></a></span> <span class="tn by">von</span> <span class='author'><% out(message.author.name); %></span><span class="tn">,</span> <span class="date"><% out(moment(message.date).format("DD.MM.YYYY, HH:mm")); %></span></span>
 <%
   if(message.messages.length > 0) { %>
     <ul>
 <%    for(var i = 0; i < message.messages.length; ++i) {
-      outputMessage(id, message.messages[i]);
+      outputMessage(thread, message.messages[i]);
     } %>
     </ul>
 <%  }
@@ -17,7 +17,7 @@ function outputMessage(id, message) {
 thread = _v("thread");
 
 if(thread) {
-  outputMessage(thread.id, thread.messages[0]);
+  outputMessage(thread, thread.messages[0]);
 }
 
 %>
