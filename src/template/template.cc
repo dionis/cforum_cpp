@@ -185,7 +185,12 @@ namespace CForum {
     return v8::Undefined();
   }
 
-  Template::Global::Global() : _global(v8::ObjectTemplate::New()) {
+
+  Template::Template() : _stream(NULL), _extends(), _base_dir() {
+    v8::HandleScope scope;
+
+    _global = v8::ObjectTemplate::New();
+
     _global->SetInternalFieldCount(1);
 
     _global->Set(v8::String::New("_e"), v8::FunctionTemplate::New(_eCallback));
@@ -194,13 +199,32 @@ namespace CForum {
 
     _global->Set(v8::String::New("partial"), v8::FunctionTemplate::New(partialCallback));
     _global->Set(v8::String::New("extend"), v8::FunctionTemplate::New(extendCallback));
-  }
 
-  Template::Template() : _stream(NULL), _extends(), _handle_scope(), _global(), _context(v8::Context::New(NULL, _global.getGlobal())), _scope(_context), _vars(v8::Object::New()), _base_dir() {
+    _context = v8::Context::New(NULL, _global);
+    _scope = boost::make_shared<v8::Context::Scope>(_context);
+    _vars = v8::Object::New();
+
     v8::Local<v8::Object>::Cast(_context->Global()->GetPrototype())->SetInternalField(0, v8::External::New(this));
   }
 
-  Template::Template(v8::ExtensionConfiguration *ext) : _stream(NULL), _extends(), _handle_scope(), _global(), _context(v8::Context::New(ext, _global.getGlobal())), _scope(_context), _vars(v8::Object::New()), _base_dir() {
+  Template::Template(v8::ExtensionConfiguration *ext) : _stream(NULL), _extends(), _base_dir() {
+    v8::HandleScope scope;
+
+    _global = v8::ObjectTemplate::New();
+
+    _global->SetInternalFieldCount(1);
+
+    _global->Set(v8::String::New("_e"), v8::FunctionTemplate::New(_eCallback));
+    _global->Set(v8::String::New("_v"), v8::FunctionTemplate::New(_vCallback));
+    _global->Set(v8::String::New("_p"), v8::FunctionTemplate::New(_pCallback));
+
+    _global->Set(v8::String::New("partial"), v8::FunctionTemplate::New(partialCallback));
+    _global->Set(v8::String::New("extend"), v8::FunctionTemplate::New(extendCallback));
+
+    _context = v8::Context::New(ext, _global);
+    _scope = boost::make_shared<v8::Context::Scope>(_context);
+    _vars = v8::Object::New();
+
     v8::Local<v8::Object>::Cast(_context->Global()->GetPrototype())->SetInternalField(0, v8::External::New(this));
   }
 
@@ -226,6 +250,8 @@ namespace CForum {
   }
 
   std::string Template::evaluate(const v8::Local<v8::Script> &script, v8::Local<v8::Object> vars) {
+    v8::HandleScope scope;
+
     std::ostringstream ostr;
     std::ostream *tmp;
     std::string str;
@@ -286,53 +312,6 @@ namespace CForum {
 
   Template::~Template() {
     _context.Dispose();
-  }
-
-
-  v8::Local<v8::Value> Template::jsonToV8(boost::shared_ptr<JSON::Element> elem) {
-    if(boost::dynamic_pointer_cast<JSON::String>(elem)) {
-      std::string v;
-      boost::dynamic_pointer_cast<JSON::String>(elem)->getValue().toUTF8String(v);
-      return v8::String::New(v.c_str());
-    }
-    else if(boost::dynamic_pointer_cast<JSON::Number>(elem)) {
-      boost::shared_ptr<JSON::Number> val = boost::dynamic_pointer_cast<JSON::Number>(elem);
-      if(val->getNumberType() == JSON::JSONNumberTypeInt) {
-        return v8::Integer::New(val->getIValue());
-      }
-
-      return v8::Number::New(val->getDValue());
-    }
-    else if(boost::dynamic_pointer_cast<JSON::Boolean>(elem)) {
-      return v8::Local<v8::Boolean>::New(v8::Boolean::New(boost::dynamic_pointer_cast<JSON::Boolean>(elem)->getValue()));
-    }
-    else if(boost::dynamic_pointer_cast<JSON::Array>(elem)) {
-      JSON::Array::ArrayType_t ary = boost::dynamic_pointer_cast<JSON::Array>(elem)->getValue();
-      JSON::Array::ArrayType_t::iterator it, end = ary.end();
-      v8::Local<v8::Array> v8ary = v8::Array::New();
-      uint32_t i;
-
-      for(i = 0, it = ary.begin(); it != end; ++it, ++i) {
-        v8ary->Set(i, jsonToV8(*it));
-      }
-
-      return v8ary;
-    }
-    else if(boost::dynamic_pointer_cast<JSON::Object>(elem)) {
-      JSON::Object::ObjectType_t obj = boost::dynamic_pointer_cast<JSON::Object>(elem)->getValue();
-      JSON::Object::ObjectType_t::iterator it, end = obj.end();
-      v8::Local<v8::Object> v8obj = v8::Object::New();
-
-      for(it = obj.begin(); it != end; ++it) {
-        std::string key;
-        it->first.toUTF8String(key);
-        v8obj->Set(v8::String::New(key.c_str()), jsonToV8(it->second));
-      }
-
-      return v8obj;
-    }
-
-    return v8::Local<v8::Primitive>::New(v8::Undefined());
   }
 
 }

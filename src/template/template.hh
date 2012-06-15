@@ -91,8 +91,6 @@ namespace CForum {
 
     std::string generateFileName(const v8::String::Utf8Value &);
 
-    v8::Local<v8::Value> jsonToV8(boost::shared_ptr<JSON::Element>);
-
     void setGlobal(const char *, v8::Handle<v8::Value>);
 
     ~Template();
@@ -102,14 +100,6 @@ namespace CForum {
       TemplateParseModeString,
       TemplateParseModeInJS
     } TemplateParseMode;
-
-    class Global {
-    public:
-      v8::Local<v8::ObjectTemplate> _global;
-
-      Global();
-      v8::Local<v8::ObjectTemplate> &getGlobal();
-    };
 
     class Extender {
     public:
@@ -131,17 +121,12 @@ namespace CForum {
 
     Extender _extends;
 
-    v8::HandleScope _handle_scope;
-    Template::Global _global;
+    v8::Local<v8::ObjectTemplate> _global;
     v8::Persistent<v8::Context> _context;
-    v8::Context::Scope _scope;
     v8::Local<v8::Object> _vars;
     std::string _base_dir;
+    boost::shared_ptr<v8::Context::Scope> _scope;
   };
-
-  inline v8::Local<v8::ObjectTemplate> &Template::Global::getGlobal() {
-    return _global;
-  }
 
   inline std::string Template::parseString(const std::string &str) {
     return parseString(str.c_str(),str.length());
